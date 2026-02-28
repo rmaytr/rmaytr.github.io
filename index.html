@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio — [Your Name]</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-primary: #FAF8F5;
+  --bg-secondary: #F0EDE8;
+  --bg-card: #FFFFFF;
+  --text-primary: #2B2B2B;
+  --text-secondary: #6B6560;
+  --text-muted: #9A9490;
+  --accent: #8C1515;
+  --accent-light: #B83A3A;
+  --accent-mid: #D44444;
+  --accent-subtle: rgba(140, 21, 21, 0.05);
+  --accent-secondary: #A02020;
+  --border: rgba(43, 43, 43, 0.08);
+  --border-strong: rgba(43, 43, 43, 0.15);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.03);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Outfit', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --menu-width: 320px;
+  --grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--accent-light) transparent; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.7;
+  font-weight: 400;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: var(--grain);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+::selection { background: var(--accent); color: #fff; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--accent-light); border-radius: 99px; }
+a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
+a:hover { color: var(--accent-mid); }
+
+/* =============================================
+   SLIDING DRAWER — menu + handle as one unit
+   ============================================= */
+.menu-drawer {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  z-index: 999;
+  display: flex;
+  align-items: stretch;
+  transform: translateX(calc(-1 * var(--menu-width)));
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.menu-drawer.open {
+  transform: translateX(0);
+}
+
+.side-menu {
+  width: var(--menu-width);
+  height: 100%;
+  background: var(--bg-card);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  flex-shrink: 0;
+}
+
+.menu-handle {
+  align-self: center;
+  width: 20px;
+  min-height: 88px;
+  background: var(--accent);
+  border-radius: 0 10px 10px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-shadow: 3px 0 16px rgba(140, 21, 21, 0.15);
+  transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              background 0.35s,
+              box-shadow 0.35s;
+  position: relative;
+}
+
+/* Invisible hover-catch area extending right of handle */
+.menu-handle::after {
+  content: '';
+  position: absolute;
+  right: -24px;
+  top: -40px;
+  width: 48px;
+  height: calc(100% + 80px);
+}
+
+.menu-handle:hover {
+  width: 24px;
+  background: var(--accent-light);
+  box-shadow: 4px 0 22px rgba(140, 21, 21, 0.22);
+}
+
+.menu-handle .chevron {
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid rgba(255,255,255,0.8);
+  border-bottom: 2px solid rgba(255,255,255,0.8);
+  transform: rotate(-45deg);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.menu-drawer.open .menu-handle .chevron {
+  transform: rotate(135deg);
+}
+
+.menu-handle .handle-line {
+  width: 8px;
+  height: 1px;
+  background: rgba(255,255,255,0.25);
+  margin-top: 10px;
+  border-radius: 1px;
+  transition: background 0.3s;
+}
+
+.menu-handle:hover .handle-line {
+  background: rgba(255,255,255,0.45);
+}
+
+.menu-handle .handle-dots {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.menu-handle .handle-dots span {
+  display: block;
+  width: 2.5px;
+  height: 2.5px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  transition: background 0.3s;
+}
+
+.menu-handle:hover .handle-dots span {
+  background: rgba(255,255,255,0.6);
+}
+
+/* Menu inner */
+.side-menu-header {
+  padding: 32px 28px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.side-menu-header h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.side-menu-header p {
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.side-menu-nav { padding: 16px 0; }
+
+.side-menu-nav a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 28px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 400;
+  transition: all 0.25s;
+  border-left: 2px solid transparent;
+}
+
+.side-menu-nav a:hover {
+  color: var(--accent);
+  background: var(--accent-subtle);
+  border-left-color: var(--accent);
+}
+
+.side-menu-nav a .nav-icon {
+  width: 18px;
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+.side-menu-nav .divider {
+  height: 1px;
+  background: var(--border);
+  margin: 12px 28px;
+}
+
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(43, 43, 43, 0.12);
+  backdrop-filter: blur(2px);
+  z-index: 998;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+
+.menu-overlay.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* =============================================
+   MAIN CONTENT
+   ============================================= */
+.main-content {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 32px 120px;
+}
+
+.hero {
+  padding: 80px 0 40px;
+  text-align: center;
+  animation: fade-in-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.hero-photo-wrapper {
+  width: 160px;
+  height: 160px;
+  margin: 0 auto 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--border-strong);
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-photo-wrapper .placeholder-icon { font-size: 56px; color: var(--text-muted); opacity: 0.4; }
+.hero-photo-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: 42px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.hero .tagline {
+  font-size: 15px;
+  color: var(--text-secondary);
+  font-weight: 400;
+  max-width: 500px;
+  margin: 0 auto 24px;
+  line-height: 1.6;
+}
+
+.contact-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px 0 0;
+}
+
+.contact-bar a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 400;
+  transition: all 0.25s;
+}
+
+.contact-bar a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.contact-bar a .icon { font-size: 14px; }
+
+/* SECTIONS */
+.section {
+  margin-top: 56px;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.section.visible { opacity: 1; transform: translateY(0); }
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.section-divider {
+  width: 40px;
+  height: 2px;
+  background: var(--accent-light);
+  margin-bottom: 28px;
+  border-radius: 2px;
+}
+
+.summary-text {
+  font-size: 16px;
+  line-height: 1.85;
+  color: var(--text-secondary);
+  max-width: 660px;
+}
+
+.summary-text .highlight { color: var(--text-primary); font-weight: 500; }
+
+/* CARDS */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 28px;
+  margin-bottom: 16px;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  gap: 16px;
+}
+
+.card-title { font-family: var(--font-display); font-size: 20px; font-weight: 600; line-height: 1.3; }
+.card-subtitle { font-size: 14px; color: var(--accent); font-weight: 500; margin-top: 2px; }
+
+.card-date {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  padding: 4px 10px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.card-body { font-size: 14px; color: var(--text-secondary); line-height: 1.75; }
+.card-body ul { list-style: none; padding: 0; }
+.card-body ul li { padding: 4px 0 4px 20px; position: relative; }
+.card-body ul li::before { content: '\2014'; position: absolute; left: 0; color: var(--accent-light); font-weight: 600; }
+
+.card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+
+.tag {
+  padding: 3px 10px;
+  background: var(--bg-secondary);
+  border-radius: 99px;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.tag.accent { background: var(--accent-subtle); color: var(--accent); }
+
+/* SKILLS */
+.skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.skill-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  transition: all 0.25s;
+}
+
+.skill-item:hover { border-color: var(--border-strong); }
+.skill-name { font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 8px; }
+
+.skill-bar-track { width: 100%; height: 4px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden; }
+
+.skill-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-mid));
+  border-radius: 4px;
+  width: 0%;
+  transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.skill-bar-fill.green { background: linear-gradient(90deg, var(--accent-secondary), var(--accent-mid)); }
+
+/* LANGUAGES */
+.lang-grid { display: flex; gap: 16px; flex-wrap: wrap; }
+
+.lang-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px 28px;
+  text-align: center;
+  flex: 1;
+  min-width: 160px;
+  transition: all 0.25s;
+}
+
+.lang-item:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+.lang-name { font-family: var(--font-display); font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+.lang-level { font-size: 12px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
+
+/* FUN SECTIONS */
+.fun-section-separator { margin: 60px 0 48px; display: flex; align-items: center; gap: 16px; }
+.fun-section-separator .line { flex: 1; height: 1px; background: var(--border-strong); }
+.fun-section-separator .label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); }
+
+.facts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.fact-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px 22px;
+  transition: all 0.3s;
+  cursor: default;
+}
+
+.fact-card:hover { border-color: var(--accent-light); background: var(--accent-subtle); transform: translateY(-2px); }
+.fact-emoji { font-size: 22px; margin-bottom: 8px; }
+.fact-text { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+
+.hobbies-flex { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.hobby-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  transition: all 0.25s;
+  cursor: default;
+}
+
+.hobby-chip:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+
+/* SLIDESHOW */
+.slideshow-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+
+.slideshow-track {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.slide {
+  min-width: 100%;
+  flex-shrink: 0;
+}
+
+.slide-placeholder {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-card) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.slide-placeholder span {
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: 600;
+  color: var(--border-strong);
+  opacity: 0.5;
+}
+
+.slide-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: var(--bg-card);
+  color: var(--accent);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: all 0.25s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.slide-btn:hover {
+  background: var(--accent);
+  color: #fff;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.slide-prev { left: 12px; }
+.slide-next { right: 12px; }
+
+.slide-counter {
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(4px);
+  padding: 4px 10px;
+  border-radius: 99px;
+  z-index: 2;
+}
+
+/* FOOTER */
+.footer { text-align: center; padding: 60px 0 40px; border-top: 1px solid var(--border); margin-top: 80px; }
+.footer p { font-size: 13px; color: var(--text-muted); }
+.footer .footer-accent { color: var(--accent); }
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  :root { --menu-width: 280px; }
+  .main-content { padding: 0 20px 80px; }
+  .hero h1 { font-size: 32px; }
+  .skills-grid, .facts-grid { grid-template-columns: 1fr; }
+  .card-header { flex-direction: column; gap: 8px; }
+}
+
+@media (max-width: 480px) {
+  .hero h1 { font-size: 28px; }
+  .section-title { font-size: 24px; }
+  .lang-grid { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<!-- UNIFIED DRAWER -->
+<div class="menu-drawer" id="menuDrawer">
+  <nav class="side-menu">
+    <div class="side-menu-header">
+      <h2>[Your Name]</h2>
+      <p>CS &amp; Physics &middot; UAB &middot; Birmingham, AL</p>
+    </div>
+    <div class="side-menu-nav">
+      <a href="#summary">Background</a>
+      <a href="#contact">Contact</a>
+      <a href="#education">Education</a>
+      <a href="#work">Work Experience</a>
+      <a href="#projects">Projects</a>
+      <a href="#leadership">Leadership</a>
+      <a href="#extracurriculars">Extracurriculars</a>
+      <a href="#awards">Awards &amp; Certificates</a>
+      <a href="#skills">Skills</a>
+      <a href="#languages">Languages</a>
+      <div class="divider"></div>
+      <a href="#facts">Interesting Facts</a>
+      <a href="#hobbies">Life Background &amp; Interest</a>
+    </div>
+  </nav>
+  <div class="menu-handle" id="menuHandle">
+    <span class="chevron"></span>
+    <div class="handle-line"></div>
+    <div class="handle-dots">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+</div>
+
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<main class="main-content">
+
+  <section class="hero" id="hero">
+    <div class="hero-photo-wrapper">
+      <span class="placeholder-icon">&#9671;</span>
+    </div>
+    <h1>[Your Name]</h1>
+    <p class="tagline">Computer Science &amp; Physics &middot; University of Alabama at Birmingham &middot; Birmingham, AL</p>
+    <div class="contact-bar" id="contact">
+      <a href="mailto:your.email@uab.edu"><span class="icon">&#9993;</span> Email</a>
+      <a href="https://linkedin.com/in/yourprofile" target="_blank"><span class="icon">in</span> LinkedIn</a>
+      <a href="https://github.com/yourgithub" target="_blank"><span class="icon">&#8984;</span> GitHub</a>
+      <a href="tel:+1234567890"><span class="icon">&#9742;</span> (XXX) XXX-XXXX</a>
+    </div>
+  </section>
+
+  <section class="section" id="summary">
+    <span class="section-label">01 &mdash; Background</span>
+    <h2 class="section-title">Summary</h2>
+    <div class="section-divider"></div>
+    <p class="summary-text">
+      I'm an international student from <span class="highlight">Russia</span>, originally from Moscow, now studying in the United States. In 2022, when the invasion of Ukraine shattered the reality I knew, I made the decision to leave Russia. I moved to <span class="highlight">Arizona</span> alone as a teenager, finished high school, and then relocated to <span class="highlight">Birmingham, Alabama</span> to attend the University of Alabama at Birmingham. Today I'm a freshman pursuing a <span class="highlight">Double Major in Computer Science and Physics</span> with minors in <span class="highlight">Mathematics</span> and <span class="highlight">Entrepreneurship</span>, holding a 4.0 GPA. My long-term goal is to build intelligent systems at the intersection of AI, physics, and human cognition &mdash; technology that is anchored in reality and designed to expand human agency. I plan to pursue a Ph.D. in Machine Learning and Artificial Intelligence.
+    </p>
+  </section>
+
+  <section class="section" id="education">
+    <span class="section-label">02 &mdash; Education</span>
+    <h2 class="section-title">Education</h2>
+    <div class="section-divider"></div>
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">University of Alabama at Birmingham</div>
+          <div class="card-subtitle">B.S. Computer Science &amp; B.S. Physics &middot; Minors: Mathematics, Entrepreneurship</div>
+        </div>
+        <span class="card-date">2024 &mdash; Present</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Cumulative GPA: <strong>4.0 / 4.0</strong></li>
+          <li>Relevant Coursework: [Add your key courses here]</li>
+          <li>Long-term academic goal: M.S. in Artificial Intelligence</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag accent">4.0 GPA</span>
+          <span class="tag">R1 Research University</span>
+          <span class="tag">Double Major</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">[High School Name], Arizona</div>
+          <div class="card-subtitle">High School Diploma</div>
+        </div>
+        <span class="card-date">[Year &mdash; Year]</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Relocated to the United States from Russia to complete secondary education</li>
+          <li>[Add GPA, honors, activities as needed]</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="work">
+    <span class="section-label">03 &mdash; Work Experience</span>
+    <h2 class="section-title">Work Experience</h2>
+    <div class="section-divider"></div>
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Front-End Web Developer</div>
+          <div class="card-subtitle">[Company / Organization Name]</div>
+        </div>
+        <span class="card-date">[Date &mdash; Present]</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>[Describe key responsibilities, technologies used, and impact]</li>
+          <li>[Specific metrics or deliverables if available]</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag">HTML/CSS</span>
+          <span class="tag">JavaScript</span>
+          <span class="tag">React</span>
+          <span class="tag">[Add more]</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Physics &amp; Mathematics Tutor</div>
+          <div class="card-subtitle">VMASC &mdash; University of Alabama at Birmingham</div>
+        </div>
+        <span class="card-date">[Date &mdash; Present]</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Tutor undergraduate students in introductory and intermediate Physics and Mathematics</li>
+          <li>Develop tailored pedagogical approaches to match individual learning styles &mdash; a practice directly informing my research interest in adaptive AI tutoring systems</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag">Physics</span>
+          <span class="tag">Mathematics</span>
+          <span class="tag">Pedagogy</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="projects">
+    <span class="section-label">04 &mdash; Projects</span>
+    <h2 class="section-title">Projects</h2>
+    <div class="section-divider"></div>
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Physics-Informed Generative AI Tutoring Model</div>
+          <div class="card-subtitle">Independent Research &amp; Development</div>
+        </div>
+        <span class="card-date">In Progress</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Designing and prototyping a generative AI system that uses physics-based constraints to anchor tutoring responses in mathematical truth, reducing hallucination in STEM explanations</li>
+          <li>Combines physics simulation, natural language generation, and adaptive learning to create a cognitively responsive educational tool</li>
+          <li>[Link to prototype will be added upon deployment]</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag accent">Flagship Project</span>
+          <span class="tag">Python</span>
+          <span class="tag">Generative AI</span>
+          <span class="tag">Physics-Informed ML</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Secure VPN System</div>
+          <div class="card-subtitle">Independent Engineering &mdash; Russia, 2022</div>
+        </div>
+        <span class="card-date">Feb 2022</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Engineered and deployed a secure VPN to bypass Russian state-imposed internet censorship following the invasion of Ukraine</li>
+          <li>Provided family and close contacts with access to independent, uncensored information during a period of total informational collapse</li>
+          <li>The project that catalyzed my conviction: technology anchored in truth is a lifeline</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag">Networking</span>
+          <span class="tag">Security</span>
+          <span class="tag">Encryption</span>
+          <span class="tag accent">Origin Story</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">[Additional Projects]</div>
+          <div class="card-subtitle">[Add more projects here]</div>
+        </div>
+        <span class="card-date">[Date]</span>
+      </div>
+      <div class="card-body">
+        <ul><li>[Description]</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="leadership">
+    <span class="section-label">05 &mdash; Leadership</span>
+    <h2 class="section-title">Leadership Activities</h2>
+    <div class="section-divider"></div>
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Founder &amp; President &mdash; The AI Collective (AIC)</div>
+          <div class="card-subtitle">Registered Campus Organization &middot; UAB</div>
+        </div>
+        <span class="card-date">[Date &mdash; Present]</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Founded and registered the first dedicated AI-focused student organization at UAB</li>
+          <li>[Add membership count, events hosted, workshops, speakers, etc.]</li>
+          <li>[Add specific impact metrics]</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag accent">Founder</span>
+          <span class="tag">Artificial Intelligence</span>
+          <span class="tag">Community Building</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Undergraduate Student Government (USG)</div>
+          <div class="card-subtitle">Initiative Lead &mdash; Micro-Internship Pipeline</div>
+        </div>
+        <span class="card-date">[Date &mdash; Present]</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Led an initiative in partnership with the UAB Career Center to design and build a structured micro-internship pipeline for freshmen</li>
+          <li>Addressed a systemic gap: most freshmen at large R1 universities have zero access to professional experience in their first year</li>
+          <li>[Add number of students impacted, partnerships formed, etc.]</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag">Policy</span>
+          <span class="tag">Student Advocacy</span>
+          <span class="tag">Career Development</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="extracurriculars">
+    <span class="section-label">06 &mdash; Extracurriculars</span>
+    <h2 class="section-title">Extracurricular Activities</h2>
+    <div class="section-divider"></div>
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">[Extracurricular 1]</div>
+          <div class="card-subtitle">[Role / Organization]</div>
+        </div>
+        <span class="card-date">[Date]</span>
+      </div>
+      <div class="card-body"><ul><li>[Description of involvement and impact]</li></ul></div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">[Extracurricular 2]</div>
+          <div class="card-subtitle">[Role / Organization]</div>
+        </div>
+        <span class="card-date">[Date]</span>
+      </div>
+      <div class="card-body"><ul><li>[Description of involvement and impact]</li></ul></div>
+    </div>
+  </section>
+
+  <section class="section" id="awards">
+    <span class="section-label">07 &mdash; Awards &amp; Certificates</span>
+    <h2 class="section-title">Awards &amp; Certificates</h2>
+    <div class="section-divider"></div>
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">[Award / Certificate Name]</div>
+          <div class="card-subtitle">[Issuing Organization]</div>
+        </div>
+        <span class="card-date">[Date]</span>
+      </div>
+      <div class="card-body"><ul><li>[Description or significance]</li></ul></div>
+    </div>
+  </section>
+
+  <section class="section" id="skills">
+    <span class="section-label">08 &mdash; Skills</span>
+    <h2 class="section-title">Skills</h2>
+    <div class="section-divider"></div>
+    <div class="hobbies-flex">
+      <div class="hobby-chip">Python</div>
+      <div class="hobby-chip">JavaScript / TypeScript</div>
+      <div class="hobby-chip">HTML / CSS</div>
+      <div class="hobby-chip">React</div>
+      <div class="hobby-chip">Physics &amp; Mathematical Modeling</div>
+      <div class="hobby-chip">Machine Learning / AI</div>
+      <div class="hobby-chip">Git / Version Control</div>
+      <div class="hobby-chip">Data Structures &amp; Algorithms</div>
+      <div class="hobby-chip">[Add Skill]</div>
+    </div>
+  </section>
+
+  <section class="section" id="languages">
+    <span class="section-label">09 &mdash; Languages</span>
+    <h2 class="section-title">Languages</h2>
+    <div class="section-divider"></div>
+    <div class="lang-grid">
+      <div class="lang-item"><div class="lang-name">Russian</div><div class="lang-level">Native</div></div>
+      <div class="lang-item"><div class="lang-name">English</div><div class="lang-level">Fluent / Near-Native</div></div>
+      <div class="lang-item"><div class="lang-name">Mandarin</div><div class="lang-level">Beginner</div></div>
+    </div>
+  </section>
+
+  <div class="fun-section-separator">
+    <div class="line"></div>
+    <span class="label">Beyond the Resume</span>
+    <div class="line"></div>
+  </div>
+
+  <section class="section" id="facts">
+    <span class="section-label">&#10022; &mdash; Personal</span>
+    <h2 class="section-title">Interesting Facts</h2>
+    <div class="section-divider"></div>
+    <div class="facts-grid">
+      <div class="fact-card"><div class="fact-emoji">&#127969;</div><div class="fact-text">Grew up splitting time between Moscow and a rural dacha in Lokotnya &mdash; where physics was not academic but the literal rules of survival: hauling well-water, building fires, fighting entropy.</div></div>
+      <div class="fact-card"><div class="fact-emoji">&#127758;</div><div class="fact-text">Left Russia at [age] and moved to Arizona alone to rebuild my educational trajectory in the United States.</div></div>
+      <div class="fact-card"><div class="fact-emoji">&#128272;</div><div class="fact-text">Built a working VPN at [age] to bypass Russian state firewalls and keep my family connected to uncensored information during the 2022 invasion of Ukraine.</div></div>
+      <div class="fact-card"><div class="fact-emoji">&#127934;</div><div class="fact-text">[Add a fun personal fact &mdash; e.g., tennis, a hobby, something unexpected]</div></div>
+    </div>
+  </section>
+
+  <section class="section" id="hobbies">
+    <span class="section-label">&#9826; &mdash; Personal</span>
+    <h2 class="section-title">Life Background &amp; Interest</h2>
+    <div class="section-divider"></div>
+
+    <div class="slideshow-wrapper">
+      <div class="slideshow-track" id="slideshowTrack">
+        <div class="slide"><div class="slide-placeholder"><span>1</span></div></div>
+        <div class="slide"><div class="slide-placeholder"><span>2</span></div></div>
+        <div class="slide"><div class="slide-placeholder"><span>3</span></div></div>
+        <div class="slide"><div class="slide-placeholder"><span>4</span></div></div>
+        <div class="slide"><div class="slide-placeholder"><span>5</span></div></div>
+        <div class="slide"><div class="slide-placeholder"><span>6</span></div></div>
+        <div class="slide"><div class="slide-placeholder"><span>7</span></div></div>
+        <div class="slide"><div class="slide-placeholder"><span>8</span></div></div>
+        <div class="slide"><div class="slide-placeholder"><span>9</span></div></div>
+        <div class="slide"><div class="slide-placeholder"><span>10</span></div></div>
+        <div class="slide"><div class="slide-placeholder"><span>11</span></div></div>
+        <div class="slide"><div class="slide-placeholder"><span>12</span></div></div>
+        <div class="slide"><div class="slide-placeholder"><span>13</span></div></div>
+        <div class="slide"><div class="slide-placeholder"><span>14</span></div></div>
+        <div class="slide"><div class="slide-placeholder"><span>15</span></div></div>
+        <div class="slide"><div class="slide-placeholder"><span>16</span></div></div>
+        <div class="slide"><div class="slide-placeholder"><span>17</span></div></div>
+        <div class="slide"><div class="slide-placeholder"><span>18</span></div></div>
+        <div class="slide"><div class="slide-placeholder"><span>19</span></div></div>
+        <div class="slide"><div class="slide-placeholder"><span>20</span></div></div>
+      </div>
+      <button class="slide-btn slide-prev" id="slidePrev" aria-label="Previous">&lsaquo;</button>
+      <button class="slide-btn slide-next" id="slideNext" aria-label="Next">&rsaquo;</button>
+      <div class="slide-counter"><span id="slideIndex">1</span> / 20</div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>Built from scratch by <span class="footer-accent">[Your Name]</span> &middot; 2025</p>
+    <p style="margin-top: 6px; font-size: 12px;">Designed and coded as a demonstration of front-end development capability.</p>
+  </footer>
+
+</main>
+
+<script>
+(() => {
+  'use strict';
+
+  const drawer = document.getElementById('menuDrawer');
+  const handle = document.getElementById('menuHandle');
+  const overlay = document.getElementById('menuOverlay');
+  let isOpen = false;
+  let closeTimer;
+
+  function open() {
+    if (isOpen) return;
+    isOpen = true;
+    drawer.classList.add('open');
+    overlay.classList.add('visible');
+  }
+
+  function close() {
+    if (!isOpen) return;
+    isOpen = false;
+    drawer.classList.remove('open');
+    overlay.classList.remove('visible');
+  }
+
+  // Hover on handle opens
+  handle.addEventListener('mouseenter', () => {
+    clearTimeout(closeTimer);
+    open();
+  });
+
+  // Click toggle fallback
+  handle.addEventListener('click', () => {
+    isOpen ? close() : open();
+  });
+
+  // Stay open while on drawer
+  drawer.addEventListener('mouseenter', () => {
+    clearTimeout(closeTimer);
+  });
+
+  // Close when leaving entire drawer
+  drawer.addEventListener('mouseleave', () => {
+    closeTimer = setTimeout(close, 350);
+  });
+
+  overlay.addEventListener('click', close);
+
+  // Nav links
+  drawer.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) {
+        close();
+        setTimeout(() => {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 300);
+      }
+    });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') close();
+  });
+
+  // Scroll animations
+  const sections = document.querySelectorAll('.section');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        entry.target.querySelectorAll('.skill-bar-fill').forEach((bar, i) => {
+          setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 150 + i * 80);
+        });
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  sections.forEach(s => obs.observe(s));
+
+  // Hero parallax
+  const hero = document.querySelector('.hero');
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (y < 600) {
+      hero.style.transform = 'translateY(' + (y * 0.15) + 'px)';
+      hero.style.opacity = Math.max(1 - y / 500, 0.2);
+    }
+  }, { passive: true });
+  // Slideshow
+  const track = document.getElementById('slideshowTrack');
+  const prevBtn = document.getElementById('slidePrev');
+  const nextBtn = document.getElementById('slideNext');
+  const indexEl = document.getElementById('slideIndex');
+  let current = 0;
+  const total = 20;
+
+  function goTo(i) {
+    current = (i + total) % total;
+    track.style.transform = 'translateX(-' + (current * 100) + '%)';
+    indexEl.textContent = current + 1;
+  }
+
+  prevBtn.addEventListener('click', () => goTo(current - 1));
+  nextBtn.addEventListener('click', () => goTo(current + 1));
+
+  // Auto-advance every 4 seconds
+  let autoSlide = setInterval(() => goTo(current + 1), 4000);
+
+  // Pause on hover
+  track.parentElement.addEventListener('mouseenter', () => clearInterval(autoSlide));
+  track.parentElement.addEventListener('mouseleave', () => {
+    autoSlide = setInterval(() => goTo(current + 1), 4000);
+  });
+})();
+</script>
+</body>
+</html>
