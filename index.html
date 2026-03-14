@@ -1,0 +1,4661 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio &mdash; Rodion Mayatskiy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #EDE8E3;
+      --bg-secondary: #E3DED8;
+      --bg-card: #FFFFFF;
+      --text-primary: #2B2B2B;
+      --text-secondary: #6B6560;
+      --text-muted: #9A9490;
+      --accent: #8C1515;
+      --accent-light: #B83A3A;
+      --accent-mid: #D44444;
+      --accent-subtle: rgba(140, 21, 21, 0.05);
+      --accent-secondary: #A02020;
+      --border: rgba(43, 43, 43, 0.08);
+      --border-strong: rgba(43, 43, 43, 0.15);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
+      --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'Outfit', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --menu-width: 320px;
+      --grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    }
+
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html.lenis,
+    html.lenis body {
+      height: auto;
+    }
+
+    .lenis.lenis-smooth {
+      scroll-behavior: auto !important;
+    }
+
+    html {
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent-light) transparent;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      font-weight: 400;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: var(--grain);
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    ::selection {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--accent-light);
+      border-radius: 99px;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    a:hover {
+      color: var(--accent-mid);
+    }
+
+    /* =============================================
+   SLIDING DRAWER — Physicist's Notebook Menu
+   ============================================= */
+    .menu-drawer {
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100vh;
+      z-index: 999;
+      display: flex;
+      align-items: stretch;
+      transform: translateX(calc(-1 * var(--menu-width)));
+      transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .menu-drawer.open {
+      transform: translateX(0);
+    }
+
+    .side-menu {
+      width: var(--menu-width);
+      height: 100%;
+      background: #F5F0EB;
+      background-image: repeating-linear-gradient(to bottom,
+          transparent,
+          transparent 27px,
+          rgba(140, 21, 21, 0.04) 27px,
+          rgba(140, 21, 21, 0.04) 28px);
+      border-right: 1px solid rgba(43, 43, 43, 0.1);
+      overflow: hidden;
+      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.06);
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    /* Ruled lines fade-in on open */
+    .side-menu::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Red margin line (notebook style) */
+    .side-menu::after {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 0;
+      bottom: 0;
+      width: 1.5px;
+      background: rgba(140, 21, 21, 0.12);
+      pointer-events: none;
+      z-index: 0;
+      transform-origin: top;
+      transform: scaleY(0);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .menu-drawer.open .side-menu::after {
+      transform: scaleY(1);
+      transition-delay: 0.15s;
+    }
+
+    /* ---- Handle: Notebook Tab ---- */
+    .menu-handle {
+      align-self: center;
+      width: 28px;
+      min-height: 90px;
+      background: #F5F0EB;
+      border: 1px solid rgba(140, 21, 21, 0.12);
+      border-left: none;
+      border-radius: 0 10px 10px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      box-shadow: 2px 0 12px rgba(0, 0, 0, 0.06), 0 0 0 0 rgba(140, 21, 21, 0);
+      transition: box-shadow 0.35s, width 0.25s ease, background 0.25s ease;
+      position: relative;
+      animation: handlePulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes handlePulse {
+
+      0%,
+      100% {
+        box-shadow: 2px 0 12px rgba(0, 0, 0, 0.06), 0 0 0 0 rgba(140, 21, 21, 0);
+      }
+
+      50% {
+        box-shadow: 3px 0 16px rgba(0, 0, 0, 0.08), 0 0 0 4px rgba(140, 21, 21, 0.06);
+      }
+    }
+
+    .menu-handle::after {
+      content: '';
+      position: absolute;
+      right: -24px;
+      top: -40px;
+      width: 48px;
+      height: calc(100% + 80px);
+    }
+
+    .menu-handle:hover {
+      width: 32px;
+      background: #F0EAE4;
+      box-shadow: 4px 0 18px rgba(0, 0, 0, 0.1), 0 0 0 6px rgba(140, 21, 21, 0.08);
+      animation: none;
+    }
+
+    /* Three hamburger lines */
+    .handle-lines {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .handle-line {
+      width: 14px;
+      height: 1.5px;
+      background: rgba(140, 21, 21, 0.6);
+      border-radius: 1px;
+      transition: transform 0.3s ease, opacity 0.3s ease, gap 0.3s ease, background 0.3s ease, width 0.2s ease;
+    }
+
+    .menu-handle:hover .handle-lines {
+      gap: 8px;
+    }
+
+    .menu-handle:hover .handle-line {
+      background: #8C1515;
+      width: 16px;
+    }
+
+    /* Hamburger to X when open */
+    .menu-drawer.open .handle-line:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+      background: #8C1515;
+    }
+
+    .menu-drawer.open .handle-line:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-drawer.open .handle-line:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+      background: #8C1515;
+    }
+
+    /* Radar ping */
+    .handle-ping {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .handle-ping::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: rgba(140, 21, 21, 0.15);
+      animation: radarPing 3s ease-out infinite;
+    }
+
+    .menu-handle:hover .handle-ping::before {
+      animation-duration: 1.5s;
+    }
+
+    .menu-drawer.open .handle-ping::before {
+      animation: none;
+      opacity: 0;
+    }
+
+    @keyframes radarPing {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(7);
+        opacity: 0;
+      }
+    }
+
+    /* ---- Menu Header ---- */
+    .side-menu-header {
+      padding: 20px 28px 14px 28px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .side-menu-header h2 {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 600;
+      color: #8C1515;
+      margin-bottom: 4px;
+      opacity: 0;
+      filter: blur(4px);
+      transition: opacity 0.3s ease, filter 0.3s ease;
+    }
+
+    .menu-drawer.open .side-menu-header h2 {
+      opacity: 1;
+      filter: blur(0);
+      transition-delay: 0.2s;
+    }
+
+    .side-menu-header p {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: rgba(43, 43, 43, 0.35);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 400;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .menu-drawer.open .side-menu-header p {
+      opacity: 1;
+      transition-delay: 0.25s;
+    }
+
+    /* Divider line below header */
+    .header-divider {
+      height: 1px;
+      margin: 10px 28px 0;
+      background: rgba(140, 21, 21, 0.2);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      position: relative;
+      z-index: 1;
+    }
+
+    .menu-drawer.open .header-divider {
+      transform: scaleX(1);
+      transition-delay: 0.35s;
+    }
+
+    /* ---- Timeline Navigation ---- */
+    .side-menu-nav {
+      padding: 12px 0 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Vertical timeline line */
+    .timeline-line {
+      position: absolute;
+      left: 22px;
+      top: 12px;
+      bottom: 8px;
+      width: 1px;
+      background: rgba(140, 21, 21, 0.1);
+      transform-origin: top;
+      transform: scaleY(0);
+      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .menu-drawer.open .timeline-line {
+      transform: scaleY(1);
+      transition-delay: 0.4s;
+    }
+
+    /* Glowing current-section indicator */
+    .timeline-glow-dot {
+      position: absolute;
+      left: 22px;
+      width: 4px;
+      height: 4px;
+      margin-left: -1.5px;
+      background: #8C1515;
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(140, 21, 21, 0.25);
+      transition: top 0.3s ease;
+      z-index: 3;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .menu-drawer.open .timeline-glow-dot {
+      opacity: 1;
+      transition-delay: 0.9s;
+    }
+
+    /* Timeline nav links */
+    .timeline-link {
+      display: flex;
+      align-items: center;
+      padding: 8px 28px 8px 24px;
+      position: relative;
+      text-decoration: none !important;
+      cursor: pointer;
+      color: #6B6560;
+      border-radius: 6px;
+      transition: background 0.2s ease;
+    }
+
+    .timeline-node {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      border: 1.5px solid #8C1515;
+      background: transparent;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 2;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.2s ease;
+      transform: scale(0);
+      opacity: 1;
+    }
+
+    .menu-drawer.open .timeline-node {
+      transform: scale(1);
+    }
+
+    .timeline-connector {
+      width: 10px;
+      height: 1px;
+      background: rgba(140, 21, 21, 0.08);
+      opacity: 1;
+      flex-shrink: 0;
+      margin: 0 6px 0 5px;
+      transition: width 0.2s ease, opacity 0.2s ease;
+    }
+
+    .timeline-link-text {
+      font-family: var(--font-body);
+      font-size: 12px;
+      color: #6B6560;
+      transition: color 0.2s ease;
+      flex: 1;
+      opacity: 0;
+    }
+
+    .menu-drawer.open .timeline-link-text {
+      opacity: 1;
+    }
+
+    .timeline-thumb {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .menu-drawer.open .timeline-thumb {
+      opacity: 1;
+    }
+
+    .timeline-thumb svg {
+      width: 14px;
+      height: 14px;
+      fill: none;
+      stroke: rgba(140, 21, 21, 0.2);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.2s ease, transform 0.2s ease;
+    }
+
+    /* Hover effects */
+    .timeline-link:hover {
+      background: rgba(140, 21, 21, 0.03);
+    }
+
+    .timeline-link:hover .timeline-node {
+      background: rgba(140, 21, 21, 0.1);
+    }
+
+    .timeline-link:hover .timeline-connector {
+      width: 20px;
+    }
+
+    .timeline-link:hover .timeline-link-text {
+      color: #8C1515;
+    }
+
+    .timeline-link:hover .timeline-thumb svg {
+      stroke: #8C1515;
+    }
+
+    /* Active link */
+    .timeline-link.active .timeline-node {
+      background: #8C1515;
+      border-color: #8C1515;
+      box-shadow: 0 0 6px rgba(140, 21, 21, 0.2);
+    }
+
+    .timeline-link.active .timeline-link-text {
+      color: #8C1515;
+      font-weight: 500;
+    }
+
+    /* Remove old scan line effect */
+    .timeline-link::after {
+      content: none;
+    }
+
+    /* Section color assignments — unified */
+    .tl-white,
+    .tl-gold,
+    .tl-red,
+    .tl-amber,
+    .tl-blue,
+    .tl-green {
+      color: #6B6560;
+    }
+
+    /* ---- Divider between main & personal ---- */
+    .menu-divider-fancy {
+      position: relative;
+      margin: 8px 28px 4px 40px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      z-index: 1;
+    }
+
+    .menu-divider-fancy .dash-line {
+      flex: 1;
+      height: 1px;
+      background: repeating-linear-gradient(90deg,
+          rgba(140, 21, 21, 0.12) 0, rgba(140, 21, 21, 0.12) 4px,
+          transparent 4px, transparent 12px);
+    }
+
+    .menu-divider-fancy .diamond {
+      width: 6px;
+      height: 6px;
+      border: 1px solid rgba(140, 21, 21, 0.15);
+      transform: rotate(45deg);
+      margin: 0 8px;
+      flex-shrink: 0;
+    }
+
+    .menu-divider-label {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(140, 21, 21, 0.25);
+      margin: 0 0 4px 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(43, 43, 43, 0.08);
+      backdrop-filter: blur(2px);
+      z-index: 998;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s;
+    }
+
+    .menu-overlay.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* =============================================
+   MAIN CONTENT
+   ============================================= */
+    .main-content {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 32px 120px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .hero {
+      position: relative;
+      z-index: 1;
+      padding: 80px 0 40px;
+      text-align: center;
+      animation: fade-in-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    #heroCanvas {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100vw;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero>*:not(#heroCanvas) {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-photo-wrapper {
+      width: 160px;
+      height: 160px;
+      margin: 0 auto 32px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid var(--border-strong);
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-photo-wrapper .placeholder-icon {
+      font-size: 56px;
+      color: var(--text-muted);
+      opacity: 0.4;
+    }
+
+    .hero-photo-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 15%;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: 42px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    .hero .tagline {
+      font-size: 15px;
+      color: var(--text-secondary);
+      font-weight: 400;
+      max-width: 500px;
+      margin: 0 auto 24px;
+      line-height: 1.6;
+    }
+
+    .contact-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      padding: 24px 0 0;
+    }
+
+    .contact-bar a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 400;
+      transition: all 0.25s;
+    }
+
+    .contact-bar a:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .contact-bar a .icon {
+      font-size: 14px;
+    }
+
+    /* SECTIONS */
+    .section {
+      margin-top: 56px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+      position: relative;
+      z-index: 1;
+    }
+
+    .section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #FFFFFF;
+      font-weight: 500;
+      margin-bottom: 6px;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #8C1515;
+      padding: 4px 12px;
+      border-radius: 4px;
+    }
+
+    .section-label::after {
+      content: "";
+      display: block;
+    }
+
+    .section-label .label-line {
+      display: inline-block;
+      width: 0;
+      height: 1.5px;
+      background: #FFFFFF;
+      flex-shrink: 0;
+      transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .section.visible .section-label .label-line {
+      width: 20px;
+    }
+
+    .section-label .label-inner {
+      display: inline-block;
+      clip-path: inset(0 100% 0 0);
+      transition: clip-path 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .section.visible .section-label .label-inner {
+      clip-path: inset(0 0% 0 0);
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: var(--text-primary);
+      line-height: 1.3;
+      display: table;
+      margin-top: 8px;
+      background: #FFFFFF;
+      border: 1px solid rgba(43, 43, 43, 0.08);
+      border-radius: 8px;
+      padding: 8px 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+
+    .section-divider {
+      width: 0;
+      height: 2px;
+      background: #8C1515;
+      margin-bottom: 28px;
+      border-radius: 2px;
+      transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .section.visible .section-divider {
+      width: 40px;
+      transition-delay: 0.3s;
+    }
+
+    .summary-text {
+      font-size: 16px;
+      line-height: 1.85;
+      color: var(--text-secondary);
+      max-width: 660px;
+      background: #FFFFFF;
+      border: 1px solid rgba(43, 43, 43, 0.08);
+      border-radius: 12px;
+      padding: 28px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    }
+
+    .summary-text:hover {
+      border-color: rgba(43, 43, 43, 0.15);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
+      transform: translateY(-2px);
+    }
+
+    .summary-text .highlight {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* Skills category labels */
+    .skills-category-label {
+      font-size: 13px;
+      color: #8C1515;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 12px;
+      display: inline-block;
+      background: #FFFFFF;
+      border: 1px solid rgba(43, 43, 43, 0.08);
+      border-radius: 6px;
+      padding: 4px 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+
+    /* CARDS */
+    .card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      margin-bottom: 16px;
+      opacity: 0;
+      transform: translateY(25px) scale(0.97);
+      transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .card.card-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      gap: 16px;
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .card-subtitle {
+      font-size: 14px;
+      color: var(--accent);
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    .card-date {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      padding: 4px 10px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+    }
+
+    .card-body {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.75;
+    }
+
+    .card-body ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .card-body ul li {
+      padding: 4px 0 4px 20px;
+      position: relative;
+    }
+
+    .card-body ul li::before {
+      content: '\2014';
+      position: absolute;
+      left: 0;
+      color: var(--accent-light);
+      font-weight: 600;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 14px;
+    }
+
+    .tag {
+      padding: 3px 10px;
+      background: var(--bg-secondary);
+      border-radius: 99px;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      opacity: 0;
+      transform: scale(0);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+    }
+
+    .tag.tag-visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .tag.accent {
+      background: var(--accent-subtle);
+      color: var(--accent);
+    }
+
+    /* SKILLS */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .skill-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      transition: all 0.25s;
+    }
+
+    .skill-item:hover {
+      border-color: var(--border-strong);
+    }
+
+    .skill-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .skill-bar-track {
+      width: 100%;
+      height: 4px;
+      background: var(--bg-secondary);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .skill-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-mid));
+      border-radius: 4px;
+      width: 0%;
+      transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .skill-bar-fill.green {
+      background: linear-gradient(90deg, var(--accent-secondary), var(--accent-mid));
+    }
+
+    /* LANGUAGES */
+    .lang-grid {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .lang-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px 28px;
+      text-align: center;
+      flex: 1;
+      min-width: 160px;
+      opacity: 0;
+      transform: perspective(600px) rotateX(-10deg);
+      transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.25s, box-shadow 0.25s;
+    }
+
+    .lang-item.lang-visible {
+      opacity: 1;
+      transform: perspective(600px) rotateX(0);
+    }
+
+    .lang-item:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+    }
+
+    .lang-name {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .lang-level {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* FUN SECTIONS */
+    .fun-section-separator {
+      margin: 60px 0 48px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .fun-section-separator .line {
+      flex: 1;
+      height: 1px;
+      background: #8C1515;
+    }
+
+    .fun-section-separator .label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #8C1515;
+    }
+
+    .facts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .fact-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px 22px;
+      transition: all 0.3s;
+      cursor: default;
+    }
+
+    .fact-card:hover {
+      border-color: var(--accent-light);
+      background: var(--accent-subtle);
+      transform: translateY(-2px);
+    }
+
+    .fact-emoji {
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+
+    .fact-text {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .hobbies-flex {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .hobby-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      transition: all 0.25s;
+      cursor: default;
+    }
+
+    .hobby-chip:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    /* SLIDESHOW */
+    .slideshow-wrapper {
+      position: relative;
+      width: 100%;
+      max-height: 72vh;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: #0a0a0a;
+      overflow: hidden;
+    }
+
+    .slideshow-track {
+      display: flex;
+      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .slide {
+      min-width: 100%;
+      flex-shrink: 0;
+    }
+
+    /* aspect-ratio sets the box; all children are absolutely positioned
+       so they never push the container taller than intended */
+    .slide-media {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      max-height: 72vh;
+      overflow: hidden;
+      background: #0a0a0a;
+      isolation: isolate;
+    }
+
+    /* Blurred fill layer — sits behind the main media */
+    .slide-blur {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      filter: blur(28px);
+      transform: scale(1.15);
+      opacity: 0.65;
+      z-index: 0;
+    }
+
+    .slide-blur-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: blur(28px);
+      transform: scale(1.15);
+      opacity: 0.65;
+      z-index: 0;
+    }
+
+    /* Foreground media — absolutely positioned so it never affects container height */
+    .slide-media img,
+    .slide-main-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      z-index: 2;
+    }
+
+    .slide-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      background: var(--bg-card);
+      color: var(--accent);
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: var(--shadow-md);
+      transition: all 0.25s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+
+    .slide-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      transform: translateY(-50%) scale(1.08);
+    }
+
+    .slide-prev {
+      left: 12px;
+    }
+
+    .slide-next {
+      right: 12px;
+    }
+
+    .slide-counter {
+      position: absolute;
+      bottom: 12px;
+      right: 16px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(4px);
+      padding: 4px 10px;
+      border-radius: 99px;
+      z-index: 2;
+    }
+
+    /* SLIDE CAPTION PANEL */
+    .slide-caption {
+      margin-top: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+
+    .slide-caption-inner {
+      display: flex;
+      align-items: stretch;
+    }
+
+    .slide-caption-num-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 24px;
+      background: var(--accent);
+      min-width: 82px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .slide-caption-num-box::after {
+      content: '';
+      position: absolute;
+      right: -13px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-left: 13px solid var(--accent);
+      border-top: 16px solid transparent;
+      border-bottom: 16px solid transparent;
+      z-index: 1;
+    }
+
+    .slide-caption-num {
+      font-family: var(--font-display);
+      font-size: 34px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1;
+      letter-spacing: -1px;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .slide-caption-num.fading {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+
+    .slide-caption-total {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.5);
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    .slide-caption-content {
+      flex: 1;
+      padding: 18px 24px 18px 34px;
+      display: flex;
+      align-items: center;
+      min-height: 72px;
+    }
+
+    .slide-caption-text {
+      font-family: var(--font-display);
+      font-size: 19px;
+      font-weight: 500;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.45;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .slide-caption-text.fading {
+      opacity: 0;
+      transform: translateX(14px);
+    }
+
+    .slide-caption-dots {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 0 24px 14px 24px;
+    }
+
+    .caption-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-strong);
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.25s, transform 0.25s, border-color 0.25s;
+    }
+
+    .caption-dot.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      transform: scale(1.4);
+    }
+
+    .caption-dot:hover:not(.active) {
+      background: var(--accent-subtle);
+      border-color: var(--accent-light);
+    }
+
+    .slide-caption-bar {
+      height: 3px;
+      background: var(--bg-secondary);
+    }
+
+    .slide-caption-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-mid));
+      width: 0%;
+    }
+
+    @media (max-width: 480px) {
+      .slide-caption-content {
+        padding: 14px 16px 14px 26px;
+      }
+
+      .slide-caption-text {
+        font-size: 15px;
+      }
+
+      .slide-caption-num {
+        font-size: 26px;
+      }
+
+      .slide-caption-num-box {
+        min-width: 64px;
+        padding: 16px 16px;
+      }
+    }
+
+    /* PROJECT LINK BUTTON */
+    .project-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+      padding: 9px 18px;
+      background: var(--accent-subtle);
+      border: 1px solid var(--accent-light);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent);
+      text-decoration: none;
+      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .project-link-btn:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .project-link-icon {
+      font-size: 15px;
+      line-height: 1;
+    }
+
+    /* FOOTER */
+    .footer {
+      text-align: center;
+      padding: 60px 0 40px;
+      border-top: 1px solid #8C1515;
+      margin-top: 80px;
+    }
+
+    .footer p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .footer .footer-accent {
+      color: var(--accent);
+    }
+
+    /* SCROLL INDICATOR */
+    .scroll-indicator {
+      position: fixed;
+      right: 16px;
+      top: 60px;
+      bottom: 60px;
+      width: 20px;
+      z-index: 900;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
+
+    .scroll-indicator.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .scroll-indicator.idle {
+      opacity: 0.4;
+    }
+
+    .scroll-indicator.scrolling {
+      opacity: 0.8;
+    }
+
+    .scroll-track {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: rgba(140, 21, 21, 0.15);
+      border-radius: 2px;
+    }
+
+    .scroll-progress {
+      position: absolute;
+      top: 0;
+      width: 2px;
+      background: #8C1515;
+      border-radius: 2px;
+      transition: height 0.05s linear;
+    }
+
+    .scroll-dot {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #8C1515;
+      border-radius: 50%;
+      left: 50%;
+      transform: translateX(-50%);
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      z-index: 2;
+    }
+
+    .scroll-dot.active {
+      animation: dot-pulse 0.3s ease-out;
+    }
+
+    .scroll-dot-tooltip {
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(43, 43, 43, 0.9);
+      color: #FAF8F5;
+      font-family: var(--font-body);
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .scroll-dot:hover .scroll-dot-tooltip {
+      opacity: 1;
+    }
+
+    @keyframes dot-pulse {
+      0% {
+        transform: translateX(-50%) scale(1);
+      }
+
+      50% {
+        transform: translateX(-50%) scale(1.5);
+      }
+
+      100% {
+        transform: translateX(-50%) scale(1);
+      }
+    }
+
+    @keyframes fade-in-up {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --menu-width: 280px;
+      }
+
+      .main-content {
+        padding: 0 20px 80px;
+        max-width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+      }
+
+      .hero h1 {
+        font-size: 32px;
+      }
+
+      .skills-grid,
+      .facts-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card-header {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      /* Blueprint menu mobile */
+      .timeline-thumb {
+        display: none !important;
+      }
+
+      .timeline-node {
+        width: 6px;
+        height: 6px;
+      }
+
+    }
+
+    @media (max-width: 480px) {
+      .hero h1 {
+        font-size: 28px;
+      }
+
+      .section-title {
+        font-size: 24px;
+      }
+
+      .lang-grid {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- UNIFIED DRAWER — Living Blueprint Menu -->
+  <div class="menu-drawer" id="menuDrawer">
+    <nav class="side-menu">
+      <div class="side-menu-header">
+        <h2>Rodion Mayatskiy</h2>
+        <p>CS &amp; Physics &middot; UAB &middot; Birmingham, AL</p>
+      </div>
+      <div class="header-divider"></div>
+      <div class="side-menu-nav">
+        <div class="timeline-line"></div>
+        <div class="timeline-glow-dot" id="timelineGlowDot"></div>
+
+        <!-- Background -->
+        <a href="#summary" class="timeline-link tl-white" data-section="summary">
+          <span class="timeline-node"></span>
+          <span class="timeline-connector"></span>
+          <span class="timeline-link-text">Background</span>
+          <span class="timeline-thumb"><svg viewBox="0 0 24 24">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 20c0-4 4-7 8-7s8 3 8 7" />
+            </svg></span>
+        </a>
+        <!-- Contact -->
+        <a href="#contact" class="timeline-link tl-white" data-section="contact">
+          <span class="timeline-node"></span>
+          <span class="timeline-connector"></span>
+          <span class="timeline-link-text">Contact</span>
+          <span class="timeline-thumb"><svg viewBox="0 0 24 24">
+              <rect x="2" y="4" width="20" height="16" rx="2" />
+              <polyline points="2,4 12,13 22,4" />
+            </svg></span>
+        </a>
+        <!-- Education -->
+        <a href="#education" class="timeline-link tl-gold" data-section="education">
+          <span class="timeline-node"></span>
+          <span class="timeline-connector"></span>
+          <span class="timeline-link-text">Education</span>
+          <span class="timeline-thumb"><svg viewBox="0 0 24 24">
+              <path d="M2 10l10-6 10 6-10 6z" />
+              <path d="M6 12v5c0 2 3 3 6 3s6-1 6-3v-5" />
+            </svg></span>
+        </a>
+        <!-- Work Experience -->
+        <a href="#work" class="timeline-link tl-red" data-section="work">
+          <span class="timeline-node"></span>
+          <span class="timeline-connector"></span>
+          <span class="timeline-link-text">Work Experience</span>
+          <span class="timeline-thumb"><svg viewBox="0 0 24 24">
+              <polyline points="4 17 10 11 14 15 20 9" />
+              <polyline points="16 9 20 9 20 13" />
+            </svg></span>
+        </a>
+        <!-- Projects -->
+        <a href="#projects" class="timeline-link tl-red" data-section="projects">
+          <span class="timeline-node"></span>
+          <span class="timeline-connector"></span>
+          <span class="timeline-link-text">Projects</span>
+          <span class="timeline-thumb"><svg viewBox="0 0 24 24">
+              <path d="M4 15l4-8 4 4 4-6 4 10" />
+              <rect x="2" y="2" width="20" height="20" rx="2" />
+            </svg></span>
+        </a>
+        <!-- Leadership -->
+        <a href="#leadership" class="timeline-link tl-amber" data-section="leadership">
+          <span class="timeline-node"></span>
+          <span class="timeline-connector"></span>
+          <span class="timeline-link-text">Leadership</span>
+          <span class="timeline-thumb"><svg viewBox="0 0 24 24">
+              <path d="M5 20h14l-2-8H7z" />
+              <path d="M12 2l2 6h-4z" />
+              <circle cx="5" cy="10" r="1.5" />
+              <circle cx="19" cy="10" r="1.5" />
+            </svg></span>
+        </a>
+        <!-- Awards -->
+        <a href="#awards" class="timeline-link tl-amber" data-section="awards">
+          <span class="timeline-node"></span>
+          <span class="timeline-connector"></span>
+          <span class="timeline-link-text">Awards &amp; Certificates</span>
+          <span class="timeline-thumb"><svg viewBox="0 0 24 24">
+              <polygon points="12,2 15,9 22,9 16.5,14 18,21 12,17 6,21 7.5,14 2,9 9,9" />
+            </svg></span>
+        </a>
+        <!-- Skills -->
+        <a href="#skills" class="timeline-link tl-blue" data-section="skills">
+          <span class="timeline-node"></span>
+          <span class="timeline-connector"></span>
+          <span class="timeline-link-text">Skills</span>
+          <span class="timeline-thumb"><svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="3" />
+              <circle cx="5" cy="6" r="2" />
+              <circle cx="19" cy="6" r="2" />
+              <circle cx="5" cy="18" r="2" />
+              <circle cx="19" cy="18" r="2" />
+              <line x1="7" y1="7" x2="10" y2="10" />
+              <line x1="17" y1="7" x2="14" y2="10" />
+              <line x1="7" y1="17" x2="10" y2="14" />
+              <line x1="17" y1="17" x2="14" y2="14" />
+            </svg></span>
+        </a>
+        <!-- Languages -->
+        <a href="#languages" class="timeline-link tl-blue" data-section="languages">
+          <span class="timeline-node"></span>
+          <span class="timeline-connector"></span>
+          <span class="timeline-link-text">Languages</span>
+          <span class="timeline-thumb"><svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="9" />
+              <ellipse cx="12" cy="12" rx="4" ry="9" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+            </svg></span>
+        </a>
+
+        <!-- Fancy divider -->
+        <div class="menu-divider-fancy">
+          <div class="dash-line"></div>
+          <div class="diamond"></div>
+          <div class="dash-line"></div>
+        </div>
+        <div class="menu-divider-label">PERSONAL</div>
+
+        <!-- Volunteering -->
+        <a href="#facts" class="timeline-link tl-green" data-section="facts">
+          <span class="timeline-node"></span>
+          <span class="timeline-connector"></span>
+          <span class="timeline-link-text">Volunteering &amp; Other</span>
+          <span class="timeline-thumb"><svg viewBox="0 0 24 24">
+              <path d="M9 18V5l12-2v13" />
+              <circle cx="6" cy="18" r="3" />
+              <circle cx="18" cy="16" r="3" />
+            </svg></span>
+        </a>
+        <!-- Life Background -->
+        <a href="#hobbies" class="timeline-link tl-green" data-section="hobbies">
+          <span class="timeline-node"></span>
+          <span class="timeline-connector"></span>
+          <span class="timeline-link-text">Life Background</span>
+          <span class="timeline-thumb"><svg viewBox="0 0 24 24">
+              <rect x="2" y="4" width="20" height="16" rx="2" />
+              <circle cx="12" cy="12" r="4" />
+              <circle cx="18" cy="7" r="1" />
+            </svg></span>
+        </a>
+      </div>
+    </nav>
+    <div class="menu-handle" id="menuHandle">
+      <div class="handle-ping"></div>
+      <div class="handle-lines">
+        <div class="handle-line"></div>
+        <div class="handle-line"></div>
+        <div class="handle-line"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="menu-overlay" id="menuOverlay"></div>
+
+  <!-- SCROLL PROGRESS INDICATOR -->
+  <div class="scroll-indicator" id="scrollIndicator">
+    <div class="scroll-track"></div>
+    <div class="scroll-progress" id="scrollProgress"></div>
+  </div>
+
+  <main class="main-content">
+
+    <section class="hero" id="hero">
+      <canvas id="heroCanvas"></canvas>
+      <div class="hero-photo-wrapper">
+        <img src="headshot.jpg" alt="Rodion Mayatskiy">
+      </div>
+      <h1 style="color: var(--accent);">Rodion Mayatskiy</h1>
+      <p class="tagline">Computer Science &amp; Physics &middot; University of Alabama at Birmingham &middot;
+        Birmingham, AL</p>
+      <div class="contact-bar" id="contact">
+        <a href="mailto:mayatrod@gmail.com"><span class="icon">&#9993;</span> mayatrod@gmail.com</a>
+        <a href="https://www.linkedin.com/in/rodion-mayatskiy-025128374/" target="_blank"><span class="icon">in</span>
+          LinkedIn</a>
+        <a href="https://github.com/rmaytr" target="_blank"><span class="icon">&#8984;</span> GitHub</a>
+        <a href="tel:+14804936260"><span class="icon">&#9742;</span> (480) 493-6260</a>
+      </div>
+    </section>
+
+    <section class="section" id="summary">
+      <span class="section-label">01 &mdash; Background</span>
+      <h2 class="section-title">Summary</h2>
+      <div class="section-divider"></div>
+      <p class="summary-text">
+        I'm an international student from <span class="highlight">Russia</span>, originally from Moscow, now studying in
+        the United States. In 2022, when the Russian-Ukrainian war began, I made the decision to
+        leave Russia. In July 2023, I moved to <span class="highlight">Arizona</span>, finished high school, and
+        then relocated to <span class="highlight">Birmingham, Alabama</span> to attend the University of Alabama at
+        Birmingham on a full scholarship. Today I'm a freshman pursuing a <span class="highlight">Double Major in
+          Computer Science and
+          Physics</span> with minors in <span class="highlight">Mathematics</span> and <span
+          class="highlight">Entrepreneurship</span>, holding a 4.0 GPA. My long-term goal is to build intelligent
+        systems at the intersection of AI, physics, and human cognition &mdash; technology that is anchored in reality
+        and designed to expand human agency. I plan to pursue a Ph.D. in Machine Learning and Artificial Intelligence.
+      </p>
+    </section>
+
+    <section class="section" id="education">
+      <span class="section-label">02 &mdash; Education</span>
+      <h2 class="section-title">Education</h2>
+      <div class="section-divider"></div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">University of Alabama at Birmingham &#127941;</div>
+            <div class="card-subtitle">B.S. Computer Science &amp; B.S. Physics &middot; Minors: Mathematics,
+              Entrepreneurship</div>
+          </div>
+          <span class="card-date">Aug 2025 &mdash; Present</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li><strong>GPA: 4.0</strong> &middot; <strong>Presidential Honors List</strong> &mdash; College of Arts
+              &amp; Sciences &middot; Honors College</li>
+            <li>Birmingham, Alabama</li>
+            <li>Expected graduation: May 2029</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag accent">&#127942; 4.0 GPA</span>
+            <span class="tag accent">Presidential Honors List</span>
+            <span class="tag">R1 Research University</span>
+            <span class="tag">Honors College</span>
+            <span class="tag">Double Major</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Rancho Solano Preparatory School &#127941;</div>
+            <div class="card-subtitle">High School Diploma</div>
+          </div>
+          <span class="card-date">Aug 2023 &mdash; May 2025</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>GPA: <strong>4.0 UW / 4.47 W</strong> &middot; SAT: <strong>1550</strong></li>
+            <li>Scottsdale, Arizona</li>
+            <li>Relocated to the United States from Russia to complete secondary education</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag accent">&#127942; 4.0 GPA</span>
+            <span class="tag">1550 SAT</span>
+            <span class="tag">Scottsdale, AZ</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="work">
+      <span class="section-label">03 &mdash; Work Experience</span>
+      <h2 class="section-title">Work Experience</h2>
+      <div class="section-divider"></div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Academic Peer Tutor</div>
+            <div class="card-subtitle">UAB Vulcan Materials Academic Success Center &middot; Birmingham, AL</div>
+          </div>
+          <span class="card-date">Feb 2026 &mdash; Present</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Provide paid tutoring across <strong>12+ STEM courses</strong> including Calculus I/II and Python CS
+              (~5&ndash;6 hrs/week); serve as the <strong>only General Physics tutor at VMASC</strong></li>
+            <li>Guide students through problem-solving frameworks using inquiry-based methods that build independent
+              critical thinking; help students visualize concepts via graphing and online simulations</li>
+            <li>Specialize in <strong>TI-Nspire CX II</strong> integration for Calculus &mdash; one of few UAB tutors
+              proficient in advanced calculator usage; teach students to verify solutions, code custom functions, and
+              graph 3D surfaces, giving them a technical edge most students never discover</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag">STEM Tutoring</span>
+            <span class="tag">Calculus</span>
+            <span class="tag">Physics</span>
+            <span class="tag">Python</span>
+            <span class="tag accent">Current Role</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Web-Content Editor Assistant (Front-End Web Developer)</div>
+            <div class="card-subtitle">UAB Student Affairs Marketing &amp; Communications &middot; Birmingham, AL</div>
+          </div>
+          <span class="card-date">Oct 2025 &mdash; Present</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Maintain and update <strong>1,500+ webpages</strong> across 20+ university organizations using Joomla 5
+              CMS; implement custom HTML, CSS, and JavaScript to optimize performance and UX</li>
+            <li>Key project: contributed to converting a <strong>40-page PDF annual report</strong> into a fully
+              interactive, animated standalone webpage, increasing digital engagement for student organizations;
+              collaborated with a <strong>3-person development team</strong></li>
+            <li>First paid professional technical role, executed concurrently with full-time coursework and
+              organizational leadership &mdash; <strong>18 hrs/week</strong> (Fall semester),
+              <strong>12&ndash;14 hrs/week</strong> (Spring, alongside a 2nd job)
+            </li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag">HTML / CSS / JS</span>
+            <span class="tag">Joomla 5 CMS</span>
+            <span class="tag">1,500+ Pages</span>
+            <span class="tag accent">Current Role</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="projects">
+      <span class="section-label">04 &mdash; Projects</span>
+      <h2 class="section-title">Projects</h2>
+      <div class="section-divider"></div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Phasora &mdash; Physics-Informed AI Tutoring Platform</div>
+            <div class="card-subtitle">Independent Research &amp; Development</div>
+          </div>
+          <span class="card-date">In Progress</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Designing and prototyping a generative AI system that uses physics-based constraints to anchor tutoring
+              responses in mathematical truth, reducing hallucination in STEM explanations</li>
+            <li>Built in React with Vite, deployed on Vercel &mdash; features spring-mass and projectile motion
+              simulations, KaTeX-rendered formula cards, AI problem generator (Anthropic API), and a physics-grounded
+              chatbot tutor</li>
+          </ul>
+          <a href="https://phasoraai.com" target="_blank" rel="noopener" class="project-link-btn">
+            <span class="project-link-icon">&#8599;</span> Visit Phasora &mdash; phasoraai.com
+          </a>
+          <div class="card-tags">
+            <span class="tag accent">&#11088; Flagship Project</span>
+            <span class="tag">React</span>
+            <span class="tag">Vite</span>
+            <span class="tag">Anthropic API</span>
+            <span class="tag">Physics-Informed ML</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">LeetCode Problems Repository</div>
+            <div class="card-subtitle">AI-Driven Python Pipeline &middot; Algorithm Engineering</div>
+          </div>
+          <span class="card-date">2026</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Architected an AI-driven Python pipeline to autonomously orchestrate, document, and unit-test optimized
+              solutions for 100 LeetCode problems, implementing advanced data structures including Graphs, Trees, and 2D
+              Dynamic Programming</li>
+          </ul>
+          <a href="https://github.com/rmaytr/leetcode" target="_blank" rel="noopener" class="project-link-btn">
+            <span class="project-link-icon">&#8599;</span> View on GitHub &mdash; rmaytr/leetcode
+          </a>
+          <div class="card-tags">
+            <span class="tag">Python</span>
+            <span class="tag">Algorithms</span>
+            <span class="tag">Data Structures</span>
+            <span class="tag">AI Pipeline</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">UE5 Third-Person Adventure Game</div>
+            <div class="card-subtitle">Game Development &middot; Unreal Engine 5</div>
+          </div>
+          <span class="card-date">2024</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Engineered a 3D adventure game in Unreal Engine 5, securing a <strong>&ldquo;2nd Best&rdquo;
+                award</strong> among 30 contestants for technical design and execution</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag">Unreal Engine 5</span>
+            <span class="tag">C++</span>
+            <span class="tag accent">&#127942; Award Winner</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Python Chess Engine</div>
+            <div class="card-subtitle">Object-Oriented Programming</div>
+          </div>
+          <span class="card-date">2023</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Implemented a fully functional Chess game using Python and OOP principles to manage complex game logic,
+              move validation, and rules</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag">Python</span>
+            <span class="tag">OOP</span>
+            <span class="tag">Game Logic</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Game Automation Script</div>
+            <div class="card-subtitle">Script Automation &middot; Python</div>
+          </div>
+          <span class="card-date">2023</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Developed a Python script to automate gameplay for &ldquo;Bloons TD6,&rdquo; enabling continuous
+              autonomous operation for extended sessions</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag">Python</span>
+            <span class="tag">Automation</span>
+            <span class="tag">Scripting</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="leadership">
+      <span class="section-label">05 &mdash; Leadership</span>
+      <h2 class="section-title">Leadership &amp; Relevant Experiences</h2>
+      <div class="section-divider"></div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Founder &amp; President &mdash; The AI Collective (AIC)</div>
+            <div class="card-subtitle">Student Leadership &middot; UAB &middot; Birmingham, AL</div>
+          </div>
+          <span class="card-date">Feb 2026 &mdash; Present</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Founded <strong>UAB&rsquo;s first interdisciplinary AI organization</strong> dedicated to introducing
+              technical AI innovations and practical, real-world applications to <strong>students of all
+                majors</strong>; drafted the organization&rsquo;s constitution and appointed executive officers</li>
+            <li>Operate five program tracks: <strong>Prompt Engineering workshops</strong>, <strong>student productivity
+                sessions</strong>, <strong>coding and research literacy</strong>, <strong>Ethical Roundtables</strong>
+              on AI safety and data privacy, and <strong>industry news briefings</strong></li>
+            <li>Launched with <strong>10 founding members</strong>; faculty-advised by the <strong>UAB CS
+                department</strong></li>
+            <li>Planned collaborations with <strong>Association for Computing Machinery (ACM)</strong> and <strong>Women
+                in Tech</strong> to foster cross-departmental engagement and expand organizational reach</li>
+          </ul>
+          <a href="https://uab.campuslabs.com/engage/actioncenter/organization/aic" target="_blank" rel="noopener"
+            class="project-link-btn">
+            <span class="project-link-icon">&#8599;</span> View AIC on UAB CampusLabs
+          </a>
+          <div class="card-tags">
+            <span class="tag accent">&#9733; Founder</span>
+            <span class="tag">Artificial Intelligence</span>
+            <span class="tag">Community Building</span>
+            <span class="tag">UAB&rsquo;s First AI Org</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Association for Computing Machinery (ACM) &mdash; Active Member</div>
+            <div class="card-subtitle">UAB ACM Chapter &middot; Birmingham, AL</div>
+          </div>
+          <span class="card-date">Oct 2025 &mdash; Present</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Active member of UAB&rsquo;s ACM chapter; participate in biweekly meetings, collaborative LeetCode
+              problem-solving sessions, internship workshops, and student career panels</li>
+            <li>Attend tech industry events and engage with CS faculty and upperclassmen to stay current on industry
+              developments and career opportunities</li>
+            <li>Complements my newly founded organization (AIC): ACM provides a technical peer community and
+              professional development infrastructure while AIC connects students of all majors in an interdisciplinary
+              setting</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag">ACM</span>
+            <span class="tag">Computer Science</span>
+            <span class="tag">Professional Development</span>
+            <span class="tag accent">Current Role</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">USGA Freshman Forum</div>
+            <div class="card-subtitle">UAB Undergraduate Student Government Association &middot; Birmingham, AL</div>
+          </div>
+          <span class="card-date">Sep 2025 &mdash; May 2026</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Selected as one of <strong>31 freshman representatives</strong> from a competitive pool of 100+
+              applicants in UAB&rsquo;s student government</li>
+            <li>Led a team of <strong>6 students</strong> to execute a campus-wide <strong>&ldquo;Career Readiness
+                Week&rdquo;</strong> &mdash; coordinating resume workshops, job fairs, professional headshots, and
+              professional development simulations</li>
+            <li>Spearheading the launch of <strong>UAB&rsquo;s Freshman Micro-Internships program</strong> in
+              collaboration with USGA and UAB Career Center &mdash; connected the Career Center Director, USGA
+              President, and VP of Finance across multiple planning meetings, acquired <strong>$2,000 in
+                funding</strong>,
+              and selected <strong>10 students</strong> for the inaugural cohort</li>
+            <li>Only student to engage in a direct mentorship with the USGA President to navigate university governance
+              and advocate for student academic success</li>
+            <li>Awarded the inaugural <strong>&ldquo;Student of the Month&rdquo;</strong> (October 2025) among 31 peers
+              for demonstrated excellence in leadership and initiative engagement</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag accent">&#127942; Student of the Month</span>
+            <span class="tag">Student Government</span>
+            <span class="tag">Policy</span>
+            <span class="tag">Career Development</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Upper School Student Government Treasurer</div>
+            <div class="card-subtitle">Rancho Solano Preparatory School &middot; Scottsdale, AZ</div>
+          </div>
+          <span class="card-date">Aug 2024 &mdash; May 2025</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Elected Treasurer within one year of arriving in the U.S. as an international student; managed student
+              store financial operations with daily revenues exceeding $300, reconciling accounts to ensure fiscal
+              accuracy</li>
+            <li>Helped organize major campus events including Homecoming and Prom; coordinated fundraisers for
+              <strong>breast cancer awareness</strong> and <strong>school supply donation drives</strong>
+            </li>
+            <li>Joined to give back to the community that welcomed me through a scholarship</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag">Finance</span>
+            <span class="tag">Event Management</span>
+            <span class="tag">Student Government</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">School eSports President &amp; Captain</div>
+            <div class="card-subtitle">Rancho Solano Preparatory School &middot; Scottsdale, AZ</div>
+          </div>
+          <span class="card-date">Aug 2023 &mdash; May 2025</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Managed two <strong>5-person competitive teams</strong> in HSEL and Vanta.gg high school tournaments;
+              coordinated practice schedules, roster decisions, and match logistics</li>
+            <li>Analyzed gameplay recordings to identify decision patterns and formulate data-driven performance
+              strategies</li>
+            <li>Led schoolwide awareness and media initiatives: managed the club&rsquo;s Instagram account and streamed
+              competitive matches live on <strong>Twitch</strong> to build viewership and promote the program</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag">eSports</span>
+            <span class="tag">Team Management</span>
+            <span class="tag">Data Analysis</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Upper School Class President</div>
+            <div class="card-subtitle">State-Funded Educational Institution School #1354 &middot; Moscow, Russia</div>
+          </div>
+          <span class="card-date">Sep 2021 &mdash; May 2023</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Elected Class President for <strong>3 consecutive years</strong>, representing a
+              <strong>38-student class</strong> within a 1,500-student public school with diverse socioeconomic
+              backgrounds
+            </li>
+            <li>Organized <strong>7 educational trips</strong> to cultural landmarks including the
+              <strong>State Tretyakov Gallery</strong> and <strong>WWII Victory Day Museum</strong>
+            </li>
+            <li>Introduced a <strong>behavioral journal system</strong> to document and address student misconduct
+              directly with students and parents, reducing classroom disruptions</li>
+            <li>Mediated academic and social conflicts to foster a stable, productive learning environment across some
+              of
+              the most difficult years of recent Russian political history</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag">Class President</span>
+            <span class="tag">Moscow, Russia</span>
+            <span class="tag">Event Coordination</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Peer Tutor &amp; Academic Mentor</div>
+            <div class="card-subtitle">State-Funded Educational Institution School #1354 &middot; Moscow, Russia</div>
+          </div>
+          <span class="card-date">Sep 2021 &mdash; May 2023</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Independently tutored <strong>8 peers</strong> in Informatics and Physics over two years at a
+              <strong>1,500-student Moscow public school</strong>, working through <strong>100+ coding problems</strong>
+              and <strong>10 Physics labs</strong> using personalized approaches tailored to each student&rsquo;s
+              learning gaps
+            </li>
+            <li>Prepared all students for Russia&rsquo;s national <strong>OGE state exam</strong> &mdash; every student
+              achieved top grades, including <strong>19/20 on the CS exam</strong>; received direct messages from
+              students crediting the sessions for their results</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag">Peer Tutoring</span>
+            <span class="tag">Informatics</span>
+            <span class="tag">Physics</span>
+            <span class="tag">Moscow, Russia</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Extracurriculars merged into Leadership above -->
+
+    <section class="section" id="awards">
+      <span class="section-label">06 &mdash; Awards &amp; Certificates</span>
+      <h2 class="section-title">Awards &amp; Certificates</h2>
+      <div class="section-divider"></div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">UAB Presidential Honors List</div>
+            <div class="card-subtitle">University of Alabama at Birmingham &middot; College of Arts &amp; Sciences</div>
+          </div>
+          <span class="card-date">2026</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Achieved a <strong>4.0 GPA</strong> during the first semester at UAB, earning placement on the
+              Presidential Honors List</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag accent">&#127942; 4.0 GPA</span>
+            <span class="tag">Presidential Honors</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">USGA &ldquo;Student of the Month&rdquo;</div>
+            <div class="card-subtitle">UAB Undergraduate Student Government Association</div>
+          </div>
+          <span class="card-date">Oct 2025</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Inaugural recipient among 31 Freshman Forum peers for demonstrated excellence in leadership and
+              initiative engagement</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Game Development Camp (Unreal Engine 5)</div>
+            <div class="card-subtitle">Arizona State University</div>
+          </div>
+          <span class="card-date">2024</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Completed intensive game development program; secured &ldquo;2nd Best&rdquo; project award among 30
+              contestants</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Mu Alpha Theta &mdash; National Math Honors Society</div>
+            <div class="card-subtitle">Rancho Solano Preparatory School &middot; Scottsdale, AZ</div>
+          </div>
+          <span class="card-date">2023 &mdash; 2025</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Served as <strong>Student Officer</strong>; achieved <strong>highest AMC 12 score</strong> in school
+              among all participants in MAA competitive math assessments</li>
+            <li>Co-produced and performed the lead role in the <strong>Mathematical Minute</strong> video contest entry;
+              volunteered to tutor freshman students in mathematics</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag">Mathematics</span>
+            <span class="tag">AMC 12</span>
+            <span class="tag">Honors Society</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Ira A. Fulton Engineering Camp</div>
+            <div class="card-subtitle">Arizona State University</div>
+          </div>
+          <span class="card-date">2023</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Selected participant in ASU&rsquo;s engineering immersion program</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Certificate in Python Programming</div>
+            <div class="card-subtitle">Yandex Lyceum &middot; Moscow, Russia</div>
+          </div>
+          <span class="card-date">2023</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Completed rigorous Python programming curriculum through Yandex&rsquo;s competitive educational program
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Prize Winner &mdash; MISIS University Olympiad</div>
+            <div class="card-subtitle">Technical &amp; Information Technologies &middot; Moscow, Russia</div>
+          </div>
+          <span class="card-date">2023</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Recognized in MISIS University&rsquo;s Olympiad in Technical and Information Technologies</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Prize Winner &mdash; All-Russian Olympiad</div>
+            <div class="card-subtitle">Technology &amp; Languages &middot; Russia</div>
+          </div>
+          <span class="card-date">2021 &mdash; 2023</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Multi-year prize winner in Russia&rsquo;s national-level Olympiad in Technology and Languages</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Award Winner &mdash; Finskills Financial Competencies Championship</div>
+            <div class="card-subtitle">National Competition &middot; Russia</div>
+          </div>
+          <span class="card-date">2022</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Placed as award winner in Russia&rsquo;s Finskills Financial Competencies Championship &mdash; a
+              national competition testing financial literacy, economic reasoning, and analytical decision-making</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag accent">&#127942; Award Winner</span>
+            <span class="tag">Financial Literacy</span>
+            <span class="tag">Russia</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="skills" style="position: relative;">
+      <span class="section-label">07 &mdash; Skills</span>
+      <h2 class="section-title">Skills</h2>
+      <div class="section-divider"></div>
+      <canvas id="skillsParticleCanvas"
+        style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:10;"></canvas>
+      <p class="skills-category-label">
+        Programming &amp; Web</p>
+      <div class="hobbies-flex" style="margin-bottom: 24px;">
+        <div class="hobby-chip">Python</div>
+        <div class="hobby-chip">Java</div>
+        <div class="hobby-chip">HTML</div>
+        <div class="hobby-chip">CSS</div>
+        <div class="hobby-chip">JavaScript</div>
+        <div class="hobby-chip">React</div>
+        <div class="hobby-chip">OOP</div>
+      </div>
+      <p class="skills-category-label">
+        Tools &amp; Frameworks</p>
+      <div class="hobbies-flex">
+        <div class="hobby-chip">Unreal Engine 5</div>
+        <div class="hobby-chip">Joomla CMS</div>
+        <div class="hobby-chip">Vite</div>
+        <div class="hobby-chip">Vercel</div>
+        <div class="hobby-chip">Git</div>
+        <div class="hobby-chip">Script Automation</div>
+        <div class="hobby-chip">Data Analytics</div>
+        <div class="hobby-chip">KaTeX</div>
+        <div class="hobby-chip">Anthropic API</div>
+      </div>
+    </section>
+
+    <section class="section" id="languages">
+      <span class="section-label">08 &mdash; Languages</span>
+      <h2 class="section-title">Languages</h2>
+      <div class="section-divider"></div>
+      <div class="lang-grid">
+        <div class="lang-item">
+          <div class="lang-name">Russian</div>
+          <div class="lang-level">Native / Bilingual</div>
+        </div>
+        <div class="lang-item">
+          <div class="lang-name">English</div>
+          <div class="lang-level">Full Professional</div>
+        </div>
+        <div class="lang-item">
+          <div class="lang-name">Mandarin</div>
+          <div class="lang-level">Beginner</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="fun-section-separator">
+      <div class="line"></div>
+      <span class="label">Beyond the Resume</span>
+      <div class="line"></div>
+    </div>
+
+    <section class="section" id="facts">
+      <span class="section-label">&#10022; &mdash; Personal</span>
+      <h2 class="section-title">Volunteering &amp; Other Experiences</h2>
+      <div class="section-divider"></div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Actor &amp; Organizational Assistant</div>
+            <div class="card-subtitle">Arizona Russian Theater &middot; Scottsdale, AZ</div>
+          </div>
+          <span class="card-date">Aug 2023 &mdash; Jul 2025</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Served as actor and organizational assistant for a Russian-language nonprofit theater; coordinated
+              production logistics for <strong>3 plays</strong>, managed backstage operations, and performed before live
+              audiences of <strong>300+</strong></li>
+            <li>Contributed to fundraising initiatives that raised <strong>$10,000 total</strong> across productions to
+              sustain the nonprofit; joined to preserve Russian cultural identity after immigration and build community
+              among Russian-speaking families in Arizona navigating displacement after February 2022</li>
+          </ul>
+          <a href="https://azrussiantheater.org/" target="_blank" rel="noopener" class="project-link-btn">
+            <span class="project-link-icon">&#8599;</span> Visit azrussiantheater.org
+          </a>
+          <div class="card-tags">
+            <span class="tag">Theater</span>
+            <span class="tag">Nonprofit</span>
+            <span class="tag">Community</span>
+            <span class="tag">Russian Culture</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Community Service Trip &mdash; Puerto Rico</div>
+            <div class="card-subtitle">Rancho Solano Preparatory School &middot; Puerto Rico, USA</div>
+          </div>
+          <span class="card-date">Apr 2024</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Participated in a school-organized 5-day service trip as part of a <strong>55-student team</strong>;
+              restored local infrastructure through debris clearing and basketball court renovation, and distributed
+              food supplies to hurricane-affected residents</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag">Community Service</span>
+            <span class="tag">Volunteer</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">UAB Tennis Club &mdash; Member</div>
+            <div class="card-subtitle">University of Alabama at Birmingham &middot; Birmingham, AL</div>
+          </div>
+          <span class="card-date">2025 &mdash; Present</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Active member of UAB&rsquo;s recreational tennis club; attend weekly practices to maintain fitness,
+              competitive edge, and camaraderie alongside full-time academic and professional commitments</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag">Tennis</span>
+            <span class="tag accent">Current</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">4th Player &mdash; Men&rsquo;s Varsity Tennis Team</div>
+            <div class="card-subtitle">Rancho Solano Preparatory School &middot; Scottsdale, AZ</div>
+          </div>
+          <span class="card-date">Jan 2024 &mdash; May 2025</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Competed as 4th player on the Varsity Tennis Team across <strong>20+ matches</strong> over 2 seasons
+              (11th&ndash;12th grade); committed to consistent improvement through daily practice</li>
+            <li>Awarded <strong>&ldquo;Most Coachable, Selfless, and Improved Player&rdquo;</strong> by coaching staff
+              &mdash; recognized for character, teamwork, and demonstrated growth over the season</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag accent">&#127942; Award Winner</span>
+            <span class="tag">Varsity Tennis</span>
+            <span class="tag">Athletics</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Boys Volleyball Team</div>
+            <div class="card-subtitle">State-Funded Educational Institution School #1354 &middot; Moscow, Russia</div>
+          </div>
+          <span class="card-date">2022</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Competed on School #1354&rsquo;s boys volleyball team; placed <strong>2nd</strong> in an in-school
+              tournament of <strong>8 teams</strong> representing 250 students</li>
+          </ul>
+          <div class="card-tags">
+            <span class="tag accent">&#127942; 2nd Place</span>
+            <span class="tag">Volleyball</span>
+            <span class="tag">Moscow, Russia</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="hobbies">
+      <span class="section-label">&#9826; &mdash; Personal</span>
+      <h2 class="section-title">Life Background &amp; Interest</h2>
+      <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 24px;"><i>My life outside of academics and
+          achievements...</i></p>
+      <div class="section-divider"></div>
+
+      <div class="slideshow-wrapper">
+        <div class="slideshow-track" id="slideshowTrack">
+          <div class="slide">
+            <div class="slide-media">
+              <div class="slide-blur" style="background-image:url('media/item%201.JPG')"></div>
+              <img src="media/item%201.JPG" alt="Photo 1" loading="lazy">
+            </div>
+          </div>
+          <div class="slide">
+            <div class="slide-media">
+              <video class="slide-blur-video" muted playsinline preload="metadata" aria-hidden="true">
+                <source src="media/item%202.mp4" type="video/mp4">
+              </video>
+              <video class="slide-main-video" muted playsinline preload="metadata">
+                <source src="media/item%202.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="slide-media">
+              <div class="slide-blur" style="background-image:url('media/item%203.JPG')"></div>
+              <img src="media/item%203.JPG" alt="Photo 3" loading="lazy">
+            </div>
+          </div>
+          <div class="slide">
+            <div class="slide-media">
+              <video class="slide-blur-video" muted playsinline preload="metadata" aria-hidden="true">
+                <source src="media/item%204.MP4" type="video/mp4">
+              </video>
+              <video class="slide-main-video" muted playsinline preload="metadata">
+                <source src="media/item%204.MP4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="slide-media">
+              <video class="slide-blur-video" muted playsinline preload="metadata" aria-hidden="true">
+                <source src="media/item%205.mp4" type="video/mp4">
+              </video>
+              <video class="slide-main-video" muted playsinline preload="metadata">
+                <source src="media/item%205.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="slide-media">
+              <video class="slide-blur-video" muted playsinline preload="metadata" aria-hidden="true">
+                <source src="media/item%206.mp4" type="video/mp4">
+              </video>
+              <video class="slide-main-video" muted playsinline preload="metadata">
+                <source src="media/item%206.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="slide-media">
+              <video class="slide-blur-video" muted playsinline preload="metadata" aria-hidden="true">
+                <source src="media/item%207.mp4" type="video/mp4">
+              </video>
+              <video class="slide-main-video" muted playsinline preload="metadata">
+                <source src="media/item%207.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="slide-media">
+              <div class="slide-blur" style="background-image:url('media/item%208.JPG')"></div>
+              <img src="media/item%208.JPG" alt="Photo 8" loading="lazy">
+            </div>
+          </div>
+          <div class="slide">
+            <div class="slide-media">
+              <video class="slide-blur-video" muted playsinline preload="metadata" aria-hidden="true">
+                <source src="media/item%209.MP4" type="video/mp4">
+              </video>
+              <video class="slide-main-video" muted playsinline preload="metadata">
+                <source src="media/item%209.MP4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="slide-media">
+              <div class="slide-blur" style="background-image:url('media/item%2010.JPEG')"></div>
+              <img src="media/item%2010.JPEG" alt="Photo 10" loading="lazy">
+            </div>
+          </div>
+          <div class="slide">
+            <div class="slide-media">
+              <div class="slide-blur" style="background-image:url('media/item%2011.JPG')"></div>
+              <img src="media/item%2011.JPG" alt="Photo 11" loading="lazy">
+            </div>
+          </div>
+          <div class="slide">
+            <div class="slide-media">
+              <video class="slide-blur-video" muted playsinline preload="metadata" aria-hidden="true">
+                <source src="media/item%2012.mp4" type="video/mp4">
+              </video>
+              <video class="slide-main-video" muted playsinline preload="metadata">
+                <source src="media/item%2012.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="slide-media">
+              <div class="slide-blur" style="background-image:url('media/item%2013.JPG')"></div>
+              <img src="media/item%2013.JPG" alt="Photo 13" loading="lazy">
+            </div>
+          </div>
+          <div class="slide">
+            <div class="slide-media">
+              <video class="slide-blur-video" muted playsinline preload="metadata" aria-hidden="true">
+                <source src="media/item%2014.mp4" type="video/mp4">
+              </video>
+              <video class="slide-main-video" muted playsinline preload="metadata">
+                <source src="media/item%2014.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="slide-media">
+              <video class="slide-blur-video" muted playsinline preload="metadata" aria-hidden="true">
+                <source src="media/item%2015.mp4" type="video/mp4">
+              </video>
+              <video class="slide-main-video" muted playsinline preload="metadata">
+                <source src="media/item%2015.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="slide-media">
+              <video class="slide-blur-video" muted playsinline preload="metadata" aria-hidden="true">
+                <source src="media/item%2016.mp4" type="video/mp4">
+              </video>
+              <video class="slide-main-video" muted playsinline preload="metadata">
+                <source src="media/item%2016.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="slide-media">
+              <video class="slide-blur-video" muted playsinline preload="metadata" aria-hidden="true">
+                <source src="media/item%2017.mp4" type="video/mp4">
+              </video>
+              <video class="slide-main-video" muted playsinline preload="metadata">
+                <source src="media/item%2017.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="slide-media">
+              <video class="slide-blur-video" muted playsinline preload="metadata" aria-hidden="true">
+                <source src="media/item%2018.MP4" type="video/mp4">
+              </video>
+              <video class="slide-main-video" muted playsinline preload="metadata">
+                <source src="media/item%2018.MP4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="slide-media">
+              <video class="slide-blur-video" muted playsinline preload="metadata" aria-hidden="true">
+                <source src="media/item%2019.MP4" type="video/mp4">
+              </video>
+              <video class="slide-main-video" muted playsinline preload="metadata">
+                <source src="media/item%2019.MP4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="slide-media">
+              <video class="slide-blur-video" muted playsinline preload="metadata" aria-hidden="true">
+                <source src="media/item%2020.MP4" type="video/mp4">
+              </video>
+              <video class="slide-main-video" muted playsinline preload="metadata">
+                <source src="media/item%2020.MP4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+        </div>
+        <button class="slide-btn slide-prev" id="slidePrev" aria-label="Previous">&lsaquo;</button>
+        <button class="slide-btn slide-next" id="slideNext" aria-label="Next">&rsaquo;</button>
+        <div class="slide-counter"><span id="slideIndex">1</span> / 20</div>
+      </div>
+
+      <div class="slide-caption">
+        <div class="slide-caption-inner">
+          <div class="slide-caption-num-box">
+            <span class="slide-caption-num" id="captionNum">01</span>
+            <span class="slide-caption-total">/ 20</span>
+          </div>
+          <div class="slide-caption-content">
+            <p class="slide-caption-text" id="captionText">Me with my sister in central Moscow</p>
+          </div>
+        </div>
+        <div class="slide-caption-dots" id="captionDots"></div>
+        <div class="slide-caption-bar">
+          <div class="slide-caption-bar-fill" id="captionBarFill"></div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>Built from scratch by <span class="footer-accent">Rodion Mayatskiy</span> &middot; 2025</p>
+      <p style="margin-top: 6px; font-size: 12px;">Designed and coded as a demonstration of front-end development
+        capability.</p>
+    </footer>
+
+  </main>
+
+  <!-- Lenis Smooth Scroll -->
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+
+  <script>
+    (() => {
+      'use strict';
+
+      /* ── Lenis smooth scroll ── */
+      const lenis = new Lenis({
+        lerp: 0.07,
+        smoothWheel: true,
+        wheelMultiplier: 1,
+      });
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+
+      /* ── PARTICLE SYSTEM ── */
+      (() => {
+        const canvas = document.getElementById('heroCanvas');
+        const ctx = canvas.getContext('2d');
+        const heroEl = document.getElementById('hero');
+        const isMobile = window.innerWidth < 768;
+        const PARTICLE_COUNT = isMobile ? 40 : 90;
+        const CONNECT_DIST = 120;
+        const CURSOR_RADIUS = 200;
+        const CURSOR_STRENGTH = 0.012;
+        const CENTER_STRENGTH = 0.0003;
+        let mouseX = -9999, mouseY = -9999;
+        let particles = [];
+        let canvasW, canvasH, centerX, centerY;
+
+        canvas.style.pointerEvents = 'auto';
+
+        function resize() {
+          const rect = heroEl.getBoundingClientRect();
+          canvasW = window.innerWidth;
+          canvasH = rect.height;
+          canvas.width = canvasW * devicePixelRatio;
+          canvas.height = canvasH * devicePixelRatio;
+          canvas.style.width = canvasW + 'px';
+          canvas.style.height = canvasH + 'px';
+          ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+          // Center = where the headshot photo is (center of hero)
+          centerX = canvasW / 2;
+          centerY = canvasH * 0.35; // roughly where the photo sits
+        }
+
+        function createParticle() {
+          // Spawn biased toward center
+          const angle = Math.random() * Math.PI * 2;
+          const radius = Math.random() * Math.min(canvasW, canvasH) * 0.6;
+          return {
+            x: centerX + Math.cos(angle) * radius,
+            y: centerY + Math.sin(angle) * radius,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
+            r: 1.5 + Math.random() * 1.5,
+            alpha: 0.1 + Math.random() * 0.3,
+          };
+        }
+
+        function init() {
+          resize();
+          particles = [];
+          for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(createParticle());
+        }
+
+        // Mouse tracking relative to canvas
+        function onMouseMove(e) {
+          const rect = canvas.getBoundingClientRect();
+          mouseX = e.clientX - rect.left;
+          mouseY = e.clientY - rect.top;
+        }
+        function onMouseLeave() { mouseX = -9999; mouseY = -9999; }
+        canvas.addEventListener('mousemove', onMouseMove, { passive: true });
+        canvas.addEventListener('mouseleave', onMouseLeave, { passive: true });
+
+        // Scroll-based opacity
+        let scrollAlpha = 1;
+        window.addEventListener('scroll', () => {
+          const heroH = heroEl.offsetHeight;
+          scrollAlpha = Math.max(1 - window.scrollY / heroH, 0);
+        }, { passive: true });
+
+        function tick() {
+          if (scrollAlpha <= 0) { requestAnimationFrame(tick); return; }
+          ctx.clearRect(0, 0, canvasW, canvasH);
+          ctx.globalAlpha = scrollAlpha;
+
+          // Update particles
+          for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
+
+            // Gentle center gravity
+            const dxC = centerX - p.x;
+            const dyC = centerY - p.y;
+            p.vx += dxC * CENTER_STRENGTH;
+            p.vy += dyC * CENTER_STRENGTH;
+
+            // Cursor attraction
+            const dxM = mouseX - p.x;
+            const dyM = mouseY - p.y;
+            const distM = Math.sqrt(dxM * dxM + dyM * dyM);
+            if (distM < CURSOR_RADIUS && distM > 1) {
+              const force = CURSOR_STRENGTH * (1 - distM / CURSOR_RADIUS);
+              p.vx += (dxM / distM) * force;
+              p.vy += (dyM / distM) * force;
+            }
+
+            // Damping
+            p.vx *= 0.98;
+            p.vy *= 0.98;
+            p.x += p.vx;
+            p.y += p.vy;
+
+            // Soft boundary wrap
+            if (p.x < -20) p.x = canvasW + 20;
+            if (p.x > canvasW + 20) p.x = -20;
+            if (p.y < -20) p.y = canvasH + 20;
+            if (p.y > canvasH + 20) p.y = -20;
+          }
+
+          // Draw connections (spatial check — only nearby)
+          ctx.strokeStyle = 'rgba(140,21,21,0.08)';
+          ctx.lineWidth = 0.8;
+          for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+              const dx = particles[i].x - particles[j].x;
+              const dy = particles[i].y - particles[j].y;
+              if (Math.abs(dx) > CONNECT_DIST || Math.abs(dy) > CONNECT_DIST) continue;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < CONNECT_DIST) {
+                const lineAlpha = 0.08 * (1 - dist / CONNECT_DIST);
+                ctx.globalAlpha = scrollAlpha * lineAlpha / 0.08;
+                ctx.beginPath();
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.stroke();
+              }
+            }
+          }
+
+          // Draw particles
+          for (const p of particles) {
+            ctx.globalAlpha = scrollAlpha * p.alpha;
+            ctx.fillStyle = '#8C1515';
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          ctx.globalAlpha = 1;
+          requestAnimationFrame(tick);
+        }
+
+        init();
+        requestAnimationFrame(tick);
+        window.addEventListener('resize', () => { resize(); }, { passive: true });
+      })();
+
+      /* ── LIVING BLUEPRINT MENU ── */
+      const drawer = document.getElementById('menuDrawer');
+      const handle = document.getElementById('menuHandle');
+      const overlay = document.getElementById('menuOverlay');
+      const glowDot = document.getElementById('timelineGlowDot');
+      const timelineLinks = drawer.querySelectorAll('.timeline-link');
+      let isOpen = false;
+      let closeTimer;
+      let activeSection = 'summary';
+
+      // Choreographed open with staggered animations
+      function open() {
+        if (isOpen) return;
+        isOpen = true;
+        drawer.classList.add('open');
+        overlay.classList.add('visible');
+
+        // Stagger timeline nodes
+        timelineLinks.forEach((link, i) => {
+          const node = link.querySelector('.timeline-node');
+          const text = link.querySelector('.timeline-link-text');
+          const thumb = link.querySelector('.timeline-thumb');
+          const isMobileMenu = window.innerWidth < 768;
+          const staggerMult = isMobileMenu ? 0.5 : 1;
+
+          node.style.transitionDelay = (0.5 + i * 0.04) * staggerMult + 's';
+          text.style.transitionDelay = (0.55 + i * 0.04) * staggerMult + 's';
+          if (thumb) thumb.style.transitionDelay = (0.8 + i * 0.03) * staggerMult + 's';
+        });
+
+        // Position glow dot
+        setTimeout(() => updateGlowDot(), 950);
+      }
+
+      function close() {
+        if (!isOpen) return;
+        isOpen = false;
+        drawer.classList.remove('open');
+        overlay.classList.remove('visible');
+
+        // Reset delays for instant disappearance
+        timelineLinks.forEach(link => {
+          const node = link.querySelector('.timeline-node');
+          const text = link.querySelector('.timeline-link-text');
+          const thumb = link.querySelector('.timeline-thumb');
+          node.style.transitionDelay = '0s';
+          text.style.transitionDelay = '0s';
+          if (thumb) thumb.style.transitionDelay = '0s';
+        });
+      }
+
+      function updateGlowDot() {
+        // Update active class on links
+        timelineLinks.forEach(l => l.classList.remove('active'));
+        const activeLink = drawer.querySelector(`.timeline-link[data-section="${activeSection}"]`);
+        if (activeLink) activeLink.classList.add('active');
+        if (activeLink && glowDot) {
+          const navRect = drawer.querySelector('.side-menu-nav').getBoundingClientRect();
+          const linkRect = activeLink.getBoundingClientRect();
+          glowDot.style.top = (linkRect.top - navRect.top + linkRect.height / 2 - 2 + 12) + 'px';
+        }
+      }
+
+      // Track current section via IntersectionObserver
+      const sectionIds = Array.from(timelineLinks).map(l => l.dataset.section);
+      const menuSectionObs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            activeSection = entry.target.id;
+            updateGlowDot();
+          }
+        });
+      }, { threshold: 0.2, rootMargin: '-20% 0px -60% 0px' });
+
+      sectionIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) menuSectionObs.observe(el);
+      });
+
+      // Hover on handle opens
+      handle.addEventListener('mouseenter', () => {
+        clearTimeout(closeTimer);
+        open();
+      });
+
+      // Click toggle fallback
+      handle.addEventListener('click', () => {
+        isOpen ? close() : open();
+      });
+
+      // Stay open while on drawer
+      drawer.addEventListener('mouseenter', () => {
+        clearTimeout(closeTimer);
+      });
+
+      // Close when leaving entire drawer
+      drawer.addEventListener('mouseleave', () => {
+        closeTimer = setTimeout(close, 350);
+      });
+
+      overlay.addEventListener('click', close);
+
+      // Nav links
+      drawer.querySelectorAll('.timeline-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const target = document.querySelector(link.getAttribute('href'));
+          if (target) {
+            close();
+            setTimeout(() => {
+              lenis.scrollTo(target, { offset: 0 });
+            }, 300);
+          }
+        });
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') close();
+      });
+
+      // Scroll animations
+      const sections = document.querySelectorAll('.section');
+
+      // Wrap section-label text in .label-inner and add decorative line
+      sections.forEach(sec => {
+        const label = sec.querySelector('.section-label');
+        if (label && !label.querySelector('.label-inner')) {
+          label.innerHTML = '<span class="label-line"></span><span class="label-inner">' + label.innerHTML + '</span>';
+        }
+
+      });
+
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const sec = entry.target;
+            sec.classList.add('visible');
+
+            // Stagger cards
+            const cards = sec.querySelectorAll('.card');
+            cards.forEach((card, i) => {
+              setTimeout(() => {
+                card.classList.add('card-visible');
+                // After card animates, pop in its tags
+                const tags = card.querySelectorAll('.tag');
+                tags.forEach((tag, j) => {
+                  setTimeout(() => tag.classList.add('tag-visible'), 500 + j * 30);
+                });
+              }, i * 100);
+            });
+
+            // Stagger lang-items
+            const langItems = sec.querySelectorAll('.lang-item');
+            langItems.forEach((item, i) => {
+              setTimeout(() => item.classList.add('lang-visible'), 100 + i * 80);
+            });
+
+            // Skill bars
+            sec.querySelectorAll('.skill-bar-fill').forEach((bar, i) => {
+              setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 150 + i * 80);
+            });
+
+            obs.unobserve(sec);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+      sections.forEach(s => obs.observe(s));
+
+      // Hero parallax
+      const hero = document.querySelector('.hero');
+      window.addEventListener('scroll', () => {
+        const y = window.scrollY;
+        if (y < 600) {
+          hero.style.transform = 'translateY(' + (y * 0.15) + 'px)';
+          hero.style.opacity = Math.max(1 - y / 500, 0.2);
+        }
+      }, { passive: true });
+      // ── SLIDESHOW ──
+      const track = document.getElementById('slideshowTrack');
+      const prevBtn = document.getElementById('slidePrev');
+      const nextBtn = document.getElementById('slideNext');
+      const indexEl = document.getElementById('slideIndex');
+      const captionTextEl = document.getElementById('captionText');
+      const captionNumEl = document.getElementById('captionNum');
+      const captionBarFill = document.getElementById('captionBarFill');
+      const captionDotsEl = document.getElementById('captionDots');
+      const slides = Array.from(track.querySelectorAll('.slide'));
+      const total = slides.length;
+      let current = 0;
+      let autoTimer = null;
+      let isPaused = false;
+      let slideshowActive = false;
+      let progressRaf = null;
+      let progressStart = null;
+      const SLIDE_DURATION = 10000;
+
+      const captions = [
+        'Me with my sister in central Moscow',
+        'View from my apartment in Moscow',
+        'My Russian high school \u2014 10th grade',
+        'Our dacha (countryside house) where I grew up',
+        'Me mowing the lawn at the dacha',
+        'Me acting in a theater club in Moscow',
+        "Me dancing Rock 'n\u2019 Roll",
+        'Learning to drive karts at a race track',
+        'Me playing tennis',
+        'President of eSports at Rancho Solano',
+        'Me performing and dancing with the Arizona Russian Theater',
+        'Me skiing',
+        'Learning to drive a snowmobile',
+        'Learning to fly a Cessna plane',
+        'Me shooting flying targets at a gun range',
+        'Trying my hand at archery',
+        'Me bowling',
+        'Me cooking',
+        'Learning to rock climb',
+        'Playing table tennis at UAB',
+      ];
+
+      // Build caption dots
+      captions.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = 'caption-dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => goTo(i));
+        captionDotsEl.appendChild(dot);
+      });
+
+      function updateCaption(idx, animate) {
+        const allDots = captionDotsEl.querySelectorAll('.caption-dot');
+        allDots.forEach((d, i) => d.classList.toggle('active', i === idx));
+        indexEl.textContent = idx + 1;
+        const numStr = String(idx + 1).padStart(2, '0');
+        if (animate) {
+          captionTextEl.classList.add('fading');
+          captionNumEl.classList.add('fading');
+          setTimeout(() => {
+            captionTextEl.textContent = captions[idx];
+            captionNumEl.textContent = numStr;
+            captionTextEl.classList.remove('fading');
+            captionNumEl.classList.remove('fading');
+          }, 300);
+        } else {
+          captionTextEl.textContent = captions[idx];
+          captionNumEl.textContent = numStr;
+        }
+      }
+
+      function startProgressBar() {
+        cancelAnimationFrame(progressRaf);
+        captionBarFill.style.transition = 'none';
+        captionBarFill.style.width = '0%';
+        captionBarFill.getBoundingClientRect(); // force reflow
+        progressStart = performance.now();
+        function tick(now) {
+          if (isPaused) { progressRaf = requestAnimationFrame(tick); return; }
+          const pct = Math.min((now - progressStart) / SLIDE_DURATION * 100, 100);
+          captionBarFill.style.transition = 'none';
+          captionBarFill.style.width = pct + '%';
+          if (pct < 100) progressRaf = requestAnimationFrame(tick);
+        }
+        progressRaf = requestAnimationFrame(tick);
+      }
+
+      function stopProgressBar() {
+        cancelAnimationFrame(progressRaf);
+        captionBarFill.style.transition = 'none';
+        captionBarFill.style.width = '0%';
+      }
+
+      function getMainVideo(idx) {
+        return slides[idx].querySelector('.slide-main-video');
+      }
+
+      function getBgVideo(idx) {
+        return slides[idx].querySelector('.slide-blur-video');
+      }
+
+      function startAutoTimer() {
+        clearTimeout(autoTimer);
+        if (!isPaused && slideshowActive) autoTimer = setTimeout(() => goTo(current + 1), SLIDE_DURATION);
+      }
+
+      function goTo(i, instant) {
+        const prevMain = getMainVideo(current);
+        const prevBg = getBgVideo(current);
+        if (prevMain) { prevMain.pause(); prevMain.currentTime = 0; }
+        if (prevBg) { prevBg.pause(); prevBg.currentTime = 0; }
+
+        current = (i + total) % total;
+        track.style.transform = 'translateX(-' + (current * 100) + '%)';
+        updateCaption(current, !instant);
+
+        const vid = getMainVideo(current);
+        const bgVid = getBgVideo(current);
+        if (vid) {
+          vid.currentTime = 0;
+          vid.play().catch(() => { });
+          vid.onended = () => { vid.pause(); if (bgVid) bgVid.pause(); };
+        }
+        if (bgVid) {
+          bgVid.currentTime = 0;
+          bgVid.play().catch(() => { });
+        }
+        stopProgressBar();
+        startProgressBar();
+        startAutoTimer();
+      }
+
+      prevBtn.addEventListener('click', () => goTo(current - 1));
+      nextBtn.addEventListener('click', () => goTo(current + 1));
+
+      // Touch swipe support
+      let touchStartX = 0;
+      const slideshowEl = track.parentElement;
+      slideshowEl.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].clientX;
+      }, { passive: true });
+      slideshowEl.addEventListener('touchend', e => {
+        const diff = touchStartX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 40) goTo(diff > 0 ? current + 1 : current - 1);
+      }, { passive: true });
+
+      track.parentElement.addEventListener('mouseenter', () => {
+        isPaused = true;
+        clearTimeout(autoTimer);
+      });
+      track.parentElement.addEventListener('mouseleave', () => {
+        isPaused = false;
+        startProgressBar();
+        startAutoTimer();
+      });
+
+      // Initialize caption text without playing anything
+      updateCaption(0, false);
+
+      // Only activate when the section scrolls into view
+      const hobbiesSection = document.getElementById('hobbies');
+      const slideshowObs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !slideshowActive) {
+            slideshowActive = true;
+            goTo(0, true);
+            slideshowObs.unobserve(hobbiesSection);
+          }
+        });
+      }, { threshold: 0.25 });
+      slideshowObs.observe(hobbiesSection);
+
+      /* ── SCROLL PROGRESS INDICATOR ── */
+      const scrollIndicator = document.getElementById('scrollIndicator');
+      const scrollProgress = document.getElementById('scrollProgress');
+      const heroSection = document.getElementById('hero');
+
+      const indicatorSections = [
+        { id: 'summary', label: 'Background' },
+        { id: 'education', label: 'Education' },
+        { id: 'work', label: 'Work Experience' },
+        { id: 'projects', label: 'Projects' },
+        { id: 'leadership', label: 'Leadership' },
+        { id: 'awards', label: 'Awards' },
+        { id: 'skills', label: 'Skills' },
+        { id: 'languages', label: 'Languages' },
+        { id: 'facts', label: 'Volunteering' },
+        { id: 'hobbies', label: 'Life & Interests' },
+      ];
+
+      // Create dots
+      const dots = [];
+      indicatorSections.forEach((sec) => {
+        const dot = document.createElement('div');
+        dot.className = 'scroll-dot';
+        dot.innerHTML = '<span class="scroll-dot-tooltip">' + sec.label + '</span>';
+        dot.addEventListener('click', () => {
+          const el = document.getElementById(sec.id);
+          if (el) lenis.scrollTo(el, { offset: -20 });
+        });
+        scrollIndicator.appendChild(dot);
+        dots.push({ dot, id: sec.id, activated: false });
+      });
+
+      // Position dots and update progress
+      let scrollTimeout;
+      let isScrolling = false;
+
+      function updateIndicator() {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = Math.min(scrollTop / docHeight, 1);
+        const trackHeight = scrollIndicator.offsetHeight;
+
+        scrollProgress.style.height = (progress * trackHeight) + 'px';
+
+        // Show after hero
+        const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
+        if (scrollTop > heroBottom * 0.6) {
+          scrollIndicator.classList.add('visible');
+        } else {
+          scrollIndicator.classList.remove('visible');
+        }
+
+        // Position dots
+        dots.forEach((d) => {
+          const el = document.getElementById(d.id);
+          if (!el) return;
+          const elTop = el.offsetTop;
+          const dotPos = (elTop / (docHeight + window.innerHeight)) * trackHeight;
+          d.dot.style.top = dotPos + 'px';
+
+          // Pulse when reached
+          if (scrollTop + window.innerHeight * 0.4 >= elTop && !d.activated) {
+            d.activated = true;
+            d.dot.classList.add('active');
+            setTimeout(() => d.dot.classList.remove('active'), 350);
+          }
+          if (scrollTop + window.innerHeight * 0.4 < elTop) {
+            d.activated = false;
+          }
+        });
+      }
+
+      function onScroll() {
+        if (!isScrolling) {
+          isScrolling = true;
+          scrollIndicator.classList.remove('idle');
+          scrollIndicator.classList.add('scrolling');
+        }
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          isScrolling = false;
+          scrollIndicator.classList.remove('scrolling');
+          scrollIndicator.classList.add('idle');
+        }, 800);
+        updateIndicator();
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      scrollIndicator.classList.add('idle');
+      updateIndicator();
+
+    })();
+  </script>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       SCATTERED FLOATING LANDMARKS v4 — Russia → Arizona → Alabama
+       ══════════════════════════════════════════════════════════════ -->
+  <style>
+    #floating-landmarks {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .landmark {
+      position: fixed;
+      pointer-events: none;
+    }
+
+    .landmark svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .lm-layer {
+      position: absolute;
+      inset: 0;
+      transition: none;
+    }
+
+    .lm-sub {
+      transition: none;
+    }
+
+    /* Location label — frosted pill */
+    #loc-label {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9000;
+      pointer-events: none;
+    }
+
+    .loc-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 20px;
+      padding: 6px 20px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-weight: 500;
+      white-space: nowrap;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .loc-pill .loc-icon {
+      font-size: 10px;
+    }
+
+    .loc-pill-item {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      white-space: nowrap;
+    }
+
+    /* Snowflake canvas */
+    #snowCanvas {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    @media (max-width: 768px) {
+      .landmark.desktop-only {
+        display: none !important;
+      }
+
+      #loc-label {
+        top: 12px;
+      }
+
+      .loc-pill {
+        font-size: 9px;
+        letter-spacing: 2px;
+        padding: 4px 14px;
+      }
+    }
+  </style>
+
+  <div id="floating-landmarks">
+
+    <!-- ═══ LANDMARK A: Top-left, large, partially offscreen — Saint Basil's hero ═══ -->
+    <div class="landmark" id="lmA" style="left:2%; top:3%; width:260px; height:360px; opacity:0.75;">
+      <div class="lm-layer" data-scene="russia">
+        <svg viewBox="0 0 280 360" xmlns="http://www.w3.org/2000/svg">
+          <!-- Central spire -->
+          <rect class="lm-sub" x="125" y="170" width="30" height="190" fill="#A0522D" />
+          <polygon class="lm-sub" points="140,45 118,170 162,170" fill="#DAA520" />
+          <path class="lm-sub"
+            d="M140,30 C140,30 133,40 132,46 C131,50 134,54 140,56 C146,54 149,50 148,46 C147,40 140,30 140,30Z"
+            fill="#DAA520" />
+          <!-- Cross on central spire -->
+          <rect class="lm-sub" x="138" y="18" width="4" height="14" fill="#DAA520" />
+          <rect class="lm-sub" x="134" y="21" width="12" height="3" fill="#DAA520" />
+          <line class="lm-sub" x1="135" y1="28" x2="138" y2="30" stroke="#DAA520" stroke-width="1.5" />
+
+          <!-- Dome 1 (left large): Red with white zigzag stripes -->
+          <rect class="lm-sub" x="55" y="180" width="28" height="180" fill="#8B4513" />
+          <rect class="lm-sub" x="60" y="168" width="18" height="16" fill="#A0522D" />
+          <path class="lm-sub"
+            d="M69,80 C69,80 48,130 46,150 C44,165 50,180 69,188 C88,180 94,165 92,150 C90,130 69,80 69,80Z"
+            fill="#C41E3A" />
+          <!-- Zigzag white stripes on dome 1 -->
+          <path class="lm-sub" d="M57,140 Q63,135 69,140 Q75,135 81,140" fill="none" stroke="#fff" stroke-width="2"
+            opacity="0.7" />
+          <path class="lm-sub" d="M54,152 Q61,147 69,152 Q77,147 84,152" fill="none" stroke="#fff" stroke-width="2"
+            opacity="0.7" />
+          <path class="lm-sub" d="M52,163 Q60,158 69,163 Q78,158 86,163" fill="none" stroke="#fff" stroke-width="2"
+            opacity="0.6" />
+          <path class="lm-sub" d="M60,128 Q65,123 69,128 Q73,123 78,128" fill="none" stroke="#fff" stroke-width="1.5"
+            opacity="0.6" />
+          <!-- Cross -->
+          <rect class="lm-sub" x="67" y="68" width="3" height="14" fill="#DAA520" />
+          <rect class="lm-sub" x="63" y="71" width="11" height="2.5" fill="#DAA520" />
+
+          <!-- Dome 2 (right large): Green with gold spiral ridges -->
+          <rect class="lm-sub" x="195" y="190" width="28" height="170" fill="#8B4513" />
+          <rect class="lm-sub" x="200" y="178" width="18" height="16" fill="#A0522D" />
+          <path class="lm-sub"
+            d="M209,95 C209,95 188,145 186,162 C184,175 190,190 209,198 C228,190 234,175 232,162 C230,145 209,95 209,95Z"
+            fill="#2E7D32" />
+          <!-- Gold spiral ridges -->
+          <path class="lm-sub" d="M203,120 Q209,110 215,120 Q221,130 215,140 Q209,150 203,140 Q197,130 203,120Z"
+            fill="none" stroke="#DAA520" stroke-width="1.5" opacity="0.6" />
+          <path class="lm-sub" d="M200,145 Q209,138 218,145 Q225,155 218,165 Q209,172 200,165 Q193,155 200,145Z"
+            fill="none" stroke="#DAA520" stroke-width="1.2" opacity="0.5" />
+          <!-- Cross -->
+          <rect class="lm-sub" x="207" y="83" width="3" height="14" fill="#DAA520" />
+          <rect class="lm-sub" x="203" y="86" width="11" height="2.5" fill="#DAA520" />
+
+          <!-- Dome 3 (left small): Blue with white diamond pattern -->
+          <rect class="lm-sub" x="92" y="200" width="22" height="160" fill="#6B4226" />
+          <path class="lm-sub"
+            d="M103,110 C103,110 88,148 87,160 C86,170 90,180 103,186 C116,180 120,170 119,160 C118,148 103,110 103,110Z"
+            fill="#1565C0" />
+          <!-- Diamond pattern -->
+          <polygon class="lm-sub" points="103,135 107,140 103,145 99,140" fill="#fff" opacity="0.5" />
+          <polygon class="lm-sub" points="103,150 106,154 103,158 100,154" fill="#fff" opacity="0.4" />
+          <polygon class="lm-sub" points="95,142 98,146 95,150 92,146" fill="#fff" opacity="0.4" />
+          <polygon class="lm-sub" points="111,142 114,146 111,150 108,146" fill="#fff" opacity="0.4" />
+          <rect class="lm-sub" x="101" y="100" width="3" height="12" fill="#DAA520" />
+          <rect class="lm-sub" x="97" y="103" width="11" height="2" fill="#DAA520" />
+
+          <!-- Dome 4 (right small): Orange with green teardrop decorations -->
+          <rect class="lm-sub" x="165" y="205" width="22" height="155" fill="#6B4226" />
+          <path class="lm-sub"
+            d="M176,115 C176,115 161,153 160,164 C159,174 163,184 176,190 C189,184 193,174 192,164 C191,153 176,115 176,115Z"
+            fill="#E65100" />
+          <!-- Green teardrops -->
+          <path class="lm-sub" d="M170,148 Q172,142 174,148 Q172,152 170,148Z" fill="#2E7D32" opacity="0.6" />
+          <path class="lm-sub" d="M178,148 Q180,142 182,148 Q180,152 178,148Z" fill="#2E7D32" opacity="0.6" />
+          <path class="lm-sub" d="M174,160 Q176,154 178,160 Q176,164 174,160Z" fill="#2E7D32" opacity="0.6" />
+          <path class="lm-sub" d="M166,158 Q168,152 170,158 Q168,162 166,158Z" fill="#2E7D32" opacity="0.5" />
+          <path class="lm-sub" d="M182,158 Q184,152 186,158 Q184,162 182,158Z" fill="#2E7D32" opacity="0.5" />
+          <rect class="lm-sub" x="174" y="105" width="3" height="12" fill="#DAA520" />
+          <rect class="lm-sub" x="170" y="108" width="11" height="2" fill="#DAA520" />
+
+          <!-- Base gallery arches -->
+          <rect class="lm-sub" x="45" y="340" width="190" height="20" fill="#8B4513" />
+          <path class="lm-sub" d="M55,345 Q62,338 69,345" fill="none" stroke="#5C3A1E" stroke-width="1.5" />
+          <path class="lm-sub" d="M75,345 Q82,338 89,345" fill="none" stroke="#5C3A1E" stroke-width="1.5" />
+          <path class="lm-sub" d="M95,345 Q102,338 109,345" fill="none" stroke="#5C3A1E" stroke-width="1.5" />
+          <path class="lm-sub" d="M115,345 Q122,338 129,345" fill="none" stroke="#5C3A1E" stroke-width="1.5" />
+          <path class="lm-sub" d="M135,345 Q142,338 149,345" fill="none" stroke="#5C3A1E" stroke-width="1.5" />
+          <path class="lm-sub" d="M155,345 Q162,338 169,345" fill="none" stroke="#5C3A1E" stroke-width="1.5" />
+          <path class="lm-sub" d="M175,345 Q182,338 189,345" fill="none" stroke="#5C3A1E" stroke-width="1.5" />
+          <path class="lm-sub" d="M195,345 Q202,338 209,345" fill="none" stroke="#5C3A1E" stroke-width="1.5" />
+
+          <!-- Windows with warm glow -->
+          <rect class="lm-sub" x="130" y="220" width="8" height="12" rx="4" fill="#FFD700" opacity="0.7" />
+          <rect class="lm-sub" x="144" y="220" width="8" height="12" rx="4" fill="#FFD700" opacity="0.7" />
+          <rect class="lm-sub" x="130" y="250" width="8" height="12" rx="4" fill="#F5D060" opacity="0.5" />
+          <rect class="lm-sub" x="144" y="250" width="8" height="12" rx="4" fill="#F5D060" opacity="0.5" />
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="arizona" style="opacity:0;">
+        <svg viewBox="0 0 280 360" xmlns="http://www.w3.org/2000/svg">
+          <!-- Main saguaro with connected arms -->
+          <g class="lm-sub">
+            <path d="M130,350 L130,60 Q130,45 135,42 Q140,40 145,42 Q150,45 150,60 L150,350Z" fill="#3d6b35" />
+            <!-- Left arm connected to body -->
+            <path
+              d="M130,180 Q125,178 118,178 L105,178 Q88,178 88,162 L88,120 Q88,105 95,105 Q102,105 102,120 L102,165 Q102,172 110,174 L130,178Z"
+              fill="#3d6b35" />
+            <!-- Right arm connected to body -->
+            <path
+              d="M150,150 Q155,148 162,148 L175,148 Q192,148 192,132 L192,90 Q192,75 185,75 Q178,75 178,90 L178,135 Q178,142 170,144 L150,148Z"
+              fill="#3d6b35" />
+            <!-- Highlight strips -->
+            <rect x="132" y="55" width="6" height="290" rx="3" fill="#5a8f4f" opacity="0.35" />
+            <rect x="90" y="110" width="4" height="60" rx="2" fill="#5a8f4f" opacity="0.3" />
+            <rect x="180" y="80" width="4" height="60" rx="2" fill="#5a8f4f" opacity="0.3" />
+            <!-- Vertical ridges -->
+            <line x1="136" y1="50" x2="136" y2="345" stroke="#2E5B28" stroke-width="0.8" opacity="0.3" />
+            <line x1="144" y1="50" x2="144" y2="345" stroke="#2E5B28" stroke-width="0.8" opacity="0.3" />
+            <!-- Flowers -->
+            <circle cx="95" cy="102" r="5" fill="#FFB7C5" opacity="0.7" />
+            <circle cx="93" cy="98" r="3" fill="#fff" opacity="0.5" />
+            <circle cx="140" cy="36" r="5" fill="#FFB7C5" opacity="0.6" />
+            <circle cx="185" cy="72" r="4" fill="#FFB7C5" opacity="0.6" />
+            <!-- Spines -->
+            <g stroke="#2a5428" stroke-width="1" opacity="0.4">
+              <line x1="128" y1="80" x2="124" y2="78" />
+              <line x1="128" y1="110" x2="124" y2="108" />
+              <line x1="128" y1="140" x2="124" y2="138" />
+              <line x1="128" y1="200" x2="124" y2="198" />
+              <line x1="152" y1="90" x2="156" y2="88" />
+              <line x1="152" y1="120" x2="156" y2="118" />
+              <line x1="152" y1="160" x2="156" y2="158" />
+              <line x1="152" y1="220" x2="156" y2="218" />
+            </g>
+          </g>
+          <!-- Short young cactus (no arms) -->
+          <g class="lm-sub">
+            <path d="M228,360 L228,220 Q228,205 235,202 Q240,200 245,202 Q250,205 250,220 L250,360Z" fill="#4A7A3E" />
+            <rect x="230" y="215" width="4" height="140" rx="2" fill="#5a8f4f" opacity="0.3" />
+            <circle cx="239" cy="198" r="3.5" fill="#fff" opacity="0.5" />
+            <line x1="226" y1="240" x2="222" y2="238" stroke="#2a5428" stroke-width="1" opacity="0.35" />
+            <line x1="252" y1="250" x2="256" y2="248" stroke="#2a5428" stroke-width="1" opacity="0.35" />
+          </g>
+          <!-- Medium cactus with 1 arm -->
+          <g class="lm-sub">
+            <path d="M47,360 L47,280 Q47,265 52,262 Q55,260 58,262 Q63,265 63,280 L63,360Z" fill="#3d6b35" />
+            <!-- Connected arm -->
+            <path
+              d="M47,310 Q42,308 38,308 L32,308 Q22,308 22,298 L22,270 Q22,258 28,258 Q34,258 34,270 L34,300 Q34,305 40,307 L47,308Z"
+              fill="#3d6b35" />
+          </g>
+          <!-- Desert floor -->
+          <rect class="lm-sub" x="0" y="345" width="280" height="15" fill="#E8D5B7" opacity="0.4" />
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="alabama" style="opacity:0;">
+        <svg viewBox="0 0 280 360" xmlns="http://www.w3.org/2000/svg">
+          <!-- Large oak tree -->
+          <g class="lm-sub">
+            <rect x="125" y="220" width="22" height="140" fill="#5D4037" />
+            <!-- Branch structure -->
+            <line x1="136" y1="240" x2="100" y2="200" stroke="#5D4037" stroke-width="6" stroke-linecap="round" />
+            <line x1="136" y1="240" x2="175" y2="195" stroke="#5D4037" stroke-width="6" stroke-linecap="round" />
+            <line x1="136" y1="260" x2="80" y2="220" stroke="#5D4037" stroke-width="4" stroke-linecap="round" />
+            <!-- Multi-blob canopy -->
+            <ellipse cx="136" cy="160" rx="80" ry="55" fill="#3A7D44" />
+            <ellipse cx="95" cy="175" rx="50" ry="40" fill="#2D6B35" opacity="0.85" />
+            <ellipse cx="180" cy="170" rx="55" ry="42" fill="#2D6B35" opacity="0.8" />
+            <ellipse cx="136" cy="140" rx="55" ry="35" fill="#5A9E4A" opacity="0.5" />
+            <ellipse cx="110" cy="155" rx="35" ry="28" fill="#438B43" opacity="0.6" />
+            <ellipse cx="165" cy="148" rx="38" ry="30" fill="#4A9B4A" opacity="0.5" />
+            <!-- Spanish moss -->
+            <path class="lm-sub" d="M85,200 Q83,215 86,225" fill="none" stroke="#8B9E8B" stroke-width="1.2"
+              opacity="0.4" />
+            <path class="lm-sub" d="M180,198 Q182,212 179,222" fill="none" stroke="#8B9E8B" stroke-width="1.2"
+              opacity="0.4" />
+            <path class="lm-sub" d="M110,205 Q108,218 111,226" fill="none" stroke="#8B9E8B" stroke-width="1"
+              opacity="0.35" />
+          </g>
+          <!-- Rolling hills behind -->
+          <path class="lm-sub"
+            d="M0,340 Q40,300 80,310 Q120,290 160,305 Q200,285 240,300 Q260,290 280,305 L280,360 L0,360Z" fill="#6BAF72"
+            opacity="0.4" />
+          <path class="lm-sub" d="M0,350 Q60,320 120,335 Q180,315 240,330 L280,325 L280,360 L0,360Z" fill="#4A8B52"
+            opacity="0.3" />
+          <!-- Wildflowers -->
+          <circle class="lm-sub" cx="60" cy="345" r="2" fill="#9C27B0" opacity="0.5" />
+          <circle class="lm-sub" cx="90" cy="348" r="1.5" fill="#FFD700" opacity="0.5" />
+          <circle class="lm-sub" cx="200" cy="342" r="2" fill="#fff" opacity="0.4" />
+          <circle class="lm-sub" cx="230" cy="350" r="1.5" fill="#9C27B0" opacity="0.4" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- ═══ LANDMARK B: Upper-right — Kremlin tower → Mesa formation → Pine cluster ═══ -->
+    <div class="landmark" id="lmB" style="left:65%; top:8%; width:150px; height:260px; opacity:0.65;">
+      <div class="lm-layer" data-scene="russia">
+        <svg viewBox="0 0 160 260" xmlns="http://www.w3.org/2000/svg">
+          <!-- Kremlin Tower -->
+          <rect class="lm-sub" x="55" y="100" width="50" height="160" fill="#8B4513" />
+          <!-- Green tent-roof -->
+          <polygon class="lm-sub" points="80,25 50,100 110,100" fill="#2E5B28" />
+          <!-- Red star -->
+          <polygon class="lm-sub" points="80,18 83,25 90,25 84,30 86,37 80,33 74,37 76,30 70,25 77,25" fill="#C41E3A" />
+          <!-- Clock face -->
+          <circle class="lm-sub" cx="80" cy="120" r="12" fill="#E8E0D0" opacity="0.7" />
+          <circle class="lm-sub" cx="80" cy="120" r="10" fill="none" stroke="#8B4513" stroke-width="1" />
+          <line class="lm-sub" x1="80" y1="120" x2="80" y2="113" stroke="#5C3A1E" stroke-width="1.5" />
+          <line class="lm-sub" x1="80" y1="120" x2="86" y2="118" stroke="#5C3A1E" stroke-width="1" />
+          <!-- Windows -->
+          <g class="lm-sub" fill="#F5D060" opacity="0.5">
+            <rect x="63" y="145" width="7" height="10" rx="3.5" />
+            <rect x="76" y="145" width="7" height="10" rx="3.5" />
+            <rect x="89" y="145" width="7" height="10" rx="3.5" />
+            <rect x="63" y="170" width="7" height="10" rx="3.5" />
+            <rect x="76" y="170" width="7" height="10" rx="3.5" />
+            <rect x="89" y="170" width="7" height="10" rx="3.5" />
+          </g>
+          <!-- Crenellated wall extending left -->
+          <rect class="lm-sub" x="0" y="220" width="55" height="40" fill="#8B4513" opacity="0.8" />
+          <rect class="lm-sub" x="3" y="210" width="10" height="14" fill="#8B4513" opacity="0.8" />
+          <rect class="lm-sub" x="17" y="210" width="10" height="14" fill="#8B4513" opacity="0.8" />
+          <rect class="lm-sub" x="31" y="210" width="10" height="14" fill="#8B4513" opacity="0.8" />
+          <rect class="lm-sub" x="45" y="210" width="10" height="14" fill="#8B4513" opacity="0.8" />
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="arizona" style="opacity:0;">
+        <svg viewBox="0 0 160 260" xmlns="http://www.w3.org/2000/svg">
+          <!-- Mesa formations with sediment layers -->
+          <path class="lm-sub" d="M10,260 L10,120 L25,90 L65,80 L80,90 L85,260Z" fill="#B85C3C" />
+          <rect class="lm-sub" x="10" y="130" width="75" height="4" fill="#A04E30" opacity="0.5" />
+          <rect class="lm-sub" x="10" y="155" width="75" height="3" fill="#C46A4A" opacity="0.4" />
+          <rect class="lm-sub" x="10" y="180" width="75" height="4" fill="#A04E30" opacity="0.4" />
+          <!-- Distant mesa -->
+          <path class="lm-sub" d="M90,260 L90,150 L105,130 L145,125 L155,135 L160,260Z" fill="#7B6B8A" opacity="0.6" />
+          <!-- Desert shrub -->
+          <ellipse class="lm-sub" cx="40" cy="255" rx="12" ry="6" fill="#8B9E7C" opacity="0.5" />
+          <ellipse class="lm-sub" cx="130" cy="258" rx="8" ry="4" fill="#8B9E7C" opacity="0.4" />
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="alabama" style="opacity:0;">
+        <svg viewBox="0 0 160 260" xmlns="http://www.w3.org/2000/svg">
+          <!-- Pine tree cluster -->
+          <g class="lm-sub">
+            <!-- Pine 1 (tallest) -->
+            <rect x="55" y="160" width="8" height="100" fill="#5C3A1E" />
+            <polygon points="59,40 30,100 88,100" fill="#1B5E20" />
+            <polygon points="59,70 25,130 93,130" fill="#2E7D32" />
+            <polygon points="59,100 20,160 98,160" fill="#357A35" />
+            <polygon points="59,125 22,180 96,180" fill="#3D8B3D" />
+          </g>
+          <g class="lm-sub">
+            <!-- Pine 2 (shorter) -->
+            <rect x="115" y="170" width="7" height="90" fill="#5C3A1E" />
+            <polygon points="118,80 98,125 138,125" fill="#2D5F3A" />
+            <polygon points="118,105 93,150 143,150" fill="#3A7345" />
+            <polygon points="118,130 90,175 146,175" fill="#3D8B3D" />
+          </g>
+          <g class="lm-sub">
+            <!-- Pine 3 (smallest) -->
+            <rect x="18" y="190" width="6" height="70" fill="#5C3A1E" />
+            <polygon points="21,120 6,160 36,160" fill="#2D5F3A" />
+            <polygon points="21,145 3,185 39,185" fill="#357A35" />
+          </g>
+          <!-- Rolling hill -->
+          <path class="lm-sub" d="M0,245 Q40,225 80,235 Q120,220 160,235 L160,260 L0,260Z" fill="#4A8B52"
+            opacity="0.4" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- ═══ LANDMARK C: Left side, 22% from top — Birch trees → Desert brush → Magnolia ═══ -->
+    <div class="landmark desktop-only" id="lmC" style="left:25%; top:20%; width:90px; height:240px; opacity:0.55;">
+      <div class="lm-layer" data-scene="russia">
+        <svg viewBox="0 0 100 240" xmlns="http://www.w3.org/2000/svg">
+          <!-- Birch tree 1 -->
+          <rect class="lm-sub" x="15" y="50" width="6" height="190" fill="#E8E0D0" />
+          <rect class="lm-sub" x="16" y="70" width="3" height="6" fill="#333" opacity="0.35" />
+          <rect class="lm-sub" x="17" y="95" width="2" height="5" fill="#333" opacity="0.3" />
+          <rect class="lm-sub" x="16" y="120" width="3" height="4" fill="#333" opacity="0.3" />
+          <rect class="lm-sub" x="17" y="155" width="2" height="5" fill="#333" opacity="0.25" />
+          <!-- Branches -->
+          <line class="lm-sub" x1="18" y1="55" x2="8" y2="35" stroke="#C8BFA8" stroke-width="1.5" />
+          <line class="lm-sub" x1="18" y1="55" x2="30" y2="38" stroke="#C8BFA8" stroke-width="1.5" />
+          <line class="lm-sub" x1="8" y1="35" x2="3" y2="25" stroke="#C8BFA8" stroke-width="1" />
+          <line class="lm-sub" x1="30" y1="38" x2="36" y2="28" stroke="#C8BFA8" stroke-width="1" />
+          <!-- Golden leaves -->
+          <circle class="lm-sub" cx="5" cy="22" r="3" fill="#DAA520" opacity="0.5" />
+          <circle class="lm-sub" cx="34" cy="26" r="2.5" fill="#DAA520" opacity="0.45" />
+          <circle class="lm-sub" cx="12" cy="30" r="2" fill="#C4A020" opacity="0.4" />
+
+          <!-- Birch tree 2 -->
+          <rect class="lm-sub" x="55" y="35" width="5" height="205" fill="#E8E0D0" />
+          <rect class="lm-sub" x="56" y="55" width="2" height="5" fill="#333" opacity="0.3" />
+          <rect class="lm-sub" x="56" y="85" width="2.5" height="4" fill="#333" opacity="0.3" />
+          <rect class="lm-sub" x="56" y="130" width="2" height="5" fill="#333" opacity="0.25" />
+          <line class="lm-sub" x1="57" y1="40" x2="45" y2="22" stroke="#C8BFA8" stroke-width="1.5" />
+          <line class="lm-sub" x1="57" y1="40" x2="70" y2="20" stroke="#C8BFA8" stroke-width="1.5" />
+          <circle class="lm-sub" cx="43" cy="18" r="3" fill="#DAA520" opacity="0.5" />
+          <circle class="lm-sub" cx="72" cy="17" r="2.5" fill="#C4A020" opacity="0.4" />
+
+          <!-- Birch tree 3 (smaller) -->
+          <rect class="lm-sub" x="82" y="65" width="5" height="175" fill="#E8E0D0" />
+          <rect class="lm-sub" x="83" y="85" width="2" height="4" fill="#333" opacity="0.25" />
+          <line class="lm-sub" x1="84" y1="70" x2="92" y2="55" stroke="#C8BFA8" stroke-width="1" />
+          <circle class="lm-sub" cx="93" cy="52" r="2.5" fill="#DAA520" opacity="0.4" />
+
+          <!-- Snow ground -->
+          <path class="lm-sub" d="M0,230 Q25,222 50,228 Q75,220 100,226 L100,240 L0,240Z" fill="#e8edf5"
+            opacity="0.6" />
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="arizona" style="opacity:0;">
+        <svg viewBox="0 0 100 240" xmlns="http://www.w3.org/2000/svg">
+          <!-- Sage brush cluster -->
+          <ellipse class="lm-sub" cx="30" cy="210" rx="22" ry="12" fill="#8B9E7C" opacity="0.7" />
+          <ellipse class="lm-sub" cx="25" cy="205" rx="15" ry="8" fill="#9BAE8C" opacity="0.5" />
+          <ellipse class="lm-sub" cx="70" cy="215" rx="18" ry="10" fill="#8B9E7C" opacity="0.6" />
+          <!-- Small rocks -->
+          <ellipse class="lm-sub" cx="50" cy="225" rx="6" ry="3" fill="#C4A882" opacity="0.5" />
+          <ellipse class="lm-sub" cx="85" cy="228" rx="4" ry="2.5" fill="#C4A882" opacity="0.4" />
+          <!-- Sand -->
+          <rect class="lm-sub" x="0" y="228" width="100" height="12" fill="#E8D5B7" opacity="0.3" />
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="alabama" style="opacity:0;">
+        <svg viewBox="0 0 100 240" xmlns="http://www.w3.org/2000/svg">
+          <!-- Magnolia tree -->
+          <rect class="lm-sub" x="42" y="140" width="14" height="100" fill="#5D4037" />
+          <line class="lm-sub" x1="49" y1="155" x2="30" y2="130" stroke="#5D4037" stroke-width="4"
+            stroke-linecap="round" />
+          <line class="lm-sub" x1="49" y1="155" x2="72" y2="125" stroke="#5D4037" stroke-width="4"
+            stroke-linecap="round" />
+          <ellipse class="lm-sub" cx="50" cy="100" rx="42" ry="38" fill="#2D6B35" />
+          <ellipse class="lm-sub" cx="35" cy="110" rx="28" ry="24" fill="#246028" opacity="0.8" />
+          <ellipse class="lm-sub" cx="68" cy="105" rx="30" ry="26" fill="#306E30" opacity="0.75" />
+          <ellipse class="lm-sub" cx="50" cy="85" rx="28" ry="22" fill="#3A8040" opacity="0.5" />
+          <!-- White magnolia flowers -->
+          <circle class="lm-sub" cx="35" cy="88" r="4" fill="#fff" opacity="0.6" />
+          <circle class="lm-sub" cx="65" cy="92" r="3.5" fill="#fff" opacity="0.5" />
+          <circle class="lm-sub" cx="48" cy="75" r="3" fill="#fff" opacity="0.45" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- ═══ LANDMARK D: Right edge, 18% from top — Moon → Sun → Cloud ═══ -->
+    <div class="landmark" id="lmD" style="left:80%; top:14%; width:160px; height:180px; opacity:0.7;">
+      <div class="lm-layer" data-scene="russia">
+        <svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+          <!-- Moon -->
+          <circle class="lm-sub" cx="90" cy="90" r="45" fill="#E8E0D0" opacity="0.8" />
+          <circle class="lm-sub" cx="80" cy="78" r="8" fill="#D8D0C0" opacity="0.3" />
+          <circle class="lm-sub" cx="100" cy="95" r="5" fill="#D8D0C0" opacity="0.25" />
+          <circle class="lm-sub" cx="75" cy="100" r="4" fill="#D8D0C0" opacity="0.2" />
+          <!-- Scattered stars around moon -->
+          <polygon class="lm-sub" points="30,30 31,35 36,35 32,38 33,43 30,40 27,43 28,38 24,35 29,35" fill="#DAA520"
+            opacity="0.5" />
+          <polygon class="lm-sub" points="150,50 151,54 155,54 152,57 153,61 150,58 147,61 148,57 144,54 149,54"
+            fill="#fff" opacity="0.4" />
+          <circle class="lm-sub" cx="20" cy="80" r="1.5" fill="#fff" opacity="0.3" />
+          <circle class="lm-sub" cx="160" cy="130" r="1.5" fill="#DAA520" opacity="0.3" />
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="arizona" style="opacity:0;">
+        <svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+          <!-- Large Arizona sun -->
+          <circle class="lm-sub" cx="90" cy="90" r="55" fill="#F5A623" opacity="0.85" />
+          <circle class="lm-sub" cx="90" cy="90" r="40" fill="#F5D89A" opacity="0.4" />
+          <circle class="lm-sub" cx="90" cy="90" r="72" fill="#F5A623" opacity="0.12" />
+          <!-- Radiating lines -->
+          <g class="lm-sub" stroke="#F5A623" stroke-width="2.5" opacity="0.35">
+            <line x1="90" y1="10" x2="90" y2="0" />
+            <line x1="90" y1="170" x2="90" y2="180" />
+            <line x1="10" y1="90" x2="0" y2="90" />
+            <line x1="170" y1="90" x2="180" y2="90" />
+          </g>
+          <g class="lm-sub" stroke="#F5A623" stroke-width="1.5" opacity="0.25">
+            <line x1="30" y1="30" x2="20" y2="20" />
+            <line x1="150" y1="30" x2="160" y2="20" />
+            <line x1="30" y1="150" x2="20" y2="160" />
+            <line x1="150" y1="150" x2="160" y2="160" />
+            <line x1="55" y1="15" x2="50" y2="5" />
+            <line x1="125" y1="15" x2="130" y2="5" />
+            <line x1="55" y1="165" x2="50" y2="175" />
+            <line x1="125" y1="165" x2="130" y2="175" />
+            <line x1="15" y1="55" x2="5" y2="50" />
+            <line x1="15" y1="125" x2="5" y2="130" />
+            <line x1="165" y1="55" x2="175" y2="50" />
+            <line x1="165" y1="125" x2="175" y2="130" />
+          </g>
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="alabama" style="opacity:0;">
+        <svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+          <!-- Fluffy cloud formation -->
+          <g class="lm-sub" opacity="0.8">
+            <circle cx="90" cy="85" r="30" fill="#fff" />
+            <circle cx="65" cy="95" r="24" fill="#fff" />
+            <circle cx="115" cy="92" r="26" fill="#fff" />
+            <circle cx="80" cy="75" r="22" fill="#fff" />
+            <circle cx="100" cy="78" r="20" fill="#fff" />
+            <!-- Shadow -->
+            <ellipse cx="90" cy="105" rx="40" ry="8" fill="#F0F0F0" opacity="0.5" />
+          </g>
+          <!-- Second smaller cloud -->
+          <g class="lm-sub" opacity="0.5">
+            <circle cx="50" cy="140" r="15" fill="#fff" />
+            <circle cx="40" cy="145" r="12" fill="#fff" />
+            <circle cx="62" cy="143" r="13" fill="#fff" />
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ═══ LANDMARK E: Far left, 40% — Apartment blocks → Mesa → Campus building ═══ -->
+    <div class="landmark" id="lmE" style="left:8%; top:38%; width:180px; height:200px; opacity:0.6;">
+      <div class="lm-layer" data-scene="russia">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- Soviet apartment blocks -->
+          <rect class="lm-sub" x="5" y="30" width="55" height="170" fill="#3A4A5C" opacity="0.85" />
+          <rect class="lm-sub" x="65" y="10" width="60" height="190" fill="#4A5A6C" opacity="0.85" />
+          <rect class="lm-sub" x="130" y="50" width="55" height="150" fill="#3A4A5C" opacity="0.85" />
+          <!-- Windows grids (lit) -->
+          <g class="lm-sub" fill="#F5E6B8" opacity="0.5">
+            <rect x="12" y="42" width="5" height="7" />
+            <rect x="22" y="42" width="5" height="7" />
+            <rect x="32" y="42" width="5" height="7" />
+            <rect x="42" y="42" width="5" height="7" />
+            <rect x="12" y="58" width="5" height="7" />
+            <rect x="22" y="58" width="5" height="7" />
+            <rect x="32" y="58" width="5" height="7" />
+            <rect x="42" y="58" width="5" height="7" />
+            <rect x="12" y="74" width="5" height="7" />
+            <rect x="22" y="74" width="5" height="7" />
+            <rect x="32" y="74" width="5" height="7" />
+            <rect x="42" y="74" width="5" height="7" />
+            <rect x="12" y="90" width="5" height="7" />
+            <rect x="22" y="90" width="5" height="7" />
+            <rect x="32" y="90" width="5" height="7" />
+            <rect x="42" y="90" width="5" height="7" />
+            <rect x="12" y="106" width="5" height="7" />
+            <rect x="22" y="106" width="5" height="7" />
+            <rect x="32" y="106" width="5" height="7" />
+            <rect x="42" y="106" width="5" height="7" />
+          </g>
+          <g class="lm-sub" fill="#F5E6B8" opacity="0.45">
+            <rect x="73" y="22" width="6" height="8" />
+            <rect x="85" y="22" width="6" height="8" />
+            <rect x="97" y="22" width="6" height="8" />
+            <rect x="109" y="22" width="6" height="8" />
+            <rect x="73" y="40" width="6" height="8" />
+            <rect x="85" y="40" width="6" height="8" />
+            <rect x="97" y="40" width="6" height="8" />
+            <rect x="109" y="40" width="6" height="8" />
+            <rect x="73" y="58" width="6" height="8" />
+            <rect x="85" y="58" width="6" height="8" />
+            <rect x="97" y="58" width="6" height="8" />
+            <rect x="109" y="58" width="6" height="8" />
+            <rect x="73" y="76" width="6" height="8" />
+            <rect x="85" y="76" width="6" height="8" />
+            <rect x="97" y="76" width="6" height="8" />
+            <rect x="109" y="76" width="6" height="8" />
+            <rect x="73" y="94" width="6" height="8" />
+            <rect x="85" y="94" width="6" height="8" />
+            <rect x="97" y="94" width="6" height="8" />
+            <rect x="109" y="94" width="6" height="8" />
+          </g>
+          <g class="lm-sub" fill="#F5E6B8" opacity="0.4">
+            <rect x="138" y="62" width="5" height="7" />
+            <rect x="148" y="62" width="5" height="7" />
+            <rect x="158" y="62" width="5" height="7" />
+            <rect x="168" y="62" width="5" height="7" />
+            <rect x="138" y="78" width="5" height="7" />
+            <rect x="148" y="78" width="5" height="7" />
+            <rect x="158" y="78" width="5" height="7" />
+            <rect x="168" y="78" width="5" height="7" />
+            <rect x="138" y="94" width="5" height="7" />
+            <rect x="148" y="94" width="5" height="7" />
+            <rect x="158" y="94" width="5" height="7" />
+            <rect x="168" y="94" width="5" height="7" />
+          </g>
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="arizona" style="opacity:0;">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- Layered mesas -->
+          <path class="lm-sub" d="M0,200 L0,90 L15,65 L70,55 L85,65 L90,200Z" fill="#B85C3C" />
+          <rect class="lm-sub" x="0" y="100" width="90" height="3" fill="#A04E30" opacity="0.4" />
+          <rect class="lm-sub" x="0" y="130" width="90" height="3" fill="#C46A4A" opacity="0.35" />
+          <path class="lm-sub" d="M80,200 L80,110 L95,80 L150,72 L165,82 L175,200Z" fill="#7B6B8A" opacity="0.55" />
+          <!-- Desert floor -->
+          <rect class="lm-sub" x="0" y="190" width="200" height="10" fill="#E8D5B7" opacity="0.3" />
+          <ellipse class="lm-sub" cx="150" cy="195" rx="10" ry="5" fill="#8B9E7C" opacity="0.4" />
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="alabama" style="opacity:0;">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- Campus building -->
+          <rect class="lm-sub" x="20" y="70" width="160" height="130" fill="#8B4040" />
+          <!-- Cupola -->
+          <rect class="lm-sub" x="82" y="35" width="36" height="40" fill="#7A3535" />
+          <path class="lm-sub" d="M85,35 Q100,12 115,35Z" fill="#7A3535" />
+          <circle class="lm-sub" cx="100" cy="18" r="4" fill="#DAA520" opacity="0.6" />
+          <!-- Columns -->
+          <rect class="lm-sub" x="45" y="100" width="5" height="100" fill="#E8E0D0" opacity="0.6" />
+          <rect class="lm-sub" x="65" y="100" width="5" height="100" fill="#E8E0D0" opacity="0.6" />
+          <rect class="lm-sub" x="130" y="100" width="5" height="100" fill="#E8E0D0" opacity="0.6" />
+          <rect class="lm-sub" x="150" y="100" width="5" height="100" fill="#E8E0D0" opacity="0.6" />
+          <!-- Windows -->
+          <g class="lm-sub" fill="#B8DEF0" opacity="0.5">
+            <rect x="35" y="85" width="10" height="14" rx="1" />
+            <rect x="55" y="85" width="10" height="14" rx="1" />
+            <rect x="75" y="85" width="10" height="14" rx="1" />
+            <rect x="115" y="85" width="10" height="14" rx="1" />
+            <rect x="135" y="85" width="10" height="14" rx="1" />
+            <rect x="155" y="85" width="10" height="14" rx="1" />
+          </g>
+          <!-- Arched entrance -->
+          <path class="lm-sub" d="M90,200 L90,155 Q100,140 110,155 L110,200Z" fill="#5C2A2A" opacity="0.7" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- ═══ LANDMARK F: Right of content, 35% — Small decorative stars → small sun → birds ═══ -->
+    <div class="landmark desktop-only" id="lmF" style="left:55%; top:32%; width:85px; height:90px; opacity:0.5;">
+      <div class="lm-layer" data-scene="russia">
+        <svg viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+          <polygon class="lm-sub" points="25,8 27,16 35,16 29,21 31,29 25,24 19,29 21,21 15,16 23,16" fill="#DAA520"
+            opacity="0.8" />
+          <polygon class="lm-sub" points="65,25 66,30 71,30 67,33 68,38 65,35 62,38 63,33 59,30 64,30" fill="#fff"
+            opacity="0.6" />
+          <polygon class="lm-sub" points="40,55 42,61 48,61 43,65 45,71 40,67 35,71 37,65 32,61 38,61" fill="#DAA520"
+            opacity="0.65" />
+          <circle class="lm-sub" cx="75" cy="65" r="1.5" fill="#fff" opacity="0.4" />
+          <circle class="lm-sub" cx="15" cy="75" r="1.5" fill="#DAA520" opacity="0.35" />
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="arizona" style="opacity:0;">
+        <svg viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+          <!-- Heat shimmer lines (NOT a sun) -->
+          <path class="lm-sub" d="M10,30 Q20,25 30,30 Q40,35 50,30" fill="none" stroke="#F5A623" stroke-width="1"
+            opacity="0.3" />
+          <path class="lm-sub" d="M15,45 Q25,40 35,45 Q45,50 55,45" fill="none" stroke="#F5A623" stroke-width="1"
+            opacity="0.25" />
+          <path class="lm-sub" d="M20,60 Q30,55 40,60 Q50,65 60,60" fill="none" stroke="#E8874A" stroke-width="1"
+            opacity="0.25" />
+          <!-- Tiny desert flowers -->
+          <circle class="lm-sub" cx="25" cy="72" r="2.5" fill="#FFB7C5" opacity="0.5" />
+          <circle class="lm-sub" cx="55" cy="75" r="2" fill="#FF8A80" opacity="0.4" />
+          <circle class="lm-sub" cx="70" cy="68" r="2" fill="#FFB7C5" opacity="0.4" />
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="alabama" style="opacity:0;">
+        <svg viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+          <path class="lm-sub" d="M10,35 Q17,28 24,35 Q31,28 38,35" fill="none" stroke="#444" stroke-width="1.8"
+            opacity="0.45" />
+          <path class="lm-sub" d="M35,20 Q43,12 51,20 Q59,12 67,20" fill="none" stroke="#444" stroke-width="2"
+            opacity="0.5" />
+          <path class="lm-sub" d="M50,50 Q55,45 60,50 Q65,45 70,50" fill="none" stroke="#444" stroke-width="1.3"
+            opacity="0.35" />
+          <path class="lm-sub" d="M15,65 Q20,60 25,65 Q30,60 35,65" fill="none" stroke="#444" stroke-width="1.2"
+            opacity="0.3" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- ═══ LANDMARK G: Far right, 50%, partially offscreen — Snow ground → Desert floor → Rolling hills ═══ -->
+    <div class="landmark" id="lmG" style="left:72%; top:48%; width:240px; height:140px; opacity:0.65;">
+      <div class="lm-layer" data-scene="russia">
+        <svg viewBox="0 0 260 140" xmlns="http://www.w3.org/2000/svg">
+          <!-- Snow-covered ground with distant buildings -->
+          <path class="lm-sub" d="M0,140 Q30,110 70,118 Q110,100 160,115 Q200,105 240,112 L260,108 L260,140Z"
+            fill="#e8edf5" />
+          <!-- Distant apartment silhouettes -->
+          <rect class="lm-sub" x="20" y="70" width="30" height="50" fill="#2a3555" opacity="0.5" />
+          <rect class="lm-sub" x="55" y="55" width="35" height="65" fill="#2a3555" opacity="0.55" />
+          <rect class="lm-sub" x="95" y="65" width="28" height="55" fill="#2a3555" opacity="0.45" />
+          <rect class="lm-sub" x="128" y="75" width="25" height="45" fill="#2a3555" opacity="0.4" />
+          <!-- Tiny lit windows -->
+          <g class="lm-sub" fill="#F5E6B8" opacity="0.4">
+            <rect x="28" y="78" width="3" height="3" />
+            <rect x="38" y="78" width="3" height="3" />
+            <rect x="28" y="86" width="3" height="3" />
+            <rect x="38" y="86" width="3" height="3" />
+            <rect x="63" y="62" width="3" height="3" />
+            <rect x="73" y="62" width="3" height="3" />
+            <rect x="63" y="70" width="3" height="3" />
+            <rect x="73" y="70" width="3" height="3" />
+            <rect x="63" y="78" width="3" height="3" />
+            <rect x="73" y="78" width="3" height="3" />
+          </g>
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="arizona" style="opacity:0;">
+        <svg viewBox="0 0 260 140" xmlns="http://www.w3.org/2000/svg">
+          <!-- Desert floor with cloud streaks -->
+          <rect class="lm-sub" x="0" y="100" width="260" height="40" fill="#E8D5B7" opacity="0.5" />
+          <rect class="lm-sub" x="0" y="108" width="260" height="3" fill="#D4C4A8" opacity="0.3" />
+          <!-- Cloud streaks in sky area -->
+          <rect class="lm-sub" x="20" y="20" width="80" height="4" rx="2" fill="#E89B7B" opacity="0.3" />
+          <rect class="lm-sub" x="120" y="35" width="100" height="3" rx="1.5" fill="#E89B7B" opacity="0.25" />
+          <!-- Scattered rocks -->
+          <ellipse class="lm-sub" cx="80" cy="115" rx="8" ry="4" fill="#C4A882" opacity="0.5" />
+          <ellipse class="lm-sub" cx="180" cy="118" rx="6" ry="3" fill="#C4A882" opacity="0.4" />
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="alabama" style="opacity:0;">
+        <svg viewBox="0 0 260 140" xmlns="http://www.w3.org/2000/svg">
+          <!-- Rolling green hills -->
+          <path class="lm-sub" d="M0,140 Q40,80 90,95 Q130,70 180,90 Q220,75 260,88 L260,140Z" fill="#89BFA3"
+            opacity="0.5" />
+          <path class="lm-sub" d="M0,140 Q50,95 110,108 Q170,85 230,100 L260,95 L260,140Z" fill="#6BAF72"
+            opacity="0.45" />
+          <path class="lm-sub" d="M0,140 Q70,110 140,118 Q200,100 260,112 L260,140Z" fill="#4A8B52" opacity="0.4" />
+          <!-- Wildflowers -->
+          <circle class="lm-sub" cx="60" cy="118" r="2" fill="#9C27B0" opacity="0.4" />
+          <circle class="lm-sub" cx="100" cy="112" r="1.5" fill="#FFD700" opacity="0.4" />
+          <circle class="lm-sub" cx="160" cy="105" r="2" fill="#fff" opacity="0.35" />
+          <circle class="lm-sub" cx="210" cy="108" r="1.5" fill="#9C27B0" opacity="0.35" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- ═══ LANDMARK H: Left, 60% — Church spire → thin cactus → tall pine ═══ -->
+    <div class="landmark desktop-only" id="lmH" style="left:15%; top:58%; width:65px; height:220px; opacity:0.5;">
+      <div class="lm-layer" data-scene="russia">
+        <svg viewBox="0 0 70 220" xmlns="http://www.w3.org/2000/svg">
+          <rect class="lm-sub" x="27" y="90" width="16" height="130" fill="#6B4226" />
+          <polygon class="lm-sub" points="35,20 22,90 48,90" fill="#2E5B28" />
+          <!-- Cross -->
+          <rect class="lm-sub" x="33" y="8" width="4" height="14" fill="#DAA520" />
+          <rect class="lm-sub" x="29" y="11" width="12" height="3" fill="#DAA520" />
+          <line class="lm-sub" x1="30" y1="18" x2="33" y2="20" stroke="#DAA520" stroke-width="1.5" />
+          <!-- Windows -->
+          <rect class="lm-sub" x="31" y="100" width="8" height="12" rx="4" fill="#F5D060" opacity="0.5" />
+          <rect class="lm-sub" x="31" y="130" width="8" height="12" rx="4" fill="#F5D060" opacity="0.4" />
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="arizona" style="opacity:0;">
+        <svg viewBox="0 0 70 220" xmlns="http://www.w3.org/2000/svg">
+          <!-- Thin cactus with connected arm -->
+          <path class="lm-sub" d="M30,220 L30,30 Q30,18 35,16 Q38,15 41,16 Q45,18 45,30 L45,220Z" fill="#3d6b35" />
+          <path class="lm-sub"
+            d="M45,110 Q50,108 54,108 L58,108 Q66,108 66,98 L66,75 Q66,65 61,65 Q56,65 56,75 L56,100 Q56,105 50,107 L45,108Z"
+            fill="#3d6b35" />
+          <rect class="lm-sub" x="32" y="25" width="4" height="185" rx="2" fill="#5a8f4f" opacity="0.3" />
+          <line class="lm-sub" x1="36" y1="20" x2="36" y2="215" stroke="#2E5B28" stroke-width="0.6" opacity="0.3" />
+          <circle class="lm-sub" cx="37" cy="13" r="3.5" fill="#FFB7C5" opacity="0.6" />
+          <line x1="28" y1="60" x2="24" y2="58" stroke="#2a5428" stroke-width="1" opacity="0.35" />
+          <line x1="47" y1="80" x2="51" y2="78" stroke="#2a5428" stroke-width="1" opacity="0.35" />
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="alabama" style="opacity:0;">
+        <svg viewBox="0 0 70 220" xmlns="http://www.w3.org/2000/svg">
+          <!-- Tall pine with layered branches -->
+          <rect class="lm-sub" x="30" y="130" width="8" height="90" fill="#5C3A1E" />
+          <polygon class="lm-sub" points="34,20 15,70 53,70" fill="#1B5E20" />
+          <polygon class="lm-sub" points="34,45 12,95 56,95" fill="#2E7D32" />
+          <polygon class="lm-sub" points="34,70 8,120 60,120" fill="#357A35" />
+          <polygon class="lm-sub" points="34,95 5,145 63,145" fill="#3D8B3D" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- ═══ LANDMARK I: Right, 70% — Small onion dome → small barrel cactus → small oak ═══ -->
+    <div class="landmark desktop-only" id="lmI" style="left:85%; top:65%; width:75px; height:130px; opacity:0.45;">
+      <div class="lm-layer" data-scene="russia">
+        <svg viewBox="0 0 80 130" xmlns="http://www.w3.org/2000/svg">
+          <rect class="lm-sub" x="30" y="65" width="18" height="65" fill="#A0522D" />
+          <path class="lm-sub" d="M39,18 C39,18 25,48 24,58 C23,66 27,74 39,78 C51,74 55,66 54,58 C53,48 39,18 39,18Z"
+            fill="#E65100" />
+          <path class="lm-sub" d="M33,50 Q39,45 45,50" fill="none" stroke="#2E7D32" stroke-width="1.5" opacity="0.5" />
+          <path class="lm-sub" d="M31,60 Q39,55 47,60" fill="none" stroke="#2E7D32" stroke-width="1.5" opacity="0.4" />
+          <rect class="lm-sub" x="37" y="8" width="3" height="12" fill="#DAA520" />
+          <rect class="lm-sub" x="33" y="11" width="11" height="2.5" fill="#DAA520" />
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="arizona" style="opacity:0;">
+        <svg viewBox="0 0 80 130" xmlns="http://www.w3.org/2000/svg">
+          <!-- Barrel cactus -->
+          <ellipse class="lm-sub" cx="40" cy="85" rx="22" ry="30" fill="#3d6b35" />
+          <line class="lm-sub" x1="25" y1="65" x2="25" y2="105" stroke="#2E5B28" stroke-width="0.8" opacity="0.3" />
+          <line class="lm-sub" x1="33" y1="58" x2="33" y2="112" stroke="#2E5B28" stroke-width="0.8" opacity="0.3" />
+          <line class="lm-sub" x1="40" y1="55" x2="40" y2="115" stroke="#2E5B28" stroke-width="0.8" opacity="0.3" />
+          <line class="lm-sub" x1="47" y1="58" x2="47" y2="112" stroke="#2E5B28" stroke-width="0.8" opacity="0.3" />
+          <line class="lm-sub" x1="55" y1="65" x2="55" y2="105" stroke="#2E5B28" stroke-width="0.8" opacity="0.3" />
+          <!-- Flower crown -->
+          <circle class="lm-sub" cx="36" cy="54" r="3" fill="#FFB7C5" opacity="0.6" />
+          <circle class="lm-sub" cx="44" cy="53" r="3" fill="#FF8A80" opacity="0.5" />
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="alabama" style="opacity:0;">
+        <svg viewBox="0 0 80 130" xmlns="http://www.w3.org/2000/svg">
+          <!-- Small oak -->
+          <rect class="lm-sub" x="34" y="75" width="10" height="55" fill="#5D4037" />
+          <line class="lm-sub" x1="39" y1="85" x2="25" y2="65" stroke="#5D4037" stroke-width="3"
+            stroke-linecap="round" />
+          <line class="lm-sub" x1="39" y1="85" x2="55" y2="62" stroke="#5D4037" stroke-width="3"
+            stroke-linecap="round" />
+          <ellipse class="lm-sub" cx="40" cy="50" rx="32" ry="25" fill="#3A7D44" />
+          <ellipse class="lm-sub" cx="28" cy="55" rx="20" ry="18" fill="#2D6B35" opacity="0.8" />
+          <ellipse class="lm-sub" cx="52" cy="52" rx="22" ry="19" fill="#2D6B35" opacity="0.75" />
+          <ellipse class="lm-sub" cx="40" cy="38" rx="18" ry="14" fill="#5A9E4A" opacity="0.45" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- ═══ LANDMARK J: Bottom-left, partially offscreen — Kremlin wall segment ═══ -->
+    <div class="landmark" id="lmJ" style="left:5%; top:78%; width:170px; height:100px; opacity:0.6;">
+      <div class="lm-layer" data-scene="russia">
+        <svg viewBox="0 0 180 100" xmlns="http://www.w3.org/2000/svg">
+          <rect class="lm-sub" x="0" y="40" width="180" height="60" fill="#8B4513" opacity="0.8" />
+          <!-- Battlements -->
+          <rect class="lm-sub" x="5" y="28" width="12" height="16" fill="#8B4513" />
+          <rect class="lm-sub" x="22" y="28" width="12" height="16" fill="#8B4513" />
+          <rect class="lm-sub" x="39" y="28" width="12" height="16" fill="#8B4513" />
+          <rect class="lm-sub" x="56" y="28" width="12" height="16" fill="#8B4513" />
+          <rect class="lm-sub" x="73" y="28" width="12" height="16" fill="#8B4513" />
+          <rect class="lm-sub" x="90" y="28" width="12" height="16" fill="#8B4513" />
+          <rect class="lm-sub" x="107" y="28" width="12" height="16" fill="#8B4513" />
+          <rect class="lm-sub" x="124" y="28" width="12" height="16" fill="#8B4513" />
+          <rect class="lm-sub" x="141" y="28" width="12" height="16" fill="#8B4513" />
+          <rect class="lm-sub" x="158" y="28" width="12" height="16" fill="#8B4513" />
+          <!-- Snow on top -->
+          <path class="lm-sub"
+            d="M0,40 Q10,36 22,40 Q34,36 56,40 Q68,36 90,40 Q102,36 124,40 Q136,36 158,40 Q170,36 180,40" fill="none"
+            stroke="#e8edf5" stroke-width="2" opacity="0.6" />
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="arizona" style="opacity:0;">
+        <svg viewBox="0 0 180 100" xmlns="http://www.w3.org/2000/svg">
+          <path class="lm-sub" d="M0,100 L0,55 Q30,50 60,55 Q90,45 120,52 Q150,48 180,54 L180,100Z" fill="#E8D5B7"
+            opacity="0.5" />
+          <path class="lm-sub" d="M0,100 L0,70 Q40,65 80,70 Q120,62 160,68 L180,66 L180,100Z" fill="#D4C4A8"
+            opacity="0.3" />
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="alabama" style="opacity:0;">
+        <svg viewBox="0 0 180 100" xmlns="http://www.w3.org/2000/svg">
+          <path class="lm-sub" d="M0,100 Q25,55 60,65 Q90,45 120,58 Q150,42 180,55 L180,100Z" fill="#4A8B52"
+            opacity="0.5" />
+          <path class="lm-sub" d="M0,100 Q40,70 80,78 Q120,60 160,72 L180,68 L180,100Z" fill="#6BAF72" opacity="0.35" />
+          <!-- Stream -->
+          <path class="lm-sub" d="M30,90 Q60,82 90,88 Q120,80 150,86" fill="none" stroke="#87CEEB" stroke-width="2"
+            opacity="0.3" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- ═══ LANDMARK K: Right of content, 88% — Small dome cluster ═══ -->
+    <div class="landmark" id="lmK" style="left:60%; top:85%; width:110px; height:140px; opacity:0.55;">
+      <div class="lm-layer" data-scene="russia">
+        <svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+          <!-- Small dome cluster -->
+          <rect class="lm-sub" x="25" y="80" width="18" height="60" fill="#A0522D" />
+          <path class="lm-sub" d="M34,35 C34,35 22,60 21,70 C20,78 24,84 34,88 C44,84 48,78 47,70 C46,60 34,35 34,35Z"
+            fill="#C41E3A" />
+          <rect class="lm-sub" x="32" y="25" width="3" height="12" fill="#DAA520" />
+          <rect class="lm-sub" x="28" y="28" width="11" height="2" fill="#DAA520" />
+
+          <rect class="lm-sub" x="55" y="90" width="14" height="50" fill="#8B4513" />
+          <path class="lm-sub" d="M62,50 C62,50 52,72 51,80 C50,86 53,91 62,94 C71,91 74,86 73,80 C72,72 62,50 62,50Z"
+            fill="#2E7D32" />
+          <rect class="lm-sub" x="60" y="42" width="3" height="10" fill="#DAA520" />
+
+          <rect class="lm-sub" x="80" y="95" width="14" height="45" fill="#8B4513" />
+          <path class="lm-sub" d="M87,60 C87,60 78,78 77,85 C76,90 79,95 87,98 C95,95 98,90 97,85 C96,78 87,60 87,60Z"
+            fill="#1565C0" />
+          <rect class="lm-sub" x="85" y="52" width="3" height="10" fill="#DAA520" />
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="arizona" style="opacity:0;">
+        <svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+          <!-- Cactus 1 with connected arm -->
+          <path class="lm-sub" d="M22,140 L22,40 Q22,28 27,26 Q30,25 33,26 Q38,28 38,40 L38,140Z" fill="#3d6b35" />
+          <path class="lm-sub"
+            d="M22,80 Q17,78 13,78 L8,78 Q0,78 0,68 L0,52 Q0,42 5,42 Q10,42 10,52 L10,70 Q10,75 16,77 L22,78Z"
+            fill="#3d6b35" />
+
+          <!-- Cactus 2 (no arms, short) -->
+          <path class="lm-sub" d="M55,140 L55,58 Q55,48 60,46 Q63,45 66,46 Q70,48 70,58 L70,140Z" fill="#4A7A3E" />
+          <circle class="lm-sub" cx="62" cy="43" r="3" fill="#FFB7C5" opacity="0.5" />
+
+          <!-- Cactus 3 with connected arm -->
+          <path class="lm-sub" d="M88,140 L88,48 Q88,36 93,34 Q96,33 99,34 Q104,36 104,48 L104,140Z" fill="#3d6b35" />
+          <path class="lm-sub"
+            d="M104,88 Q109,86 113,86 L116,86 Q124,86 124,76 L124,62 Q124,52 119,52 Q114,52 114,62 L114,78 Q114,83 108,85 L104,86Z"
+            fill="#3d6b35" />
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="alabama" style="opacity:0;">
+        <svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+          <rect class="lm-sub" x="18" y="80" width="10" height="60" fill="#5D4037" />
+          <ellipse class="lm-sub" cx="23" cy="55" rx="25" ry="22" fill="#3A7D44" />
+          <ellipse class="lm-sub" cx="15" cy="60" rx="16" ry="14" fill="#2D6B35" opacity="0.75" />
+
+          <rect class="lm-sub" x="70" y="85" width="8" height="55" fill="#5D4037" />
+          <ellipse class="lm-sub" cx="74" cy="62" rx="22" ry="20" fill="#3A7D44" />
+          <ellipse class="lm-sub" cx="82" cy="58" rx="14" ry="12" fill="#5A9E4A" opacity="0.5" />
+          <circle class="lm-sub" cx="68" cy="50" r="3" fill="#fff" opacity="0.4" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- ═══ LANDMARK L: Center, behind content, very faint ═══ -->
+    <div class="landmark desktop-only" id="lmL"
+      style="left:40%; top:42%; width:280px; height:300px; opacity:0.06; transform:translateX(-50%);">
+      <div class="lm-layer" data-scene="russia">
+        <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+          <rect class="lm-sub" x="130" y="160" width="40" height="140" fill="#8C1515" />
+          <path class="lm-sub"
+            d="M150,40 C150,40 115,110 112,140 C110,160 116,178 150,190 C184,178 190,160 188,140 C185,110 150,40 150,40Z"
+            fill="#C41E3A" />
+          <rect class="lm-sub" x="60" y="190" width="30" height="110" fill="#6B4226" />
+          <path class="lm-sub"
+            d="M75,110 C75,110 60,150 58,165 C57,175 60,185 75,190 C90,185 93,175 92,165 C90,150 75,110 75,110Z"
+            fill="#2E7D32" />
+          <rect class="lm-sub" x="210" y="195" width="30" height="105" fill="#6B4226" />
+          <path class="lm-sub"
+            d="M225,115 C225,115 210,155 208,168 C207,178 210,188 225,193 C240,188 243,178 242,168 C240,155 225,115 225,115Z"
+            fill="#1565C0" />
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="arizona" style="opacity:0;">
+        <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+          <rect class="lm-sub" x="70" y="30" width="18" height="270" rx="9" fill="#3d6b35" />
+          <rect class="lm-sub" x="145" y="50" width="20" height="250" rx="10" fill="#4A7A3E" />
+          <rect class="lm-sub" x="230" y="80" width="16" height="220" rx="8" fill="#3d6b35" />
+        </svg>
+      </div>
+      <div class="lm-layer" data-scene="alabama" style="opacity:0;">
+        <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+          <path class="lm-sub" d="M0,300 Q50,220 100,240 Q150,200 200,225 Q250,195 300,220 L300,300Z" fill="#4A8B52"
+            opacity="0.6" />
+          <ellipse class="lm-sub" cx="80" cy="200" rx="45" ry="35" fill="#2D6B35" />
+          <ellipse class="lm-sub" cx="220" cy="190" rx="40" ry="32" fill="#3A7D44" />
+        </svg>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Location Label — Frosted pill -->
+  <div id="loc-label">
+    <div class="loc-pill loc-pill-item" id="loc-russia" style="color:#C41E3A; opacity:1;">
+      <span class="loc-icon" style="color:#DAA520;">&#9733;</span> Moscow, Russia
+    </div>
+    <div class="loc-pill loc-pill-item" id="loc-arizona"
+      style="color:#B85C3C; opacity:0; transform:translateX(-50%) translateY(5px);">
+      <span class="loc-icon" style="color:#F5A623;">&#9788;</span> Scottsdale, Arizona
+    </div>
+    <div class="loc-pill loc-pill-item" id="loc-alabama"
+      style="color:#2D6B35; opacity:0; transform:translateX(-50%) translateY(5px);">
+      <span class="loc-icon" style="color:#3A7D44;">&#9752;</span> Birmingham, Alabama
+    </div>
+  </div>
+
+  <!-- Snowflake Canvas -->
+  <canvas id="snowCanvas"></canvas>
+
+  <script>
+    (function () {
+      'use strict';
+      const isMobile = window.innerWidth < 769;
+
+      // ── SNOWFLAKES (Russia phase) ──
+      const snowCanvas = document.getElementById('snowCanvas');
+      const sCtx = snowCanvas.getContext('2d');
+      let snowW, snowH;
+      const FLAKE_COUNT = isMobile ? 25 : 50;
+      const flakes = [];
+
+      function resizeSnow() {
+        snowW = window.innerWidth;
+        snowH = window.innerHeight;
+        snowCanvas.width = snowW;
+        snowCanvas.height = snowH;
+      }
+      resizeSnow();
+      window.addEventListener('resize', resizeSnow, { passive: true });
+
+      for (let i = 0; i < FLAKE_COUNT; i++) {
+        flakes.push({
+          x: Math.random() * snowW,
+          y: Math.random() * snowH,
+          r: 1 + Math.random() * 2.5,
+          speed: 0.3 + Math.random() * 0.7,
+          swayAmp: 10 + Math.random() * 20,
+          swayFreq: 0.005 + Math.random() * 0.01,
+          phase: Math.random() * Math.PI * 2,
+          alpha: 0.3 + Math.random() * 0.4,
+          isStar: Math.random() > 0.6 // some are 6-pointed
+        });
+      }
+
+      let snowOpacity = 1;
+      let frameCount = 0;
+
+      function drawSnowflakes() {
+        sCtx.clearRect(0, 0, snowW, snowH);
+        if (snowOpacity <= 0.01) return;
+
+        for (const f of flakes) {
+          f.y += f.speed;
+          f.x += Math.sin(frameCount * f.swayFreq + f.phase) * 0.3;
+
+          if (f.y > snowH + 5) { f.y = -5; f.x = Math.random() * snowW; }
+          if (f.x < -10) f.x = snowW + 10;
+          if (f.x > snowW + 10) f.x = -10;
+
+          sCtx.globalAlpha = f.alpha * snowOpacity;
+          sCtx.fillStyle = '#fff';
+
+          if (f.isStar && f.r > 2) {
+            // 6-pointed star
+            sCtx.beginPath();
+            for (let p = 0; p < 6; p++) {
+              const ang = (p * Math.PI) / 3 - Math.PI / 2;
+              const ox = f.x + Math.cos(ang) * f.r * 1.5;
+              const oy = f.y + Math.sin(ang) * f.r * 1.5;
+              const ix = f.x + Math.cos(ang + Math.PI / 6) * f.r * 0.5;
+              const iy = f.y + Math.sin(ang + Math.PI / 6) * f.r * 0.5;
+              if (p === 0) sCtx.moveTo(ox, oy);
+              else sCtx.lineTo(ox, oy);
+              sCtx.lineTo(ix, iy);
+            }
+            sCtx.closePath();
+            sCtx.fill();
+          } else {
+            sCtx.beginPath();
+            sCtx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+            sCtx.fill();
+          }
+        }
+        frameCount++;
+      }
+
+      // ── LANDMARKS SCROLL LOGIC ──
+      const landmarks = document.querySelectorAll('.landmark');
+      const locRussia = document.getElementById('loc-russia');
+      const locArizona = document.getElementById('loc-arizona');
+      const locAlabama = document.getElementById('loc-alabama');
+
+      // Stagger: each landmark morphs at slightly different scroll %
+      const staggerOffsets = [0, 0.02, 0.01, 0.03, 0.015, 0.025, 0.035, 0.005, 0.02, 0.012, 0.028, 0.008];
+
+      // Parallax drift config per landmark (dx, dy per scroll unit)
+      const driftConfigs = [
+        { dx: -5, dy: -8 },
+        { dx: 6, dy: -10 },
+        { dx: -4, dy: 5 },
+        { dx: 8, dy: -6 },
+        { dx: -7, dy: 10 },
+        { dx: 5, dy: -4 },
+        { dx: 10, dy: 8 },
+        { dx: -6, dy: -5 },
+        { dx: 4, dy: 7 },
+        { dx: -8, dy: -3 },
+        { dx: 7, dy: -9 },
+        { dx: -3, dy: 6 }
+      ];
+
+      function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+      let ticking = false;
+
+      function updateScene() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const basePct = docHeight > 0 ? clamp(scrollTop / docHeight, 0, 1) : 0;
+
+        // Entrance (0-3%)
+        const entranceAlpha = clamp(basePct / 0.03, 0, 1);
+
+        // Snowflake opacity (fade out during 25-35%)
+        snowOpacity = basePct < 0.25 ? 1 : basePct < 0.35 ? 1 - (basePct - 0.25) / 0.10 : 0;
+        snowOpacity *= entranceAlpha;
+
+        // Update each landmark
+        landmarks.forEach((lm, idx) => {
+          const offset = staggerOffsets[idx] || 0;
+          const layers = lm.querySelectorAll('.lm-layer');
+          let russiaOp = 0, arizonaOp = 0, alabamaOp = 0;
+
+          const r2aStart = 0.25 + offset;
+          const r2aEnd = 0.40 + offset;
+          const a2bStart = 0.60 + offset;
+          const a2bEnd = 0.75 + offset;
+
+          if (basePct <= r2aStart) {
+            russiaOp = 1;
+          } else if (basePct <= r2aEnd) {
+            const t = (basePct - r2aStart) / (r2aEnd - r2aStart);
+            russiaOp = 1 - t;
+            arizonaOp = t;
+          } else if (basePct <= a2bStart) {
+            arizonaOp = 1;
+          } else if (basePct <= a2bEnd) {
+            const t = (basePct - a2bStart) / (a2bEnd - a2bStart);
+            arizonaOp = 1 - t;
+            alabamaOp = t;
+          } else {
+            alabamaOp = 1;
+          }
+
+          // During transition, scatter sub-elements outward (particle-like deconstruction)
+          const isTransitioning1 = basePct > r2aStart && basePct < r2aEnd;
+          const isTransitioning2 = basePct > a2bStart && basePct < a2bEnd;
+          const transProgress1 = isTransitioning1 ? (basePct - r2aStart) / (r2aEnd - r2aStart) : 0;
+          const transProgress2 = isTransitioning2 ? (basePct - a2bStart) / (a2bEnd - a2bStart) : 0;
+          const transActive = isTransitioning1 || isTransitioning2;
+          const transProgress = isTransitioning1 ? transProgress1 : transProgress2;
+
+          // Scatter effect: mid-transition has max scatter
+          const scatterAmount = transActive ? Math.sin(transProgress * Math.PI) * 12 : 0;
+
+          layers.forEach(layer => {
+            const scene = layer.dataset.scene;
+            let op = 0;
+            if (scene === 'russia') op = russiaOp;
+            else if (scene === 'arizona') op = arizonaOp;
+            else if (scene === 'alabama') op = alabamaOp;
+            layer.style.opacity = op * entranceAlpha;
+
+            // Apply scatter to sub-elements during transition
+            if (scatterAmount > 0 && op > 0) {
+              const subs = layer.querySelectorAll('.lm-sub');
+              subs.forEach((sub, si) => {
+                const seedX = ((si * 7 + idx * 13) % 17) - 8;
+                const seedY = ((si * 11 + idx * 5) % 13) - 6;
+                const seedR = ((si * 3 + idx * 7) % 11) - 5;
+                const tx = seedX * scatterAmount * 0.4;
+                const ty = seedY * scatterAmount * 0.4;
+                const rot = seedR * scatterAmount * 0.3;
+                const sc = 1 - scatterAmount * 0.008;
+                sub.style.transform = `translate(${tx}px, ${ty}px) rotate(${rot}deg) scale(${sc})`;
+                sub.style.opacity = 1 - scatterAmount * 0.02;
+              });
+            } else {
+              const subs = layer.querySelectorAll('.lm-sub');
+              subs.forEach(sub => {
+                sub.style.transform = '';
+                sub.style.opacity = '';
+              });
+            }
+          });
+
+          // Parallax drift
+          const drift = driftConfigs[idx] || { dx: 0, dy: 0 };
+          const driftX = basePct * drift.dx;
+          const driftY = basePct * drift.dy;
+          const existingTransform = lm.id === 'lmL' ? `translateX(-50%) translate(${driftX}px, ${driftY}px)` : `translate(${driftX}px, ${driftY}px)`;
+          lm.style.transform = existingTransform;
+        });
+
+        // Location labels
+        let locR = 0, locA = 0, locB = 0;
+        if (basePct <= 0.28) { locR = 1; }
+        else if (basePct <= 0.38) {
+          const t = (basePct - 0.28) / 0.10;
+          locR = 1 - t; locA = t;
+        } else if (basePct <= 0.62) { locA = 1; }
+        else if (basePct <= 0.72) {
+          const t = (basePct - 0.62) / 0.10;
+          locA = 1 - t; locB = t;
+        } else { locB = 1; }
+
+        locRussia.style.opacity = locR * entranceAlpha;
+        locRussia.style.transform = `translateX(-50%) translateY(${(1 - locR) * -6}px)`;
+        locArizona.style.opacity = locA * entranceAlpha;
+        locArizona.style.transform = `translateX(-50%) translateY(${(1 - locA) * -6}px)`;
+        locAlabama.style.opacity = locB * entranceAlpha;
+        locAlabama.style.transform = `translateX(-50%) translateY(${(1 - locB) * -6}px)`;
+
+        // Draw snowflakes
+        drawSnowflakes();
+
+        ticking = false;
+      }
+
+      function onScroll() {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(updateScene);
+        }
+      }
+
+      // Continuous animation loop for snowflakes even without scroll
+      let snowAnimRunning = true;
+      function snowLoop() {
+        if (!snowAnimRunning) return;
+        if (snowOpacity > 0.01) {
+          drawSnowflakes();
+          frameCount++;
+        }
+        requestAnimationFrame(snowLoop);
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      updateScene();
+      snowLoop();
+    })();
+  </script>
+
+  <!-- Skill chip particle burst -->
+  <script>
+    (() => {
+      const section = document.getElementById('skills');
+      const canvas = document.getElementById('skillsParticleCanvas');
+      if (!section || !canvas) return;
+      const ctx = canvas.getContext('2d');
+      const particles = [];
+      const colors = ['#8C1515', '#D4A574'];
+      let lastHover = 0;
+      let animating = false;
+
+      function resize() {
+        const r = section.getBoundingClientRect();
+        canvas.width = r.width * devicePixelRatio;
+        canvas.height = r.height * devicePixelRatio;
+        ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      section.querySelectorAll('.hobby-chip').forEach(chip => {
+        chip.addEventListener('mouseenter', () => {
+          const now = Date.now();
+          if (now - lastHover < 300) return;
+          lastHover = now;
+          chip.style.transition = 'transform 0.15s ease';
+          chip.style.transform = 'scale(1.05)';
+          setTimeout(() => { chip.style.transform = ''; }, 150);
+
+          const cr = chip.getBoundingClientRect();
+          const sr = section.getBoundingClientRect();
+          const cx = cr.left + cr.width / 2 - sr.left;
+          const cy = cr.top + cr.height / 2 - sr.top;
+          const count = 6 + Math.floor(Math.random() * 3);
+          for (let i = 0; i < count; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 40 + Math.random() * 60;
+            particles.push({
+              x: cx, y: cy,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed,
+              life: 1,
+              color: colors[Math.floor(Math.random() * colors.length)],
+              size: 1.5 + Math.random() * 1
+            });
+          }
+          if (!animating) animate();
+        });
+      });
+
+      function animate() {
+        animating = true;
+        ctx.clearRect(0, 0, canvas.width / devicePixelRatio, canvas.height / devicePixelRatio);
+        const dt = 1 / 60;
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.x += p.vx * dt;
+          p.y += p.vy * dt;
+          p.vx *= 0.92;
+          p.vy *= 0.92;
+          p.life -= dt / 0.4;
+          if (p.life <= 0) { particles.splice(i, 1); continue; }
+          ctx.globalAlpha = p.life;
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+        if (particles.length > 0) requestAnimationFrame(animate);
+        else animating = false;
+      }
+    })();
+  </script>
+</body>
+
+</html>
