@@ -948,14 +948,26 @@
 
     .highlight-row {
       display: grid;
-      grid-template-columns: 150px 1fr;
+      grid-template-columns: 165px 1fr;
       gap: 20px;
       align-items: baseline;
       padding: 14px 28px;
       border-top: 1px solid var(--border);
     }
 
-    .highlight-row:first-child {
+    .highlight-group {
+      padding: 9px 28px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-subtle);
+      border-top: 1px solid var(--border);
+    }
+
+    .highlight-group:first-child {
       border-top: none;
     }
 
@@ -978,6 +990,10 @@
         grid-template-columns: 1fr;
         gap: 2px;
         padding: 12px 20px;
+      }
+
+      .highlight-group {
+        padding: 9px 20px;
       }
     }
 
@@ -1294,9 +1310,11 @@
 
       <p class="skills-category-label highlights-label">At a Glance</p>
       <div class="highlights">
+        <div class="highlight-group">Academics &amp; Research</div>
         <div class="highlight-row">
           <div class="highlight-metric">4.0 GPA</div>
-          <div class="highlight-desc">Presidential Honors List &middot; Honors College</div>
+          <div class="highlight-desc">Computer Science &amp; Physics double major &middot; Presidential Honors List
+            &middot; Honors College</div>
         </div>
         <div class="highlight-row">
           <div class="highlight-metric">Early Admission</div>
@@ -1304,22 +1322,53 @@
         </div>
         <div class="highlight-row">
           <div class="highlight-metric">Co-Author</div>
-          <div class="highlight-desc">Abstract submitted to the AVS 72nd International Symposium, with collaborators from
-            Oak Ridge National Laboratory</div>
+          <div class="highlight-desc">Computational plasma physics researcher; co-author of an AVS 72nd International
+            Symposium abstract on machine-learning-guided laser deposition, with Oak Ridge National Laboratory
+            collaborators</div>
+        </div>
+
+        <div class="highlight-group">Engineering &amp; Teaching</div>
+        <div class="highlight-row">
+          <div class="highlight-metric">Phasora</div>
+          <div class="highlight-desc">Built and launched <a href="https://phasoraai.com" target="_blank"
+              rel="noopener">phasoraai.com</a>, a physics-informed AI tutoring platform on the Anthropic API that
+            grounds answers in physics to reduce hallucination</div>
+        </div>
+        <div class="highlight-row">
+          <div class="highlight-metric">1,500+ Pages</div>
+          <div class="highlight-desc">Front-end web developer for UAB Student Affairs, maintaining sites for 20+
+            university organizations</div>
+        </div>
+        <div class="highlight-row">
+          <div class="highlight-metric">2 Live Sites</div>
+          <div class="highlight-desc">Shipped in 2026 for a Phoenix real estate brokerage (bilingual Next.js, 300+
+            automated tests) and a Stanford artist (100/100 Lighthouse SEO &amp; accessibility)</div>
         </div>
         <div class="highlight-row">
           <div class="highlight-metric">60+ Students</div>
           <div class="highlight-desc">Primary Teaching Assistant for CS 103: Introduction to Python</div>
         </div>
+
+        <div class="highlight-group">Leadership</div>
         <div class="highlight-row">
-          <div class="highlight-metric">3 Sites Shipped</div>
-          <div class="highlight-desc">Production websites in 2026: a real estate brokerage, an artist portfolio, and
-            Phasora</div>
+          <div class="highlight-metric">AIC Founder</div>
+          <div class="highlight-desc">Founder &amp; President of The AI Collective, UAB's first interdisciplinary AI
+            organization, with a 4-officer board and 10-member founding team</div>
         </div>
         <div class="highlight-row">
-          <div class="highlight-metric">Founder</div>
-          <div class="highlight-desc">Micro-Internships pilot, now Project One &mdash; a long-term USGA and Career Center
-            program</div>
+          <div class="highlight-metric">20 Host Sites</div>
+          <div class="highlight-desc">Founded the Micro-Internships pilot ($2,000 funding, 10 students), adopted
+            long-term as Project One, a USGA and Career Center program</div>
+        </div>
+        <div class="highlight-row">
+          <div class="highlight-metric">5 Leadership Roles</div>
+          <div class="highlight-desc">Held at once alongside campus jobs and research: AIC President, ACM Events Chair,
+            USGA Website Coordinator, UAB Ambassador, and International Mentor</div>
+        </div>
+        <div class="highlight-row">
+          <div class="highlight-metric">Member of the Year</div>
+          <div class="highlight-desc">USGA Freshman Forum, selected 1 of 31 from 100+ applicants; inaugural Member of
+            the Month</div>
         </div>
         <div class="highlight-row">
           <div class="highlight-metric">1 of 24</div>
