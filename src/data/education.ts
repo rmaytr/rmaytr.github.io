@@ -24,7 +24,7 @@ export const highSchool = {
   lines: ['**IB curriculum** (HL Physics, HL Mathematics), on scholarship', '==GPA 4.0 unweighted== / 4.47 weighted · **SAT 1550**', '**Mu Alpha Theta**; ==highest AMC 12 score== at the school'],
 };
 
-export interface Award { title: string; year: string; group: 'university' | 'earlier' | 'certificate' }
+export interface Award { title: string; year: string; group: 'university' | 'highschool' | 'certificate' }
 
 export const awards: Award[] = [
   { group: 'university', title: '**Presidential Honors List**, UAB', year: '2026' },
@@ -34,14 +34,14 @@ export const awards: Award[] = [
   { group: 'university', title: '**Early admission**, UAB Accelerated Bachelor’s-to-Master’s Program in AI', year: '2026' },
   { group: 'university', title: '**Co-author**, AVS 72nd International Symposium abstract, accepted for an oral presentation', year: '2026' },
   { group: 'university', title: '==1st place==, **EcoCAR track**, HackBama_01, University of Alabama', year: 'Oct 2026' },
-  { group: 'earlier', title: '==2nd of 30==, **Game Development Camp**, Arizona State University', year: '2024' },
-  { group: 'earlier', title: '**Ira A. Fulton Engineering Camp**, Arizona State University', year: '2023' },
-  { group: 'earlier', title: '**Certificate in Python Programming**, Yandex Lyceum, Moscow', year: '2023' },
-  { group: 'earlier', title: '**Prize Winner**, MISIS University Olympiad in Technical & Information Technologies', year: '2023' },
-  { group: 'earlier', title: '**Prize Winner**, All-Russian Olympiad in Technology & Languages', year: '2021–2023' },
-  { group: 'earlier', title: '**Award Winner**, Finskills Financial Competencies Championship', year: '2022' },
-  { group: 'earlier', title: '**Mu Alpha Theta** (National Math Honors Society), Student Officer; ==highest AMC 12 score== at school', year: '2023–2025' },
+  { group: 'highschool', title: '==2nd of 30==, **Game Development Camp**, Arizona State University', year: '2024' },
+  { group: 'highschool', title: '**Prize Winner**, MISIS University Olympiad in Technical & Information Technologies', year: '2023' },
+  { group: 'highschool', title: '**Prize Winner**, All-Russian Olympiad in Technology & Languages', year: '2021–2023' },
+  { group: 'highschool', title: '**Award Winner**, Finskills Financial Competencies Championship', year: '2022' },
+  { group: 'highschool', title: '**Mu Alpha Theta** (National Math Honors Society), Student Officer; ==highest AMC 12 score== at school', year: '2023–2025' },
   { group: 'certificate', title: 'Anthropic: **Claude 101** · **Claude Code 101** · **Claude Platform 101**', year: '' },
+  { group: 'certificate', title: '**Ira A. Fulton Engineering Camp**, Arizona State University', year: '2023' },
+  { group: 'certificate', title: '**Certificate in Python Programming**, Yandex Lyceum, Moscow', year: '2023' },
 ];
 
 /** The marquee keeps short forms of the same awards. */
@@ -53,10 +53,10 @@ export const marquee = [
 export const aiLiteracy = {
   intro: 'I use AI as a **daily engineering and research tool** and focus on using it well: knowing ==what to delegate==, ==how to verify output== and ==how to build repeatable workflows==.',
   points: [
-    'Work daily with **agentic coding tools** (Claude Code, Codex CLI) to plan, build, test and ship software, including ==running several agents in parallel== on separate modules with human review before merge (HackBama).',
-    'Build **custom skills, projects and plugins** that turn repeated workflows into ==reusable tools==.',
-    'Build on the **Anthropic API**, including ==Phasora’s physics tutor==.',
-    'Completed Anthropic’s **Claude 101**, **Claude Code 101** and **Claude Platform 101**.',
+    { title: 'Agentic coding, daily', text: 'Work daily with **agentic coding tools** (Claude Code, Codex CLI) to plan, build, test and ship software, including ==running several agents in parallel== on separate modules with human review before merge (HackBama).' },
+    { title: 'Custom skills and plugins', text: 'Build **custom skills, projects and plugins** that turn repeated workflows into ==reusable tools==.' },
+    { title: 'Built on the Anthropic API', text: 'Build on the **Anthropic API**, including ==Phasora’s physics tutor==.' },
+    { title: 'Anthropic courses', text: 'Completed Anthropic’s **Claude 101**, **Claude Code 101** and **Claude Platform 101**.' },
   ],
 };
 

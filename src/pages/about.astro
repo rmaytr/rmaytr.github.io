@@ -9,7 +9,7 @@ import { rich } from '../data/rich';
 const earlier = roles.filter((r) => r.kind === 'earlier').sort(byStart);
 const groups = [
   ['university', 'At UAB'],
-  ['earlier', 'Before UAB'],
+  ['highschool', 'High School'],
   ['certificate', 'Certificates'],
 ] as const;
 ---
@@ -33,7 +33,7 @@ const groups = [
 
   <section class="wrap section edu-sec" id="education" aria-labelledby="edu-h" data-tone="sand">
     <span class="label">Education</span>
-    <h2 id="edu-h" data-reveal><span class="echo" data-text="Education">Education</span></h2>
+    <h2 id="edu-h" data-reveal><span class="fillword" data-fill data-text="Education">Education</span></h2>
     <div class="edu">
       <article class="uni" data-reveal>
         <DateSpan {...uab.span} note="expected" />
@@ -69,7 +69,7 @@ const groups = [
 
   <section class="wrap section" aria-labelledby="awards-h" data-tone="cardinal">
     <span class="label">Recognition</span>
-    <h2 id="awards-h" data-reveal><span class="echo" data-text="Achievements">Achievements</span></h2>
+    <h2 id="awards-h" data-reveal><span class="fillword" data-fill data-text="Awards">Awards</span></h2>
     <div class="awards">
       {groups.map(([g, label]) => {
         const list = awards.filter((a) => a.group === g);
@@ -77,7 +77,7 @@ const groups = [
           <div class:list={['grp', `grp-${g}`]} data-reveal>
             <h3 class="grp-h">{label} <span class="num">{list.length}</span></h3>
             <ul class="aw">
-              {list.map((a) => <li><span class="rich t" set:html={rich(a.title)} />{a.year && <span class="yr">{a.year}</span>}</li>)}
+              {list.map((a) => <li>{a.year && <span class="yr">{a.year}</span>}<span class="rich t" set:html={rich(a.title)} /></li>)}
             </ul>
           </div>
         );
@@ -86,17 +86,24 @@ const groups = [
   </section>
 
   <section class="wrap section ai" aria-labelledby="ai-h" data-tone="third">
-    <span class="label third">AI literacy</span>
-    <h2 id="ai-h" data-split>AI, <em>used well</em></h2>
-    <p class="lead rich" data-reveal set:html={rich(aiLiteracy.intro)} />
+    <div class="ai-head">
+      <span class="label third">AI literacy</span>
+      <h2 id="ai-h" data-split>AI, <em>used well</em></h2>
+      <p class="lead rich" data-reveal set:html={rich(aiLiteracy.intro)} />
+    </div>
     <ol class="points">
-      {aiLiteracy.points.map((p, i) => <li data-reveal><span class="n num" aria-hidden="true">0{i + 1}</span><p class="rich" set:html={rich(p)} /></li>)}
+      {aiLiteracy.points.map((pt, i) => (
+        <li data-reveal>
+          <span class="n num" aria-hidden="true">0{i + 1}</span>
+          <div><h3>{pt.title}</h3><p class="rich" set:html={rich(pt.text)} /></div>
+        </li>
+      ))}
     </ol>
   </section>
 
   <section class="wrap section" aria-labelledby="earlier-h" data-tone="sand">
     <span class="label">Before UAB</span>
-    <h2 id="earlier-h" data-reveal><span class="echo" data-text="Earlier">Earlier</span></h2>
+    <h2 id="earlier-h" data-reveal><span class="fillword" data-fill data-text="Earlier">Earlier</span></h2>
     <ol class="earlier">
       {earlier.map((r) => (
         <li data-reveal>
@@ -154,23 +161,29 @@ const groups = [
   .hs h3 { font-size: clamp(1.25rem, 1rem + 0.8vw, 1.6rem); margin-bottom: 16px; }
   .hs .marks { margin: 0; }
 
-  /* achievements: UAB on the left, the rest stacked beside it; years as rose tabs, no rules between rows */
-  .awards { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); grid-template-rows: auto 1fr; gap: clamp(26px, 3vw, 44px) clamp(30px, 5vw, 80px); }
-  .grp-university { grid-row: span 2; }
-  .grp-h { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 1.35rem; color: var(--sand); }
+  /* awards: three columns, each award with its year above it, no rules between rows */
+  .awards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(26px, 3vw, 44px) clamp(24px, 3.5vw, 56px); align-items: start; }
+  .grp-h { display: flex; align-items: center; gap: 10px; margin: 0 0 16px; padding-bottom: 14px; font-size: 1.35rem; color: var(--sand); background: linear-gradient(90deg, rgba(212, 165, 116, 0.45), transparent) 0 100% / 100% 1px no-repeat; }
   .grp-h .num { padding: 2px 10px; border-radius: 999px; font-size: 0.85rem; color: var(--bg); background: var(--sand); }
-  .aw { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
-  .aw li { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 12px 16px; border-radius: 14px; transition: background 0.3s; }
+  .aw { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; }
+  .aw li { display: grid; gap: 4px; padding: 12px 14px; margin-inline: -14px; border-radius: 14px; transition: background 0.3s; }
   .aw li:hover { background: color-mix(in srgb, var(--sand) 7%, transparent); }
-  .aw .t { color: color-mix(in srgb, var(--ink) 82%, transparent); }
-  .yr { flex: none; padding: 3px 10px; border-radius: 999px; font: 700 0.82rem var(--display); color: var(--third); background: color-mix(in srgb, var(--third) 12%, transparent); white-space: nowrap; }
+  .aw .t { color: color-mix(in srgb, var(--ink) 84%, transparent); text-align: left; }
+  .yr { font: 700 0.85rem var(--display); color: var(--third); }
 
-  /* AI: numbered points on soft tonal tiles */
-  .ai .lead { max-width: 60ch; }
-  .points { list-style: none; padding: 0; margin: 34px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-  .points li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px; align-items: start; padding: clamp(20px, 2.4vw, 30px); border-radius: 20px; background: linear-gradient(150deg, color-mix(in srgb, var(--third) 8%, transparent), transparent 75%); }
-  .points .n { font: 800 2.4rem / 1 var(--display); color: transparent; -webkit-text-stroke: 1.2px var(--third); }
-  .points p { margin: 0; }
+  /* AI: the heading stays on the left while four titled points run down the right */
+  .ai { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: clamp(30px, 5vw, 90px); align-items: start; }
+  .ai-head { position: sticky; top: clamp(100px, 14vh, 150px); }
+  .ai-head h2 { margin-bottom: 26px; }
+  .ai-head .lead { text-align: left; text-wrap: pretty; } /* a narrow column: justified, its large type opens wide gaps */
+  .points { list-style: none; padding: 0; margin: 0; counter-reset: none; }
+  .points li { position: relative; display: grid; grid-template-columns: 4.6rem minmax(0, 1fr); gap: 18px; padding-block: clamp(22px, 2.6vw, 34px); transition: transform 0.5s var(--ease-out); }
+  .points li + li::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--third) 50%, transparent) 30%, transparent); }
+  .points .n { font: 800 3.2rem / 0.9 var(--display); color: transparent; -webkit-text-stroke: 1.3px var(--third); transition: color 0.5s var(--ease-out); }
+  .points li:hover { transform: translateX(6px); }
+  .points li:hover .n { color: color-mix(in srgb, var(--third) 35%, transparent); }
+  .points h3 { margin: 4px 0 10px; font-size: clamp(1.25rem, 1rem + 0.7vw, 1.6rem); }
+  .points p { margin: 0; text-align: left; }
 
   /* earlier: a dated list with a glowing marker per entry */
   .earlier { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 34px clamp(30px, 5vw, 70px); }
@@ -182,10 +195,10 @@ const groups = [
   .line { margin: 0 0 10px; }
 
   @media (max-width: 860px) {
-    .intro, .edu, .awards, .points, .earlier { grid-template-columns: 1fr; }
+    .intro, .edu, .awards, .ai, .earlier { grid-template-columns: 1fr; }
+    .ai-head { position: static; }
     .pic-col { order: -1; }
     .pic { position: relative; top: 0; max-width: 420px; }
-    .grp-university { grid-row: auto; }
     .facts div { grid-template-columns: 1fr; gap: 2px; }
   }
 </style>

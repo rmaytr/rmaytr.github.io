@@ -108,6 +108,12 @@ function pageEffects(): () => void {
       });
     });
 
+    // single-word headers fill from below as they rise into view
+    document.querySelectorAll<HTMLElement>('[data-fill]').forEach((el) => {
+      if (reduce) return;
+      gsap.fromTo(el, { '--top': '100%' }, { '--top': '44%', ease: 'none', scrollTrigger: { trigger: el, start: 'top 92%', end: 'top 50%', scrub: true } });
+    });
+
     // statements that light up word by word with scroll
     document.querySelectorAll<HTMLElement>('[data-words]').forEach((el) => {
       if (reduce) return;

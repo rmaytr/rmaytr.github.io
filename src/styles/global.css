@@ -85,10 +85,11 @@ p { margin: 0 0 1em; max-width: 68ch; text-align: justify; hyphens: auto; }
 /* type treatments */
 .serif, h2 em, h3 em { font-family: var(--serif); font-style: italic; font-weight: 400; text-transform: none; letter-spacing: -0.01em; color: var(--sand); -webkit-text-stroke: 0.6px color-mix(in srgb, var(--ink) 70%, transparent); text-shadow: 0 0 22px rgba(212, 165, 116, 0.35); }
 .outline { color: transparent; -webkit-text-stroke: 1.5px var(--ink); }
-/* single-word section headers: the whole word in an ivory-to-sand fill over a cardinal outline echo (never split mid-word) */
-.echo { position: relative; display: inline-block; background: linear-gradient(180deg, var(--ink) 35%, var(--sand)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.echo::after { content: attr(data-text); position: absolute; left: 0.05em; top: 0.055em; z-index: -1; color: transparent; -webkit-text-stroke: 1.5px color-mix(in srgb, var(--glow) 85%, transparent); }
-:is(h1, h2):has(.echo) { isolation: isolate; }
+/* single-word section headers: an outlined word that fills with ivory from below as it scrolls up into view,
+   a glowing line riding on the surface of the fill (motion.ts scrubs --top; without script it rests half full) */
+.fillword { --top: 44%; position: relative; display: inline-block; color: transparent; -webkit-text-stroke: 1.6px color-mix(in srgb, var(--sand) 90%, transparent); }
+.fillword::before { content: attr(data-text); position: absolute; inset: 0; background: linear-gradient(180deg, var(--ink) 45%, #e9cba6); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-stroke: 0; clip-path: inset(var(--top) 0 0 0); }
+.fillword::after { content: ''; position: absolute; left: -0.08em; right: -0.08em; top: var(--top); height: 2px; margin-top: -1px; border-radius: 2px; background: linear-gradient(90deg, transparent, var(--glow) 14%, var(--sand) 86%, transparent); box-shadow: 0 0 14px var(--glow); }
 /* emphasis inside data text (src/data/rich.ts): key details in sand, the biggest under a cardinal marker stroke */
 .rich strong { color: var(--sand); font-weight: 650; }
 .rich mark { background: none; color: var(--ink); font-weight: 650; box-shadow: inset 0 -0.36em 0 rgba(212, 68, 68, 0.45); padding-inline: 0.04em; }

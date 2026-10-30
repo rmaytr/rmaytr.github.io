@@ -29,7 +29,7 @@ Every red comes from Rodion's current portfolio (Stanford cardinal family). Sand
 
 - Calls to action (`src/components/Cta.astro`): no pill, no white text. The label in sand, which rolls to an ember-to-sand copy on hover, beside a badge: a ring of the label's text turning slowly round a sand-outlined arrow. On hover the ring warms, a cardinal fill swells in the centre and the arrow passes through, all over 0.6–0.8s. No multicolour borders, no instant fills.
 - Links (`.link`, `.more-link`): ivory text on a sand underline; "Read more" adds a sand arrow chip, and a bright sand rule draws across on hover.
-- Single-word section headers (Education, Leadership, Achievements, Earlier) use `.echo`: the whole word in an ivory-to-sand fill over a cardinal outline echo. Never split a word between two styles.
+- Single-word section headers (Education, Leadership, Awards, Earlier) use `.fillword`: an outlined word that fills with ivory from below as it scrolls into view, a glowing cardinal line riding the surface. Never split a word between two styles.
 - Key details in running text are marked in the data (`**sand**`, `==cardinal marker==`) and rendered by `src/data/rich.ts`.
 - Nav: larger mono links; the `RM` monogram has a filled R, an outlined M that fills on hover, and a live cardinal dot.
 - Section labels (`.label`): a sand-lit pill, a glowing dot on one side and a ring on the other so the word sits centred.
