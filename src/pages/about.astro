@@ -1,98 +1,110 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import Figure from '../components/Figure.astro';
+import DateSpan from '../components/DateSpan.astro';
 import headshot from '../assets/headshot.jpg';
 import { about, uab, highSchool, awards, aiLiteracy } from '../data/education';
 import { roles, byStart } from '../data/roles';
+import { rich } from '../data/rich';
 const earlier = roles.filter((r) => r.kind === 'earlier').sort(byStart);
 const groups = [
-  ['university', 'University'],
-  ['earlier', 'Earlier'],
+  ['university', 'At UAB'],
+  ['earlier', 'Before UAB'],
   ['certificate', 'Certificates'],
 ] as const;
 ---
 <Base title="About" description={about.short}>
-  <section class="wrap hero">
+  <!-- the story on the left; the photo stays beside it until the story ends -->
+  <section class="wrap intro" data-tone="cardinal">
     <div class="txt">
       <span class="label">About</span>
       <h1 data-split>Computer Science <em>&amp;</em> <span class="outline">Physics</span></h1>
       <p class="lead" data-reveal>{about.short}</p>
+      <div class="story">
+        {about.long.map((p) => <p class="para rich" data-words set:html={rich(p)} />)}
+      </div>
     </div>
-    <div class="pic" data-reveal>
-      <Image src={headshot} alt="Rodion Mayatskiy" widths={[420, 640, 900]} sizes="(max-width: 860px) 90vw, 38vw" loading="eager" />
-    </div>
-  </section>
-
-  <section class="wrap section story" aria-label="Story">
-    {about.long.map((p) => <p class="para" data-words>{p}</p>)}
-  </section>
-
-  <section class="wrap section journey" aria-labelledby="journey-h">
-    <div>
-      <h2 id="journey-h" data-split>The <em>route</em> here</h2>
-      <ol class="route">
-        <li data-reveal><b>Moscow</b><span>School #1354</span></li>
-        <li data-reveal><b>Scottsdale, Arizona</b><span>Rancho Solano Preparatory School, moved at 16</span></li>
-        <li data-reveal><b>Birmingham, Alabama</b><span>University of Alabama at Birmingham</span></li>
-      </ol>
-      <p class="muted" data-reveal>Spoken: {about.languages.join(' · ')}</p>
-    </div>
-    <div class="globe card" data-reveal>
-      <Figure name="globe" label="A desk globe that turns to Moscow, Scottsdale or Birmingham under the pointer" />
-      <p class="meta">Move over the globe</p>
+    <div class="pic-col">
+      <div class="pic" data-reveal>
+        <Image src={headshot} alt="Rodion Mayatskiy" widths={[420, 640, 900]} sizes="(max-width: 860px) 90vw, 36vw" loading="eager" />
+      </div>
     </div>
   </section>
 
-  <section class="wrap section" id="education" aria-labelledby="edu-h">
-    <h2 id="edu-h" data-split>Edu<em>cation</em></h2>
+  <section class="wrap section edu-sec" id="education" aria-labelledby="edu-h" data-tone="sand">
+    <span class="label">Education</span>
+    <h2 id="edu-h" data-reveal><span class="echo" data-text="Education">Education</span></h2>
     <div class="edu">
-      <article class="card" data-reveal>
-        <p class="meta">{uab.dates}</p>
-        <h3>{uab.school}</h3>
-        <p>{uab.degree}</p>
-        <p class="muted">Physics concentration: {uab.concentration} · Minors: {uab.minors} · {uab.honors}</p>
-        <ul>{uab.lines.map((l) => <li>{l}</li>)}</ul>
+      <article class="uni" data-reveal>
+        <DateSpan {...uab.span} note="expected" />
+        <h3 class="school">{uab.school}</h3>
+        <p class="degree">{uab.degree}</p>
+        <dl class="facts">
+          <div><dt>Concentration</dt><dd>{uab.concentration}</dd></div>
+          <div><dt>Minors</dt><dd>{uab.minors}</dd></div>
+          <div><dt>Programs</dt><dd>{uab.honors}</dd></div>
+        </dl>
+        <ul class="marks">{uab.lines.map((l) => <li class="rich" set:html={rich(l)} />)}</ul>
         <div class="cw">
-          <div><p class="meta">Completed</p><ul class="chips">{uab.completed.map((c) => <li class="chip">{c}</li>)}</ul></div>
-          <div><p class="meta">In progress, Fall 2026</p><ul class="chips">{uab.inProgress.map((c) => <li class="chip">{c}</li>)}</ul></div>
+          <div>
+            <p class="cw-h">Completed <b class="num">{uab.completed.length}</b></p>
+            <ul class="pills done">{uab.completed.map((c) => <li>{c}</li>)}</ul>
+          </div>
+          <div>
+            <p class="cw-h">In progress, Fall 2026 <b class="num">{uab.inProgress.length}</b></p>
+            <ul class="pills now">{uab.inProgress.map((c) => <li>{c}</li>)}</ul>
+          </div>
         </div>
       </article>
-      <article class="card" data-reveal>
-        <p class="meta">{highSchool.dates}</p>
-        <h3>{highSchool.school}</h3>
-        <ul>{highSchool.lines.map((l) => <li>{l}</li>)}</ul>
-      </article>
+      <aside class="side" data-reveal>
+        <p class="gpa"><span class="num gradient">{uab.gpa}</span><span>GPA at UAB</span></p>
+        <article class="hs">
+          <p class="hs-when">{highSchool.dates}</p>
+          <h3>{highSchool.school}</h3>
+          <ul class="marks">{highSchool.lines.map((l) => <li class="rich" set:html={rich(l)} />)}</ul>
+        </article>
+      </aside>
     </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="awards-h">
-    <h2 id="awards-h" data-split>Hon<em>ors</em></h2>
+  <section class="wrap section" aria-labelledby="awards-h" data-tone="cardinal">
+    <span class="label">Recognition</span>
+    <h2 id="awards-h" data-reveal><span class="echo" data-text="Achievements">Achievements</span></h2>
     <div class="awards">
-      {groups.map(([g, label]) => (
-        <div data-reveal>
-          <p class="meta">{label}</p>
-          <ul>{awards.filter((a) => a.group === g).map((a) => <li><span>{a.title}</span>{a.year && <span class="meta">{a.year}</span>}</li>)}</ul>
-        </div>
-      ))}
+      {groups.map(([g, label]) => {
+        const list = awards.filter((a) => a.group === g);
+        return (
+          <div class:list={['grp', `grp-${g}`]} data-reveal>
+            <h3 class="grp-h">{label} <span class="num">{list.length}</span></h3>
+            <ul class="aw">
+              {list.map((a) => <li><span class="rich t" set:html={rich(a.title)} />{a.year && <span class="yr">{a.year}</span>}</li>)}
+            </ul>
+          </div>
+        );
+      })}
     </div>
   </section>
 
-  <section class="wrap section ai" aria-labelledby="ai-h">
+  <section class="wrap section ai" aria-labelledby="ai-h" data-tone="third">
+    <span class="label third">AI literacy</span>
     <h2 id="ai-h" data-split>AI, <em>used well</em></h2>
-    <p class="lead" data-reveal>{aiLiteracy.intro}</p>
-    <ul class="points">{aiLiteracy.points.map((p) => <li data-reveal>{p}</li>)}</ul>
+    <p class="lead rich" data-reveal set:html={rich(aiLiteracy.intro)} />
+    <ol class="points">
+      {aiLiteracy.points.map((p, i) => <li data-reveal><span class="n num" aria-hidden="true">0{i + 1}</span><p class="rich" set:html={rich(p)} /></li>)}
+    </ol>
   </section>
 
-  <section class="wrap section" aria-labelledby="earlier-h">
-    <h2 id="earlier-h" data-split>Ear<em>lier</em></h2>
+  <section class="wrap section" aria-labelledby="earlier-h" data-tone="sand">
+    <span class="label">Before UAB</span>
+    <h2 id="earlier-h" data-reveal><span class="echo" data-text="Earlier">Earlier</span></h2>
     <ol class="earlier">
       {earlier.map((r) => (
         <li data-reveal>
-          <p class="meta">{r.dates}</p>
+          <p class="when">{r.dates}</p>
           <h3>{r.title}</h3>
-          <p class="muted">{r.cardLine}</p>
-          {r.link && <a class="link" href={r.link.href} rel="noopener" target="_blank">{r.link.label} ↗</a>}
+          <p class="org">{r.org}{r.place ? ` · ${r.place}` : ''}</p>
+          <p class="line rich" set:html={rich(r.cardLine)} />
+          {r.link && <a class="more-link" href={r.link.href} rel="noopener" target="_blank"><span class="t">{r.link.label}</span><span class="arrow" aria-hidden="true">↗</span></a>}
         </li>
       ))}
     </ol>
@@ -100,36 +112,80 @@ const groups = [
 </Base>
 
 <style>
-  .hero { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: clamp(30px, 5vw, 80px); align-items: end; padding-top: clamp(130px, 14vw, 200px); }
+  .intro { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr); gap: clamp(30px, 5vw, 90px); padding-top: clamp(130px, 14vw, 200px); padding-bottom: var(--section); }
   h1 { font-size: clamp(3rem, 1.6rem + 5vw, 6.6rem); text-transform: uppercase; letter-spacing: -0.045em; line-height: 0.88; margin: 14px 0 26px; }
   h1 em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--sand); text-transform: none; }
-  .pic { position: relative; border-radius: 20px; overflow: hidden; aspect-ratio: 4 / 5; background: #000; }
+  .story { display: grid; gap: 6px; margin-top: clamp(30px, 4vw, 56px); }
+  .para { font: 500 clamp(1.2rem, 0.95rem + 0.9vw, 1.75rem) / 1.42 var(--display); letter-spacing: -0.015em; max-width: none; }
+  /* the photo column runs the full height of the story, so the photo can stay in view while it is read */
+  .pic { position: sticky; top: clamp(96px, 12vh, 140px); border-radius: 20px; overflow: hidden; aspect-ratio: 4 / 5; background: #000; box-shadow: 0 40px 90px -40px rgba(140, 21, 21, 0.55); }
   .pic :global(img) { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.08); transition: filter 1s var(--ease-out); }
   .pic::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, var(--cardinal)); mix-blend-mode: multiply; transition: opacity 1s; }
   .pic:hover :global(img) { filter: none; } .pic:hover::after { opacity: 0.3; }
-  .story { display: grid; gap: 10px; }
-  .para { font: 500 clamp(1.25rem, 1rem + 1vw, 1.9rem) / 1.35 var(--display); letter-spacing: -0.02em; max-width: 40ch; }
-  .journey { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(30px, 5vw, 80px); align-items: center; }
-  .route { list-style: none; margin: 34px 0 20px; padding: 0 0 0 28px; border-left: 2px solid var(--line); display: grid; gap: 24px; }
-  .route li { position: relative; }
-  .route li::before { content: ''; position: absolute; left: -36px; top: 8px; width: 14px; height: 14px; border-radius: 50%; background: var(--glow); box-shadow: 0 0 16px var(--glow); }
-  .route b { display: block; font: 700 1.4rem var(--display); }
-  .route span { color: var(--muted); }
-  .globe { padding: 14px; }
-  .globe .meta { text-align: center; margin: 4px 0 0; }
-  .edu { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px; margin-top: 40px; }
-  .edu .card { padding: clamp(22px, 3vw, 36px); }
-  .edu h3 { margin: 10px 0 12px; }
-  .edu ul:not(.chips) { padding-left: 18px; }
-  .cw { display: grid; gap: 16px; margin-top: 18px; }
-  .chips { list-style: none; padding: 0; margin: 8px 0 0; }
-  .awards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 30px; margin-top: 40px; }
-  .awards ul { list-style: none; padding: 0; margin: 12px 0 0; }
-  .awards li { display: flex; justify-content: space-between; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--line); }
-  .awards li .meta { white-space: nowrap; }
-  .points { list-style: none; padding: 0; margin: 30px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-  .points li { padding: 22px; border-radius: var(--radius); background: var(--bg-2); border: 1px solid var(--line); }
-  .earlier { list-style: none; padding: 0; margin: 40px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 40px; }
-  .earlier h3 { font-size: 1.25rem; margin: 6px 0 6px; }
-  @media (max-width: 860px) { .hero, .journey, .edu, .awards, .points, .earlier { grid-template-columns: 1fr; } .pic { max-width: 420px; } }
+
+  section h2 { margin: 18px 0 clamp(30px, 4vw, 54px); }
+
+  /* education: no boxes; a glow that ends inside its own box, and a tonal panel for the side column */
+  .edu-sec { position: relative; isolation: isolate; }
+  .edu-sec::before { content: ''; position: absolute; z-index: -1; inset: -10% -15%; pointer-events: none; background: radial-gradient(closest-side at 30% 45%, color-mix(in srgb, var(--cardinal) 20%, transparent), transparent), radial-gradient(closest-side at 80% 60%, rgba(212, 165, 116, 0.07), transparent); }
+  .edu { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: clamp(30px, 5vw, 80px); }
+  .school { margin: 22px 0 8px; font-size: clamp(1.6rem, 1.1rem + 1.6vw, 2.5rem); color: var(--sand); }
+  .degree { margin: 0 0 22px; font: 700 1.15rem var(--display); color: var(--ink); }
+  .facts { display: grid; gap: 10px; margin: 0 0 24px; }
+  .facts div { display: grid; grid-template-columns: 9.5em minmax(0, 1fr); gap: 14px; align-items: baseline; }
+  .facts dt { font: italic 400 1.15rem var(--serif); color: var(--sand); }
+  .facts dd { margin: 0; font-weight: 500; }
+  .marks { list-style: none; padding: 0; margin: 0 0 30px; display: grid; gap: 12px; }
+  .marks li { position: relative; padding-left: 22px; }
+  .marks li::before { content: ''; position: absolute; left: 0; top: 0.62em; width: 8px; height: 8px; border-radius: 2px; transform: rotate(45deg); background: var(--glow); box-shadow: 0 0 10px var(--glow); }
+  .cw { display: grid; gap: 22px; }
+  .cw-h { margin: 0 0 10px; font: 700 1rem var(--display); color: var(--ink); }
+  .cw-h b { margin-left: 6px; padding: 2px 9px; border-radius: 999px; font-size: 0.85rem; color: var(--bg); background: var(--sand); }
+  .pills { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .pills li { padding: 7px 13px; border-radius: 999px; font-size: 0.9rem; }
+  .pills.done li { color: var(--sand); background: rgba(212, 165, 116, 0.12); }
+  .pills.now li { color: var(--third); background: color-mix(in srgb, var(--third) 11%, transparent); }
+  .pills.now li::before { content: ''; display: inline-block; width: 6px; height: 6px; margin-right: 8px; border-radius: 50%; vertical-align: 0.15em; background: var(--third); box-shadow: 0 0 8px var(--third); }
+  .side { align-self: start; display: grid; gap: 26px; padding: clamp(24px, 3vw, 40px); background: radial-gradient(closest-side at 40% 35%, color-mix(in srgb, var(--sand) 9%, transparent), transparent); }
+  .gpa { display: flex; align-items: baseline; gap: 14px; margin: 0; }
+  .gpa .num { font: 800 clamp(5rem, 3rem + 5vw, 8rem) / 0.85 var(--display); letter-spacing: -0.05em; }
+  .gpa span:last-child { font: italic 400 1.3rem var(--serif); color: var(--sand); }
+  .hs-when { margin: 0 0 6px; font: 700 0.95rem var(--display); color: var(--third); }
+  .hs h3 { font-size: clamp(1.25rem, 1rem + 0.8vw, 1.6rem); margin-bottom: 16px; }
+  .hs .marks { margin: 0; }
+
+  /* achievements: UAB on the left, the rest stacked beside it; years as rose tabs, no rules between rows */
+  .awards { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); grid-template-rows: auto 1fr; gap: clamp(26px, 3vw, 44px) clamp(30px, 5vw, 80px); }
+  .grp-university { grid-row: span 2; }
+  .grp-h { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 1.35rem; color: var(--sand); }
+  .grp-h .num { padding: 2px 10px; border-radius: 999px; font-size: 0.85rem; color: var(--bg); background: var(--sand); }
+  .aw { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+  .aw li { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 12px 16px; border-radius: 14px; transition: background 0.3s; }
+  .aw li:hover { background: color-mix(in srgb, var(--sand) 7%, transparent); }
+  .aw .t { color: color-mix(in srgb, var(--ink) 82%, transparent); }
+  .yr { flex: none; padding: 3px 10px; border-radius: 999px; font: 700 0.82rem var(--display); color: var(--third); background: color-mix(in srgb, var(--third) 12%, transparent); white-space: nowrap; }
+
+  /* AI: numbered points on soft tonal tiles */
+  .ai .lead { max-width: 60ch; }
+  .points { list-style: none; padding: 0; margin: 34px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .points li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px; align-items: start; padding: clamp(20px, 2.4vw, 30px); border-radius: 20px; background: linear-gradient(150deg, color-mix(in srgb, var(--third) 8%, transparent), transparent 75%); }
+  .points .n { font: 800 2.4rem / 1 var(--display); color: transparent; -webkit-text-stroke: 1.2px var(--third); }
+  .points p { margin: 0; }
+
+  /* earlier: a dated list with a glowing marker per entry */
+  .earlier { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 34px clamp(30px, 5vw, 70px); }
+  .earlier li { position: relative; padding-left: 26px; }
+  .earlier li::before { content: ''; position: absolute; left: 0; top: 6px; bottom: 0; width: 2px; border-radius: 2px; background: linear-gradient(var(--glow), transparent); box-shadow: 0 0 10px rgba(212, 68, 68, 0.5); }
+  .when { margin: 0 0 6px; font: 700 0.95rem var(--display); color: var(--third); }
+  .earlier h3 { font-size: 1.3rem; margin: 0 0 6px; }
+  .org { margin: 0 0 8px; font-size: 0.95rem; color: var(--sand); }
+  .line { margin: 0 0 10px; }
+
+  @media (max-width: 860px) {
+    .intro, .edu, .awards, .points, .earlier { grid-template-columns: 1fr; }
+    .pic-col { order: -1; }
+    .pic { position: relative; top: 0; max-width: 420px; }
+    .grp-university { grid-row: auto; }
+    .facts div { grid-template-columns: 1fr; gap: 2px; }
+  }
 </style>

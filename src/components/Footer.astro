@@ -8,7 +8,6 @@ const cards = [
   { key: 'linkedin', label: 'LinkedIn', handle: 'Rodion Mayatskiy', action: 'Open profile', href: site.links.linkedin, tone: 'third', path: 'M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.75h4v11H3v-11Zm6.5 0h3.8v1.5h.1c.5-1 1.8-2 3.8-2 4 0 4.8 2.6 4.8 6v5.5h-4v-4.9c0-1.2 0-2.7-1.6-2.7-1.7 0-2 1.3-2 2.6v5h-4v-11Z', fill: true },
   { key: 'github', label: 'GitHub', handle: '@rmaytr', action: 'See the code', href: site.links.github, tone: 'sand', path: 'M12 .5a11.5 11.5 0 0 0-3.6 22.4c.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.9 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A11.5 11.5 0 0 0 12 .5Z', fill: true },
 ];
-const name = `${site.first} ${site.last}`;
 ---
 <footer class="footer" data-footer data-tone="cardinal">
   <div class="wrap find">
@@ -37,12 +36,6 @@ const name = `${site.first} ${site.last}`;
       ))}
     </ul>
     {site.resume && <Cta href={site.resume} label="Résumé (PDF)" arrow="↓" big class="resume" data-astro-reload />}
-  </div>
-
-  <div class="giant" aria-label={name} role="img" data-giant>
-    {name.split(' ').map((word) => (
-      <span class="word" aria-hidden="true">{[...word].map((ch) => <span class="ch" data-ch={ch}>{ch}</span>)}</span>
-    ))}
   </div>
 
   <div class="wrap bottom">
@@ -77,54 +70,23 @@ const name = `${site.first} ${site.last}`;
   .t-cardinal .act { background: #e06060; }
   .resume { margin-top: 30px; }
 
-  .giant { display: flex; flex-direction: column; padding: clamp(60px, 8vw, 120px) var(--gutter) 0.24em; font: italic 400 clamp(4.4rem, 1rem + 17vw, 19rem) / 0.86 var(--serif); letter-spacing: -0.025em; user-select: none; }
-  .word { display: flex; }
-  .word:nth-child(2) { align-self: flex-end; }
-  .ch { display: inline-block; position: relative; color: transparent; -webkit-text-stroke: 1.2px rgba(243, 237, 228, 0.6); will-change: transform; }
-  /* the fill: a flowing gradient that rises into each letter as the footer arrives. Its box reaches past the
-     letter's own (the italic leans out and the tight leading crops it), padded back so the glyph stays put */
-  .ch::after { content: attr(data-ch); position: absolute; inset: -0.2em -0.3em; padding: 0.2em 0.3em; -webkit-text-stroke: 0; background: linear-gradient(110deg, var(--cardinal), var(--glow) 18%, var(--sand) 38%, #f3d9b8 48%, var(--glow) 64%, var(--third) 82%, var(--cardinal)) 0 0 / 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; clip-path: inset(calc(100% - var(--fill, 0%)) 0 0 0); animation: flow 8s linear infinite; text-shadow: none; }
-  .ch { text-shadow: 0.02em 0.03em 0 rgba(140, 21, 21, 0.45), 0.04em 0.06em 0 rgba(140, 21, 21, 0.25); }
-  @keyframes flow { to { background-position: 300% 0; } }
-
-  .bottom { display: grid; gap: 14px; padding-block: 30px 44px; }
+  .bottom { display: grid; gap: 14px; margin-top: clamp(60px, 8vw, 110px); padding-block: 30px 44px; }
   .bottom ul { display: flex; gap: 24px; flex-wrap: wrap; list-style: none; margin: 0; padding: 0; font: 700 1.05rem var(--display); }
   .status { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 0; font: 500 0.78rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--sand); }
   .status b { color: var(--ink); font-weight: 600; }
   .fine { margin: 0; font-size: 0.85rem; color: var(--muted); }
   @media (max-width: 900px) { .cards { grid-template-columns: 1fr; } .card-link { min-height: 190px; } }
-  @media (prefers-reduced-motion: reduce) { .ch::after { animation: none; clip-path: none; } }
 </style>
 
 <script>
-  import { gsap, ScrollTrigger } from '../scripts/motion';
-  import { onPage, reducedMotion, finePointer } from '../scripts/page';
+  import { onPage } from '../scripts/page';
   onPage(() => {
-    const giant = document.querySelector<HTMLElement>('[data-giant]');
-    const chars = [...document.querySelectorAll<HTMLElement>('[data-giant] .ch')];
     const offs: Array<() => void> = [];
     // the cards' light follows the pointer
     document.querySelectorAll<HTMLElement>('[data-glow]').forEach((c) => {
       const move = (e: PointerEvent) => { const r = c.getBoundingClientRect(); c.style.setProperty('--mx', `${e.clientX - r.left}px`); c.style.setProperty('--my', `${e.clientY - r.top}px`); };
       c.addEventListener('pointermove', move); offs.push(() => c.removeEventListener('pointermove', move));
     });
-    if (!giant || reducedMotion()) return () => offs.forEach((f) => f());
-    const ctx = gsap.context(() => {
-      chars.forEach((ch, i) => gsap.fromTo(ch, { '--fill': '0%' }, { '--fill': '100%', ease: 'none', scrollTrigger: { trigger: giant, start: `top ${92 - (i % 7) * 2}%`, end: 'bottom 98%', scrub: true } }));
-      gsap.from(chars, { yPercent: 60, opacity: 0, stagger: 0.03, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: giant, start: 'top 85%', once: true } });
-      // letters near the pointer rise and tilt toward it
-      if (!finePointer()) return;
-      const setters = chars.map((ch) => ({ ch, y: gsap.quickTo(ch, 'y', { duration: 0.5, ease: 'power3' }), r: gsap.quickTo(ch, 'rotate', { duration: 0.5, ease: 'power3' }) }));
-      const move = (e: PointerEvent) => setters.forEach(({ ch, y, r }) => {
-        const b = ch.getBoundingClientRect(), dx = e.clientX - (b.left + b.width / 2), dy = e.clientY - (b.top + b.height / 2), d = Math.hypot(dx, dy);
-        const k = Math.max(0, 1 - d / 260);
-        y(-k * 40); r(k * Math.sign(dx) * -8);
-      });
-      const leave = () => setters.forEach(({ y, r }) => { y(0); r(0); });
-      giant.addEventListener('pointermove', move); giant.addEventListener('pointerleave', leave);
-      offs.push(() => { giant.removeEventListener('pointermove', move); giant.removeEventListener('pointerleave', leave); });
-    });
-    requestAnimationFrame(() => ScrollTrigger.refresh());
-    return () => { ctx.revert(); offs.forEach((f) => f()); };
+    return () => offs.forEach((f) => f());
   });
 </script>

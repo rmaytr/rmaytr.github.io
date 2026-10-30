@@ -151,9 +151,12 @@ const count = (n: number) => words[n] ?? String(n);
       const dist = () => track.scrollWidth - innerWidth;
       const tw = gsap.to(track, { x: () => -dist(), ease: 'none', scrollTrigger: { trigger: pin, start: 'top top', end: () => `+=${dist()}`, pin: true, scrub: 0.6, invalidateOnRefresh: true } });
       sideways = tw.scrollTrigger ?? null;
-      // each panel reveals its details as it slides in, and its picture drifts against the motion
+      // each panel reveals its details as it comes into view, once, and its picture drifts against the motion.
+      // Panels already on screen when the line arrives reveal as the row scrolls up into view; the rest as they slide in.
       track.querySelectorAll<HTMLElement>('[data-panel]').forEach((p) => {
-        gsap.from(p.querySelectorAll('[data-pr]'), { y: 26, opacity: 0, duration: 0.8, ease: 'expo.out', stagger: 0.07, scrollTrigger: { trigger: p, containerAnimation: tw, start: 'left 88%', toggleActions: 'play none none reverse' } });
+        const onScreen = p.offsetLeft < innerWidth * 0.9;
+        const when = onScreen ? { trigger: p, start: 'top 90%', once: true } : { trigger: p, containerAnimation: tw, start: 'left 92%', once: true };
+        gsap.from(p.querySelectorAll('[data-pr]'), { y: 26, opacity: 0, duration: 0.8, ease: 'expo.out', stagger: 0.07, scrollTrigger: when });
         const par = p.querySelector('[data-par]');
         if (par) gsap.fromTo(par, { xPercent: -5 }, { xPercent: 5, ease: 'none', scrollTrigger: { trigger: p, containerAnimation: tw, start: 'left right', end: 'right left', scrub: true } });
       });

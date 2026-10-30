@@ -27,8 +27,11 @@ Every red comes from Rodion's current portfolio (Stanford cardinal family). Sand
 | `--third` → `--rose` | `#E8A49C` (deep `#9C4A44`) | Third colour, warm rose between cardinal and sand: dates, kind pills, live things (not links: rose on red reads poorly) |
 | `--sky` (backup) | `#8FC7E8` (deep `#3D7EA6`) | The earlier third colour, kept unused. To restore it, point `--third` / `--third-deep` at `--sky` / `--sky-deep` in `global.css` |
 
-- Calls to action (`src/components/Cta.astro`): no pill. The label, which rolls to a sand copy on hover, beside a badge: a ring of the label's text turning slowly round a sand-outlined arrow. On hover the ring warms, a cardinal fill swells in the centre and the arrow passes through, all over 0.6–0.8s. No multicolour borders, no instant fills.
+- Calls to action (`src/components/Cta.astro`): no pill, no white text. The label in sand, which rolls to an ember-to-sand copy on hover, beside a badge: a ring of the label's text turning slowly round a sand-outlined arrow. On hover the ring warms, a cardinal fill swells in the centre and the arrow passes through, all over 0.6–0.8s. No multicolour borders, no instant fills.
 - Links (`.link`, `.more-link`): ivory text on a sand underline; "Read more" adds a sand arrow chip, and a bright sand rule draws across on hover.
+- Single-word section headers (Education, Leadership, Achievements, Earlier) use `.echo`: the whole word in an ivory-to-sand fill over a cardinal outline echo. Never split a word between two styles.
+- Key details in running text are marked in the data (`**sand**`, `==cardinal marker==`) and rendered by `src/data/rich.ts`.
+- Nav: larger mono links; the `RM` monogram has a filled R, an outlined M that fills on hover, and a live cardinal dot.
 - Section labels (`.label`): a sand-lit pill, a glowing dot on one side and a ring on the other so the word sits centred.
 - Body paragraphs are justified and hyphenated; heading-like single lines stay left-aligned.
 - Sections never meet at a straight line: scenes fade out at their edges, glows end inside their own boxes, the About sheet darkens in from nothing.
@@ -67,7 +70,7 @@ Catalogue (all required):
 - Experience: timeline line fills with a glowing cardinal beam; nodes ignite as it passes; cards slide in.
 - Leadership and projects: animated Hairline figures on cards.
 - Skills: **the periodic table of skills**. All 60 skills as elements (symbol, number, name, colour by group) in blocks by group that stand on one base line, with the detail card docked beside the table (below it on narrow screens); elements lift toward the pointer; clicking one shows a one-line explanation, a link to its official page and where it was used; group legend filters; the table can re-form into a sphere or helix you drag to turn.
-- Footer: giant outlined name in Instrument Serif italic that fills with a flowing cardinal-to-sand gradient as you reach the bottom.
+- Footer: "Find me online" contact cards, then the bottom bar (links, clock, build). No giant name.
 - Page transitions: a cardinal curtain wipes up between routes; project images morph into case-study headers.
 
 ## The research laser scene

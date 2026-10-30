@@ -3,6 +3,7 @@ import Cta from '../Cta.astro';
 import { Image } from 'astro:assets';
 import headshot from '../../assets/headshot.jpg';
 import { about } from '../../data/education';
+import { rich } from '../../data/rich';
 const facts = [
   { v: '4.0', l: 'GPA, Presidential Honors List' },
   { v: 'Honors', l: 'College, Personalized Pathway' },
@@ -17,7 +18,7 @@ const facts = [
   <div class="txt">
     <span class="label">About</span>
     <h2 id="about-h" data-split>About <em>me</em></h2>
-    <p class="statement" data-words>{about.intro}</p>
+    <p class="statement rich" data-words set:html={rich(about.intro)} />
     <ul class="facts">
       {facts.map((f) => <li data-reveal><b>{f.v}</b><span>{f.l}</span></li>)}
     </ul>

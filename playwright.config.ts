@@ -4,6 +4,7 @@ export default defineConfig({
   testDir: 'tests',
   timeout: 60_000,
   fullyParallel: true,
+  workers: 4, // eight WebGL pages at once starve this laptop and time out
   reporter: [['list']],
   use: { baseURL: 'http://localhost:4400', channel: 'chrome' },
   webServer: { command: 'npx astro preview --port 4400', port: 4400, reuseExistingServer: true },
