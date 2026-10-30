@@ -1,0 +1,85 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import '@fontsource/instrument-serif/400.css';
+import '@fontsource/instrument-serif/400-italic.css';
+import '@fontsource-variable/geist';
+import '@fontsource-variable/geist-mono';
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Backdrop from '../components/Backdrop.astro';
+import { site } from '../data/site';
+
+interface Props { title?: string; description?: string; }
+const { title, description = site.description } = Astro.props;
+const fullTitle = title ? `${title} · ${site.name}` : `${site.name} · Computer Science & Physics at UAB`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const personLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  url: Astro.site?.toString(),
+  email: `mailto:${site.email}`,
+  jobTitle: 'Computer Science & Physics student',
+  affiliation: { '@type': 'CollegeOrUniversity', name: 'University of Alabama at Birmingham' },
+  address: { '@type': 'PostalAddress', addressLocality: 'Birmingham', addressRegion: 'AL', addressCountry: 'US' },
+  sameAs: [site.links.github, site.links.linkedin],
+};
+---
+<!doctype html>
+<html lang="en" class="js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/bricolage-800.woff2" as="font" type="font/woff2" crossorigin />
+    <meta name="theme-color" content="#0b0909" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(personLd)} />
+    <ClientRouter />
+  </head>
+  <body>
+    <Backdrop />
+    <a class="skip" href="#main">Skip to content</a>
+    <Nav />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <div class="cursor" aria-hidden="true" transition:persist="cursor"><div class="cursor-ring"></div><div class="cursor-dot"></div></div>
+    <div class="pt" aria-hidden="true" transition:persist="pt" data-pt>
+      <div class="pt-ring"></div>
+      <div class="pt-fill"><span class="pt-word" data-pt-word></span></div>
+    </div>
+    <script>
+      import { boot } from '../scripts/motion';
+      boot();
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  .cursor { position: fixed; left: 0; top: 0; z-index: 95; pointer-events: none; mix-blend-mode: difference; opacity: 0; transition: opacity 0.3s; }
+  .cursor.on { opacity: 1; }
+  .cursor-dot { position: absolute; width: 6px; height: 6px; margin: -3px; background: #fff; border-radius: 50%; }
+  .cursor-ring { position: absolute; width: 38px; height: 38px; margin: -19px; border: 1px solid #fff; border-radius: 50%; transition: width 0.25s var(--ease-out), height 0.25s var(--ease-out), margin 0.25s var(--ease-out); }
+  .cursor.big .cursor-ring { width: 80px; height: 80px; margin: -40px; }
+  @media (hover: none), (pointer: coarse) { .cursor { display: none; } }
+  html.has-cursor, html.has-cursor a, html.has-cursor button { cursor: none; }
+
+  /* page transition: a sand ring and a cardinal iris burst from the click, the destination's name crosses, then it all implodes */
+  .pt { position: fixed; inset: 0; z-index: 99; pointer-events: none; visibility: hidden; --x: 50%; --y: 50%; }
+  .pt.on { visibility: visible; pointer-events: auto; }
+  .pt-ring, .pt-fill { position: absolute; inset: 0; clip-path: circle(0% at var(--x) var(--y)); }
+  .pt-ring { background: radial-gradient(circle at var(--x) var(--y), var(--sand), #e9c79d 40%, var(--third) 100%); }
+  .pt-fill { display: grid; place-items: center; overflow: hidden; background: radial-gradient(circle at var(--x) var(--y), #a31b1b, var(--cardinal) 35%, #3a0808 100%); }
+  .pt-word { font: 800 clamp(4rem, 2rem + 12vw, 15rem) / 0.9 var(--display); letter-spacing: -0.05em; text-transform: uppercase; white-space: nowrap; color: transparent; -webkit-text-stroke: 2px var(--ink); text-shadow: 0 0 60px rgba(212, 165, 116, 0.45); }
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+</style>

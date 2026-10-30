@@ -1,0 +1,19 @@
+---
+// A Hairline figure, mounted on the client by src/scripts/hairline.ts.
+interface Props { name: string; label: string; class?: string; }
+const { name, label, class: cls } = Astro.props;
+---
+<div class:list={['figure', cls]} data-figure={name} data-label={label}></div>
+
+<style>
+  .figure { width: 100%; aspect-ratio: 5 / 4; --hairline-plate: var(--bg-2); --hairline-hi: var(--sand); --hairline-edge: var(--ink); --hairline-mid: color-mix(in srgb, var(--ink) 45%, transparent); --hairline-lo: color-mix(in srgb, var(--ink) 16%, transparent); --hairline-stroke: 1; }
+</style>
+
+<script>
+  import { onPage, whenIdle } from '../scripts/page';
+  onPage(() => {
+    let cleanup: (() => void) | undefined, cancelled = false;
+    whenIdle(() => { import('../scripts/hairline').then(({ mountFigures }) => mountFigures()).then((c) => (cancelled ? c() : (cleanup = c))); });
+    return () => { cancelled = true; cleanup?.(); };
+  });
+</script>

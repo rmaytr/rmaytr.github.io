@@ -1,0 +1,36 @@
+---
+import Figure from '../Figure.astro';
+import { roles } from '../../data/roles';
+const order = ['aic', 'freshman-forum', 'acm', 'usga-web', 'ambassador', 'isss'];
+const items = order.map((id) => roles.find((r) => r.id === id)!);
+---
+<section class="section wrap" id="leadership" aria-labelledby="lead-h" data-tone="sand">
+  <div class="section-head">
+    <span class="label">Leadership</span>
+    <h2 id="lead-h" data-split>Lead<em>ership</em></h2>
+    <p class="lead" data-reveal>Founding things, running things and representing the university.</p>
+  </div>
+  <ul class="grid">
+    {items.map((r) => (
+      <li class="cell card" data-reveal>
+        {r.figure && <Figure name={r.figure} label={`Line figure for ${r.title}`} />}
+        <p class="meta">{r.dates}</p>
+        <h3>{r.title}</h3>
+        <p class="muted">{r.cardLine}</p>
+        <a class="more-link" href={`/experience/#${r.id}`}><span class="t">Read more</span><span class="arrow" aria-hidden="true">→</span></a>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .cell { padding: 16px 18px 22px; transition: border-color 0.3s, transform 0.5s var(--ease-out); }
+  .cell:hover { border-color: color-mix(in srgb, var(--sand) 55%, transparent); transform: translateY(-4px); }
+  .cell .meta { margin: 6px 0 8px; color: var(--sand); }
+  .cell .muted { color: var(--ink); opacity: 0.8; margin-bottom: 14px; }
+  h3 { font-size: clamp(1.15rem, 1rem + 0.5vw, 1.4rem); margin-bottom: 8px; }
+  .muted { font-size: 0.95rem; }
+  @media (max-width: 1000px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+</style>

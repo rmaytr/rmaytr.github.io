@@ -1,0 +1,55 @@
+---
+// The page's living ground: three slow light fields that take the colour of the section in view,
+// and a faint dot grid that lights up around the pointer. Behind everything, never in the way.
+---
+<div class="backdrop" aria-hidden="true" transition:persist="backdrop" data-backdrop>
+  <span class="field f1"></span><span class="field f2"></span><span class="field f3"></span>
+  <span class="grid"></span>
+</div>
+
+<style is:global>
+  /* registered as colours so a change of tone fades instead of snapping */
+  @property --c1 { syntax: '<color>'; inherits: true; initial-value: rgb(140 21 21); }
+  @property --c2 { syntax: '<color>'; inherits: true; initial-value: rgb(212 165 116); }
+  @property --c3 { syntax: '<color>'; inherits: true; initial-value: rgb(232 164 156); }
+  .backdrop { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; --mx: 50%; --my: 40%; transition: --c1 1.6s ease, --c2 1.6s ease, --c3 1.6s ease; }
+  .backdrop .field { position: absolute; width: 70vmax; height: 70vmax; border-radius: 50%; will-change: transform; }
+  .backdrop .f1 { left: -20vmax; top: -25vmax; background: radial-gradient(circle, color-mix(in srgb, var(--c1) 32%, transparent), transparent 62%); animation: drift1 38s ease-in-out infinite alternate; }
+  .backdrop .f2 { right: -25vmax; top: 20vh; background: radial-gradient(circle, color-mix(in srgb, var(--c2) 16%, transparent), transparent 62%); animation: drift2 46s ease-in-out infinite alternate; }
+  .backdrop .f3 { left: 20vw; bottom: -40vmax; background: radial-gradient(circle, color-mix(in srgb, var(--c3) 12%, transparent), transparent 62%); animation: drift3 52s ease-in-out infinite alternate; }
+  .backdrop .grid { position: absolute; inset: 0; background-image: radial-gradient(rgba(243, 237, 228, 0.5) 1px, transparent 1.4px); background-size: 34px 34px; opacity: 0.16; mask-image: radial-gradient(circle 340px at var(--mx) var(--my), #000, transparent 75%); -webkit-mask-image: radial-gradient(circle 340px at var(--mx) var(--my), #000, transparent 75%); }
+  @keyframes drift1 { to { transform: translate(18vw, 22vh) scale(1.15); } }
+  @keyframes drift2 { to { transform: translate(-22vw, -14vh) scale(0.9); } }
+  @keyframes drift3 { to { transform: translate(-14vw, -24vh) scale(1.2); } }
+  @media (prefers-reduced-motion: reduce) { .backdrop .field { animation: none; } }
+</style>
+
+<script>
+  import { onPage, finePointer } from '../scripts/page';
+  // section tones, one colour per field (CSS colours, so the third colour follows its token)
+  const TONES: Record<string, [string, string, string]> = {
+    cardinal: ['var(--cardinal)', 'var(--sand)', 'var(--third)'],
+    sand: ['var(--sand)', 'var(--cardinal)', 'var(--third)'],
+    third: ['var(--third-deep)', 'var(--third)', 'var(--cardinal)'],
+  };
+  const bd = document.querySelector<HTMLElement>('[data-backdrop]');
+  if (bd && finePointer()) {
+    let raf = 0;
+    addEventListener('pointermove', (e) => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => { bd.style.setProperty('--mx', `${e.clientX}px`); bd.style.setProperty('--my', `${e.clientY}px`); });
+    }, { passive: true });
+  }
+  onPage(() => {
+    if (!bd) return;
+    const io = new IntersectionObserver((entries) => {
+      for (const en of entries) {
+        if (!en.isIntersecting) continue;
+        const t = TONES[(en.target as HTMLElement).dataset.tone ?? 'cardinal'] ?? TONES.cardinal;
+        bd.style.setProperty('--c1', t[0]); bd.style.setProperty('--c2', t[1]); bd.style.setProperty('--c3', t[2]);
+      }
+    }, { rootMargin: '-45% 0px -45% 0px' });
+    document.querySelectorAll('[data-tone]').forEach((s) => io.observe(s));
+    return () => io.disconnect();
+  });
+</script>

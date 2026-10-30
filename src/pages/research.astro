@@ -1,0 +1,120 @@
+---
+import Cta from '../components/Cta.astro';
+import Base from '../layouts/Base.astro';
+import Figure from '../components/Figure.astro';
+import Publication from '../components/Publication.astro';
+import Research from '../components/home/Research.astro';
+import { roles } from '../data/roles';
+const r = roles.find((x) => x.id === 'plasma-research')!;
+// the first five bullets are the work; the sixth is the publication, shown in full below
+const TITLES = ['Simulations in C', 'Supercomputer runs', 'Ground truth for ML', 'Analysis in Python', 'ML-guided growth'];
+const work = r.bullets.slice(0, TITLES.length).map((b, i) => ({ t: TITLES[i], b }));
+const facts = [
+  { v: '1 of 3', l: 'students on the simulation team' },
+  { v: '12', l: 'students in the lab' },
+  { v: 'Cheaha', l: 'UAB’s supercomputer' },
+  { v: 'C + Basilisk', l: 'the simulation stack' },
+];
+---
+<Base title="Research" description="Rodion Mayatskiy's undergraduate research in computational plasma physics at UAB: laser-ablation and fluid-dynamics simulations on the Cheaha supercomputer.">
+  <!-- first, what the research is; the animation comes after -->
+  <section class="wrap intro" data-tone="cardinal">
+    <div class="txt">
+      <span class="label">Research · {r.dates}</span>
+      <h1 data-split>Plasma, <em>simulated</em></h1>
+      <p class="statement" data-words>I write and run simulations of the plasma a laser drives off a target, in C on UAB’s Cheaha supercomputer, for a physics lab that grows thin films with lasers and machine learning.</p>
+      <p class="org" data-reveal>{r.title} · {r.org}</p>
+      <ul class="facts">
+        {facts.map((f) => <li data-reveal><b>{f.v}</b><span>{f.l}</span></li>)}
+      </ul>
+    </div>
+    <div class="art" data-reveal><Figure name="cabinet" label="Line figure of a computing cabinet" /></div>
+    <div class="beam" aria-hidden="true"><i data-beam-line></i><span data-beam-dot></span></div>
+  </section>
+
+  <Research page />
+
+  <section class="section wrap" aria-labelledby="work-h" data-tone="sand">
+    <div class="section-head">
+      <span class="label">The work</span>
+      <h2 id="work-h" data-split>What I <em>do</em></h2>
+      <p class="lead" data-reveal>Project: <em class="proj">Laser-generated plasmas in length scales relevant for thin film growth and processing: simulation and experiment.</em></p>
+    </div>
+    <ol class="work">
+      {work.map((w, i) => (
+        <li class="card" data-reveal>
+          <span class="n num" aria-hidden="true">0{i + 1}</span>
+          <h3>{w.t}</h3>
+          <p>{w.b}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="section wrap pubs" aria-labelledby="pub-h" data-tone="third">
+    <div class="section-head">
+      <span class="label third">AVS 72</span>
+      <h2 id="pub-h" data-split>On the <em>record</em></h2>
+    </div>
+    <Publication finding />
+    <div class="tools" data-reveal>
+      <p class="meta">Tools</p>
+      <ul class="chips">{r.skills?.map((s) => <li class="chip">{s}</li>)}</ul>
+    </div>
+    <Cta href="/experience/#plasma-research" label="See every role" big data-magnetic data-reveal />
+  </section>
+</Base>
+
+<style>
+  .intro { position: relative; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: clamp(30px, 5vw, 80px); align-items: center; min-height: 100svh; padding-top: clamp(120px, 14vh, 180px); padding-bottom: 120px; }
+  h1 { font-size: clamp(3.2rem, 1.6rem + 7vw, 8.4rem); text-transform: uppercase; letter-spacing: -0.05em; line-height: 0.86; margin: 20px 0 28px; }
+  h1 em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--sand); text-transform: none; letter-spacing: -0.02em; }
+  .statement { font: 500 clamp(1.3rem, 1rem + 1.2vw, 2.1rem) / 1.3 var(--display); letter-spacing: -0.02em; max-width: 32ch; margin: 0 0 22px; }
+  .org { color: var(--sand); margin: 0 0 26px; }
+  .facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; list-style: none; margin: 0; padding: 0; }
+  .facts li { background: var(--bg-2); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+  .facts b { display: block; font: 800 1.35rem / 1.1 var(--display); background: linear-gradient(90deg, var(--glow), var(--sand)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .facts span { font-size: 0.8rem; color: var(--ink); opacity: 0.8; }
+  .art :global(.figure) { width: min(100%, 440px); margin-inline: auto; filter: drop-shadow(0 0 30px rgba(212, 68, 68, 0.2)); }
+  /* a beam drawn across the foot of the intro, ending in a hot spot: the scene below picks it up */
+  .beam { position: absolute; left: var(--gutter); right: var(--gutter); bottom: 48px; height: 2px; }
+  .beam i { position: absolute; inset: 0; background: linear-gradient(90deg, transparent, var(--glow) 30%, #ffd2a8); box-shadow: 0 0 14px var(--glow); transform-origin: left; }
+  .beam span { position: absolute; right: -6px; top: -6px; width: 14px; height: 14px; border-radius: 50%; background: #ffe2c8; box-shadow: 0 0 18px 6px rgba(212, 68, 68, 0.7); }
+  .proj { font: italic 400 1.15em var(--serif); color: var(--sand); }
+  /* three across, then two wider ones, so five cards leave no hole */
+  .work { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; }
+  .work li { grid-column: span 2; }
+  .work li:nth-child(n + 4) { grid-column: span 3; }
+  .work li { position: relative; padding: clamp(22px, 2.6vw, 32px); display: grid; gap: 10px; align-content: start; }
+  .work .n { font: 800 2.6rem / 1 var(--display); color: transparent; -webkit-text-stroke: 1.2px var(--sand); }
+  .work h3 { font-size: clamp(1.3rem, 1rem + 0.8vw, 1.7rem); }
+  .work p { margin: 0; color: var(--ink); opacity: 0.88; }
+  .pubs { display: grid; gap: 28px; justify-items: start; }
+  .pubs :global(.pub) { width: 100%; }
+  .tools { display: grid; gap: 10px; }
+  .tools .meta { margin: 0; }
+  .chips { list-style: none; margin: 0; padding: 0; }
+  @media (max-width: 860px) {
+    .intro { grid-template-columns: 1fr; min-height: 0; }
+    .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .work { grid-template-columns: 1fr; }
+    .work li, .work li:nth-child(n + 4) { grid-column: auto; }
+    .art :global(.figure) { width: min(100%, 300px); }
+  }
+</style>
+
+<script>
+  import { gsap } from '../scripts/motion';
+  import { onPage, reducedMotion } from '../scripts/page';
+  onPage(() => {
+    const line = document.querySelector('[data-beam-line]'), dot = document.querySelector('[data-beam-dot]');
+    if (!line || !dot || reducedMotion()) return;
+    const ctx = gsap.context(() => {
+      gsap.timeline({ delay: 0.9 })
+        .from(line, { scaleX: 0, duration: 1.6, ease: 'expo.inOut' })
+        .from(dot, { scale: 0, opacity: 0, duration: 0.5, ease: 'back.out(3)' }, '-=0.3')
+        .to(dot, { scale: 1.5, repeat: -1, yoyo: true, duration: 0.9, ease: 'sine.inOut' });
+    });
+    return () => ctx.revert();
+  });
+</script>

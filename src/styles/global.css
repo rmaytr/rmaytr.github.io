@@ -1,0 +1,145 @@
+/* Tokens and base styles. The palette and type are locked in DESIGN.md. */
+/* Bricolage with its contour overlaps removed (fonttools), so outlined text has no inner lines. Latin subset. */
+@font-face { font-family: 'Bricolage Grotesque'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/bricolage-500.woff2') format('woff2'); }
+@font-face { font-family: 'Bricolage Grotesque'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/bricolage-700.woff2') format('woff2'); }
+@font-face { font-family: 'Bricolage Grotesque'; font-style: normal; font-weight: 800; font-display: swap; src: url('/fonts/bricolage-800.woff2') format('woff2'); }
+:root {
+  color-scheme: dark;
+  --bg: #0b0909;
+  --bg-2: #141011;
+  --surface: #1c1617;
+  --line: #2a2223;
+  --ink: #f3ede4;
+  --muted: #c4bab2;
+  --cardinal: #8c1515;
+  --cardinal-light: #b83a3a;
+  --glow: #d44444;
+  --sand: #d4a574;
+  /* third colour: a warm rose between cardinal and sand; used for links, dates and live things */
+  --rose: #e8a49c;
+  --rose-deep: #9c4a44;
+  /* backup: the earlier sky blue. To bring it back, point --third and --third-deep at --sky and --sky-deep */
+  --sky: #8fc7e8;
+  --sky-deep: #3d7ea6;
+  --third: var(--rose);
+  --third-deep: var(--rose-deep);
+  --glow-a: rgba(212, 68, 68, 0.5);
+  --glow-b: rgba(212, 165, 116, 0.32);
+  --glow-c: color-mix(in srgb, var(--third) 22%, transparent);
+
+  --display: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --text: 'Geist Variable', ui-sans-serif, system-ui, 'Segoe UI', sans-serif;
+  --mono: 'Geist Mono Variable', ui-monospace, Consolas, monospace;
+
+  --step-meta: 0.76rem;
+  --step-body: clamp(1rem, 0.95rem + 0.2vw, 1.1rem);
+  --step-lead: clamp(1.15rem, 1rem + 0.6vw, 1.45rem);
+  --step-h3: clamp(1.4rem, 1.1rem + 1vw, 2rem);
+  --step-h2: clamp(2.6rem, 1.5rem + 4.4vw, 6rem);
+  --step-display: clamp(2.8rem, 1.4rem + 5vw, 6rem);
+
+  --gutter: clamp(20px, 6vw, 100px);
+  --section: clamp(110px, 8vw + 60px, 200px);
+  --radius: 16px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+html.lenis, html.lenis body { height: auto; }
+.lenis:not(.lenis-autoToggle).lenis-stopped { overflow: clip; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 var(--step-body) / 1.6 var(--text);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+/* film grain */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 90;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+img, video, canvas, svg { display: block; max-width: 100%; }
+a { color: inherit; }
+::selection { background: var(--cardinal); color: var(--ink); }
+:focus-visible { outline: 2px solid var(--glow); outline-offset: 3px; border-radius: 4px; }
+button { font: inherit; color: inherit; }
+
+h1, h2, h3, h4 { font-family: var(--display); margin: 0; letter-spacing: -0.03em; line-height: 0.95; text-wrap: balance; font-weight: 800; }
+h2 { font-size: var(--step-h2); text-transform: uppercase; letter-spacing: -0.04em; line-height: 0.88; }
+h3 { font-size: var(--step-h3); letter-spacing: -0.02em; line-height: 1.05; }
+/* running text is justified, hyphenated so the spacing stays even; one-line paragraphs are unaffected */
+p { margin: 0 0 1em; max-width: 68ch; text-align: justify; hyphens: auto; }
+/* words split for the scroll reveal stay inline, so justification and hyphenation still work across them */
+[data-words] > div { display: inline !important; }
+
+/* type treatments */
+.serif, h2 em, h3 em { font-family: var(--serif); font-style: italic; font-weight: 400; text-transform: none; letter-spacing: -0.01em; color: var(--sand); -webkit-text-stroke: 0.6px color-mix(in srgb, var(--ink) 70%, transparent); text-shadow: 0 0 22px rgba(212, 165, 116, 0.35); }
+.outline { color: transparent; -webkit-text-stroke: 1.5px var(--ink); }
+.gradient { background: linear-gradient(95deg, var(--glow), var(--sand)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.meta { font: 500 var(--step-meta) / 1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+/* section labels: a lit pill, a glowing dot on one side and a ring on the other, so the word sits centred */
+.label { display: inline-flex; align-items: center; gap: 12px; width: max-content; font: 700 0.92rem / 1 var(--mono); letter-spacing: 0.18em; text-transform: uppercase; color: var(--sand); padding: 13px 16px; border-radius: 999px; background: rgba(212, 165, 116, 0.12); border: 1px solid rgba(212, 165, 116, 0.5); box-shadow: 0 0 34px -8px rgba(212, 165, 116, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06); backdrop-filter: blur(6px); }
+.label::before, .label::after { content: ''; flex: none; width: 8px; height: 8px; border-radius: 50%; }
+.label::before { background: var(--glow); box-shadow: 0 0 12px var(--glow); animation: pulse 2.4s ease-in-out infinite; }
+.label::after { border: 1.5px solid currentColor; opacity: 0.7; }
+.label.third { color: var(--third); background: color-mix(in srgb, var(--third) 12%, transparent); border-color: color-mix(in srgb, var(--third) 50%, transparent); box-shadow: 0 0 34px -8px color-mix(in srgb, var(--third) 60%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.06); }
+.label.third::before { background: var(--third); box-shadow: 0 0 12px var(--third); }
+@media (max-width: 600px) { .label { font-size: 0.8rem; letter-spacing: 0.12em; padding: 11px 14px; gap: 10px; } }
+@keyframes pulse { 50% { opacity: 0.35; transform: scale(0.7); } }
+.lead { font-size: var(--step-lead); line-height: 1.5; max-width: 54ch; }
+.muted { color: var(--muted); }
+.num { font-variant-numeric: tabular-nums; }
+
+/* layout */
+.wrap { width: 100%; max-width: 1360px; margin: 0 auto; padding-inline: max(var(--gutter), env(safe-area-inset-left, 0px)) max(var(--gutter), env(safe-area-inset-right, 0px)); }
+.section { padding-block: calc(var(--section) / 2); }
+.section + .section { margin-top: calc(var(--section) / 2); }
+.section-head { display: grid; gap: 18px; margin-bottom: clamp(36px, 4vw, 64px); }
+.skip { position: absolute; left: 12px; top: -60px; z-index: 100; background: var(--ink); color: var(--bg); padding: 10px 14px; border-radius: 8px; }
+.skip:focus { top: 12px; }
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* controls */
+.btn { display: inline-flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: 999px; background: var(--cardinal); color: var(--ink); font: 500 0.95rem var(--text); text-decoration: none; border: 0; cursor: pointer; transition: background 0.25s, transform 0.25s var(--ease-out); }
+.btn:hover { background: var(--cardinal-light); }
+.btn:active { transform: scale(0.97); }
+.btn.ghost { background: transparent; box-shadow: inset 0 0 0 1px var(--line); }
+.btn.ghost:hover { box-shadow: inset 0 0 0 1px var(--sand); background: transparent; }
+.chip { display: inline-flex; align-items: center; font: 500 0.72rem var(--mono); letter-spacing: 0.04em; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+/* text links: ivory with a quiet sand underline that lights up, so they read on any tint */
+.link { color: var(--ink); font-weight: 500; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--sand) 55%, transparent); text-decoration-thickness: 1.5px; text-underline-offset: 4px; transition: color 0.3s, text-decoration-color 0.3s; }
+.link:hover, .link:focus-visible { color: var(--sand); text-decoration-color: var(--sand); }
+/* "Read more": ivory text on a faint sand rule that a bright one draws over on hover; a sand arrow chip that slides */
+.more-link { display: inline-flex; align-items: center; gap: 12px; font: 700 1rem / 1 var(--display); letter-spacing: -0.01em; color: var(--ink); text-decoration: none; }
+.more-link .t { padding-bottom: 5px; background: linear-gradient(var(--sand), var(--sand)) 0 100% / 0 1.5px no-repeat, linear-gradient(rgba(212, 165, 116, 0.35), rgba(212, 165, 116, 0.35)) 0 100% / 100% 1.5px no-repeat; transition: background-size 0.6s var(--ease-out), color 0.3s; }
+.more-link .arrow { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; color: var(--sand); background: rgba(212, 165, 116, 0.14); border: 1px solid rgba(212, 165, 116, 0.5); transition: transform 0.5s var(--ease-out), background 0.35s, color 0.35s; }
+.more-link:hover .t, .more-link:focus-visible .t { background-size: 100% 1.5px, 100% 1.5px; color: var(--sand); }
+.more-link:hover .arrow, .more-link:focus-visible .arrow { transform: translateX(4px); background: var(--sand); color: var(--bg); }
+/* rolling nav link */
+.roll { display: inline-block; overflow: hidden; height: 1.2em; line-height: 1.2em; vertical-align: top; text-decoration: none; }
+.roll span { display: block; transition: transform 0.45s var(--ease-inout); }
+.roll span + span { color: var(--glow); }
+.roll:hover span, .roll:focus-visible span { transform: translateY(-100%); }
+
+/* cards: a faint warm top light so they lift off the ground */
+.card { background: linear-gradient(170deg, color-mix(in srgb, var(--sand) 6%, var(--bg-2)), var(--bg-2) 45%); border: 1px solid var(--line); border-radius: var(--radius); }
+
+/* reveal: content is visible without JS; the motion script adds .js-reveal to animate */
+.js [data-reveal] { opacity: 0; transform: translateY(24px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .label::before { animation: none; }
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+  .js [data-reveal] { opacity: 1; transform: none; }
+}

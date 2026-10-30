@@ -1,0 +1,46 @@
+---
+import { getCollection } from 'astro:content';
+import { getImage } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import WorkIndex, { type WorkItem } from '../../components/WorkIndex';
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const items: WorkItem[] = await Promise.all(projects.map(async (p) => ({
+  id: p.id, title: p.data.title, cardLine: p.data.cardLine, year: p.data.year, role: p.data.role,
+  stack: p.data.stack, category: p.data.category, archive: p.data.archive, status: p.data.status, result: p.data.result,
+  cover: p.data.cover ? (await getImage({ src: p.data.cover, width: 520, format: 'webp' })).src : undefined,
+})));
+---
+<Base title="Projects" description="Every project by Rodion Mayatskiy: autonomous racing, an AI physics tutor, production websites, algorithms and games.">
+  <section class="wrap top">
+    <span class="label third">Projects</span>
+    <h1 data-split>All <span class="outline">projects</span></h1>
+    <p class="lead" data-reveal>Shipped products, hackathon wins, client sites and the smaller things built along the way. Featured projects open into full case studies.</p>
+  </section>
+  <section class="wrap section">
+    <WorkIndex client:visible items={items} />
+  </section>
+</Base>
+
+<style>
+  .top { padding-top: clamp(130px, 14vw, 200px); }
+  h1 { font-size: clamp(3rem, 1.6rem + 5vw, 6.6rem); text-transform: uppercase; letter-spacing: -0.045em; line-height: 0.88; margin: 14px 0 24px; }
+  :global(.wi-tools) { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px; margin-bottom: 26px; }
+  :global(.wi-search input) { width: min(100%, 360px); background: var(--bg-2); border: 1px solid var(--line); border-radius: 999px; padding: 11px 18px; color: var(--ink); font: 400 0.95rem var(--text); }
+  :global(.wi-search input:focus) { outline: 2px solid var(--glow); outline-offset: 2px; }
+  :global(.wi-filters) { display: flex; flex-wrap: wrap; gap: 6px; }
+  :global(.wi-filters button) { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; cursor: pointer; font: 500 0.9rem var(--text); }
+  :global(.wi-pill) { position: absolute; inset: 0; border-radius: 999px; background: var(--ink); }
+  :global(.wi-label) { position: relative; mix-blend-mode: difference; }
+  :global(.wi-label sup) { font: 500 0.62rem var(--mono); margin-left: 3px; }
+  :global(.wi-list) { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  :global(.wi-row) { display: grid; grid-template-columns: 70px minmax(0, 1.2fr) minmax(0, 1.4fr) minmax(0, 1fr) 30px; gap: 20px; align-items: baseline; padding: 24px 6px; border-bottom: 1px solid var(--line); text-decoration: none; transition: background 0.3s, padding 0.4s var(--ease-out); }
+  :global(.wi-row:hover) { background: var(--bg-2); padding-left: 20px; }
+  :global(.wi-title) { font: 800 clamp(1.3rem, 1rem + 1.2vw, 2.1rem) / 1.05 var(--display); letter-spacing: -0.03em; text-transform: uppercase; }
+  :global(.wi-title em) { font: italic 400 0.6em var(--serif); text-transform: none; color: var(--sand); }
+  :global(.wi-line) { color: var(--muted); font-size: 0.95rem; }
+  :global(.wi-arrow) { color: var(--sand); transition: transform 0.3s var(--ease-out); }
+  :global(.wi-row:hover .wi-arrow) { transform: translate(4px, -4px); }
+  :global(.wi-preview) { position: fixed; left: 0; top: 0; z-index: 70; pointer-events: none; width: 300px; }
+  :global(.wi-preview img) { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; border-radius: 12px; box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.8); }
+  @media (max-width: 860px) { :global(.wi-row) { grid-template-columns: 50px minmax(0, 1fr) 20px; } :global(.wi-line), :global(.wi-stack) { display: none; } :global(.wi-preview) { display: none; } }
+</style>

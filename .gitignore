@@ -1,2 +1,26 @@
-media.zip
-index old.html
+dist/
+.astro/
+node_modules/
+.env
+.env.production
+.DS_Store
+.idea/
+npm-debug.log*
+# research material: screenshots of other people's sites, never published
+research/
+docs/board/
+docs/board2/
+docs/board3/refs/
+.taste-skill/
+.playwright/
+.playwright-cli/
+hairline/*.html
+hairline/*.png
+test-results/
+playwright-report/
+
+# private working notes: never publish (the repo is public)
+contents.md
+docs/board3/
+docs/BUILD-PROMPT.md
+docs/TODO.md

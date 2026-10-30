@@ -1,0 +1,167 @@
+---
+import { site } from '../../data/site';
+const socials = [
+  { href: site.links.github, label: 'GitHub', handle: 'rmaytr', path: 'M12 .5a11.5 11.5 0 0 0-3.6 22.4c.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.9 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A11.5 11.5 0 0 0 12 .5Z', fill: true },
+  { href: site.links.linkedin, label: 'LinkedIn', handle: 'Rodion Mayatskiy', path: 'M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.75h4v11H3v-11Zm6.5 0h3.8v1.5h.1c.5-1 1.8-2 3.8-2 4 0 4.8 2.6 4.8 6v5.5h-4v-4.9c0-1.2 0-2.7-1.6-2.7-1.7 0-2 1.3-2 2.6v5h-4v-11Z', fill: true },
+  { href: `mailto:${site.email}`, label: 'Email', handle: site.email, path: 'M3 5h18v14H3zM3 7l9 6 9-6', fill: false },
+];
+---
+<section class="hero" id="top" aria-labelledby="hero-name" data-hero data-tone="cardinal">
+  <div class="glow g1" aria-hidden="true"></div>
+  <div class="glow g2" aria-hidden="true"></div>
+  <canvas class="hero-canvas" data-companion aria-label="An AI companion character that follows your pointer. Click it to make it smile." role="img"></canvas>
+
+  <div class="left" data-hero-text>
+    <p class="hi serif" data-hero-in>Hi, I'm</p>
+    <h1 class="name" id="hero-name" data-cursor>
+      <span class="line" data-hero-in>{site.first}</span>
+      <span class="line" data-hero-in><span class="ol" data-name-fill>{site.last}</span></span>
+    </h1>
+    <p class="tag" data-hero-in>{site.heroSentence}</p>
+  </div>
+
+  <div class="right" data-hero-text>
+    <span class="label third" data-hero-in><span data-role-index>01</span>&nbsp;/ 0{site.roles.length}</span>
+    <p class="role" data-hero-in>
+      <span class="visually-hidden">{site.roles.join(', ')}</span>
+      <span class="role-text" aria-hidden="true" data-role data-roles={JSON.stringify(site.roles)}>{site.roles[0]}</span>
+      <span class="role-bar" aria-hidden="true" data-role-bar></span>
+    </p>
+    <ul class="social" aria-label="Elsewhere" data-hero-in>
+      {socials.map((s) => (
+        <li>
+          <a href={s.href} rel="noopener" target={s.href.startsWith('http') ? '_blank' : undefined} aria-label={`${s.label}: ${s.handle}`} data-magnetic>
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill={s.fill ? 'currentColor' : 'none'} stroke={s.fill ? 'none' : 'currentColor'} stroke-width="1.8" stroke-linejoin="round"><path d={s.path} /></svg>
+            <span class="tip">{s.label}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <p class="hint" aria-hidden="true">Move · hover the face · click</p>
+  <div class="scroll-cue" aria-hidden="true"><span></span></div>
+</section>
+
+<div class="preloader" aria-hidden="true" data-preloader>
+  <div class="half top"></div><div class="half bottom"></div>
+  <p class="pre-count num" data-pre-count>0</p>
+  <p class="pre-name meta">{site.name}</p>
+</div>
+
+<style>
+  /* clipped sideways only, so its glows run on into the next section instead of stopping at a straight edge */
+  .hero { position: relative; height: max(640px, min(100svh, 960px)); overflow: clip visible; isolation: isolate; }
+  .glow { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; }
+  .g1 { width: 46vw; height: 46vw; left: 27vw; top: 30%; background: radial-gradient(circle, var(--glow-a), transparent 65%); }
+  .g2 { width: 30vw; height: 30vw; right: -8vw; top: 24%; background: radial-gradient(circle, var(--glow-c), transparent 65%); }
+  .hero-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; mask-image: linear-gradient(#000 62%, transparent 96%); -webkit-mask-image: linear-gradient(#000 62%, transparent 96%); }
+  .left { position: absolute; z-index: 3; left: var(--gutter); top: 30%; max-width: min(460px, 33vw); }
+  .hi { font-size: clamp(1.7rem, 1.1rem + 1.8vw, 2.8rem); line-height: 1; margin: 0; }
+  .name { font-size: var(--step-display); line-height: 0.86; letter-spacing: -0.04em; text-transform: uppercase; margin: 0.14em 0 0.34em; }
+  .name .line { display: block; }
+  .ol { display: inline-block; color: transparent; -webkit-text-stroke: 1.5px var(--ink); background: linear-gradient(100deg, var(--glow), var(--sand) 45%, var(--third) 60%, transparent 60.1%) 100% 0 / 260% 100% no-repeat; -webkit-background-clip: text; background-clip: text; transition: background-position 0.9s var(--ease-out); }
+  .name:hover .ol, .ol.full { background-position: 0 0; }
+  .tag { font-size: clamp(1rem, 0.92rem + 0.3vw, 1.12rem); line-height: 1.55; max-width: 36ch; color: var(--ink); }
+  .right { position: absolute; z-index: 3; right: var(--gutter); top: 36%; width: min(400px, 30vw); display: grid; gap: 16px; justify-items: start; }
+  .role { position: relative; margin: 0; font: 800 clamp(1.8rem, 1rem + 2.4vw, 3.2rem) / 1 var(--display); letter-spacing: -0.03em; text-transform: uppercase; min-height: 2.1em; color: var(--ink); text-shadow: 0 2px 30px rgba(11, 9, 9, 0.9); }
+  .role-bar { display: block; width: 100%; height: 3px; margin-top: 14px; border-radius: 3px; background: var(--sand); box-shadow: 0 0 14px rgba(212, 165, 116, 0.55); transform-origin: left; }
+  .social { display: flex; gap: 14px; list-style: none; margin: 10px 0 0; padding: 0; }
+  .social a { position: relative; display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; color: var(--ink); background: rgba(20, 16, 17, 0.65); border: 1px solid rgba(243, 237, 228, 0.25); backdrop-filter: blur(8px); transition: background 0.35s, color 0.35s, border-color 0.35s, box-shadow 0.35s; }
+  .social a:hover, .social a:focus-visible { background: var(--ink); color: var(--bg); border-color: var(--ink); box-shadow: 0 0 34px -6px var(--third); }
+  .social svg { width: 26px; height: 26px; }
+  .tip { position: absolute; top: calc(100% + 10px); left: 50%; transform: translate(-50%, -4px); font: 600 0.7rem var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--third); opacity: 0; transition: opacity 0.3s, transform 0.3s; white-space: nowrap; }
+  .social a:hover .tip, .social a:focus-visible .tip { opacity: 1; transform: translate(-50%, 0); }
+  .hint { position: absolute; z-index: 3; left: 50%; bottom: 34px; transform: translateX(-50%); margin: 0; white-space: nowrap; font: 600 0.7rem var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); padding: 8px 14px; border-radius: 999px; background: rgba(11, 9, 9, 0.7); border: 1px solid var(--line); backdrop-filter: blur(6px); }
+  .scroll-cue { position: absolute; z-index: 3; right: var(--gutter); bottom: 34px; width: 26px; height: 42px; border-radius: 14px; border: 1.5px solid rgba(243, 237, 228, 0.5); }
+  .scroll-cue span { position: absolute; left: 50%; top: 8px; width: 4px; height: 8px; margin-left: -2px; border-radius: 2px; background: var(--sand); animation: cue 1.8s ease-in-out infinite; }
+  @keyframes cue { 60% { transform: translateY(14px); opacity: 0; } 100% { transform: translateY(0); opacity: 0; } }
+
+  .preloader { position: fixed; inset: 0; z-index: 98; display: none; place-items: center; pointer-events: none; }
+  .preloader.run { display: grid; }
+  .half { position: absolute; left: 0; right: 0; height: 50.5%; background: var(--bg); }
+  .half.top { top: 0; } .half.bottom { bottom: 0; }
+  .pre-count { position: relative; font: 800 clamp(5rem, 3rem + 10vw, 12rem) / 1 var(--display); letter-spacing: -0.05em; margin: 0; color: transparent; -webkit-text-stroke: 1.5px var(--ink); }
+  .pre-name { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); margin: 0; }
+
+  @media (max-width: 760px) {
+    .hero { height: auto; padding-bottom: 56px; }
+    .hero-canvas { position: relative; height: 54svh; margin-top: 70px; }
+    .left, .right { position: relative; left: auto; right: auto; top: auto; max-width: none; width: auto; padding-inline: var(--gutter); }
+    .left { margin-top: -40px; }
+    .right { margin-top: 18px; }
+    .hint, .scroll-cue { display: none; }
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { onPage, reducedMotion, whenIdle } from '../../scripts/page';
+  gsap.registerPlugin(ScrambleTextPlugin, ScrollTrigger);
+
+  onPage(() => {
+    const hero = document.querySelector<HTMLElement>('[data-hero]');
+    const canvas = document.querySelector<HTMLCanvasElement>('[data-companion]');
+    if (!hero || !canvas) return;
+    const reduce = reducedMotion();
+    let unmount: (() => void) | undefined;
+    let cancelled = false;
+    whenIdle(() => {
+      import('../../scripts/scenes/companion.js')
+        .then(({ mountCompanion }) => { if (!cancelled) unmount = mountCompanion(hero, canvas); })
+        .catch(() => canvas.remove()); // no WebGL: the glows and the text carry the hero
+    });
+
+    const fillName = document.querySelector<HTMLElement>('[data-name-fill]');
+    const ctx = gsap.context(() => {
+      if (reduce) return;
+      // leaving the hero: the companion sinks and dims, the text drifts up, the About sheet rises over it
+      gsap.timeline({ scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } })
+        .to(canvas, { yPercent: 18, scale: 0.86, opacity: 0.15, ease: 'none' }, 0)
+        .to('[data-hero-text]', { yPercent: -40, opacity: 0, ease: 'none' }, 0)
+        .to('.hero .hint, .hero .scroll-cue', { opacity: 0, ease: 'none', duration: 0.3 }, 0)
+        .to('.hero .glow', { scale: 1.4, opacity: 0.4, ease: 'none' }, 0);
+    });
+
+    // preloader on the first visit of a session, then the name fills once
+    const pre = document.querySelector<HTMLElement>('[data-preloader]');
+    const seen = (() => { try { return sessionStorage.getItem('rm-pre') === '1'; } catch { return true; } })();
+    const flash = () => { if (!fillName || reduce) return; fillName.classList.add('full'); setTimeout(() => fillName.classList.remove('full'), 1600); };
+    const intro = reduce ? null : gsap.timeline({ paused: true, onComplete: flash }).from('[data-hero-in]', { y: 40, opacity: 0, duration: 1, ease: 'expo.out', stagger: 0.08 });
+    if (pre && !seen && !reduce) {
+      try { sessionStorage.setItem('rm-pre', '1'); } catch { /* storage blocked: show it again next time */ }
+      pre.classList.add('run');
+      const count = pre.querySelector('[data-pre-count]');
+      const o = { v: 0 };
+      gsap.timeline()
+        .to(o, { v: 100, duration: 1.4, ease: 'power2.inOut', onUpdate: () => { if (count) count.textContent = String(Math.round(o.v)); } })
+        .to(count, { opacity: 0, y: -30, duration: 0.35 }, '+=0.1')
+        .to(pre.querySelector('.top'), { yPercent: -100, duration: 0.9, ease: 'power4.inOut' }, '<')
+        .to(pre.querySelector('.bottom'), { yPercent: 100, duration: 0.9, ease: 'power4.inOut' }, '<')
+        .add(() => intro?.play(), '-=0.5')
+        .add(() => pre.classList.remove('run'));
+    } else intro?.play();
+
+    // roles: scramble to the next one, the bar redraws, the counter ticks
+    const role = document.querySelector<HTMLElement>('[data-role]');
+    const bar = document.querySelector<HTMLElement>('[data-role-bar]');
+    const index = document.querySelector<HTMLElement>('[data-role-index]');
+    const roles: string[] = JSON.parse(role?.dataset.roles ?? '[]');
+    let i = 0;
+    const DWELL = 2.8;
+    // the bar fills while a role is shown, so it doubles as a timer for the next one
+    const fill = () => { if (bar && !reduce) gsap.fromTo(bar, { scaleX: 0 }, { scaleX: 1, duration: DWELL, ease: 'none' }); };
+    fill();
+    const timer = reduce ? 0 : setInterval(() => {
+      if (!role) return;
+      i = (i + 1) % roles.length;
+      if (index) index.textContent = String(i + 1).padStart(2, '0');
+      gsap.to(role, { duration: 1, scrambleText: { text: roles[i], chars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#%&*+<>/', speed: 0.6 } });
+      fill();
+    }, DWELL * 1000);
+
+    return () => { cancelled = true; clearInterval(timer); intro?.kill(); ctx.revert(); unmount?.(); };
+  });
+</script>

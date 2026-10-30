@@ -1,0 +1,96 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Figure from '../../components/Figure.astro';
+import Race from '../../components/home/Race.astro';
+import Visuals from '../../components/work/Visuals.astro';
+
+export async function getStaticPaths() {
+  const all = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+  return all.map((p, i) => ({ params: { slug: p.id }, props: { p, next: all[(i + 1) % all.length] } }));
+}
+const { p, next } = Astro.props;
+const { Content } = await render(p);
+const d = p.data;
+const meta = [['Role', d.role], ['Dates', d.dates], ['Team', d.team], ['Result', d.result], ['Status', d.status]].filter(([, v]) => v) as Array<[string, string]>;
+const visual = p.id === 'phasora' || p.id === 'sofiakamal' || p.id === 'bor-realty' ? p.id : null;
+---
+<Base title={d.title} description={d.cardLine}>
+  <article>
+    <header class="wrap head">
+      <a class="meta back link" href="/work/">← All projects</a>
+      <h1 data-split>{d.title}</h1>
+      <p class="lead" data-reveal>{d.cardLine}</p>
+      <dl class="meta-grid" data-reveal>
+        {meta.map(([k, v]) => <div><dt class="meta">{k}</dt><dd>{v}</dd></div>)}
+      </dl>
+      {d.links.length > 0 && <div class="links" data-reveal>{d.links.map((l) => <a class="btn ghost" href={l.href} rel="noopener" target="_blank" data-magnetic>{l.label} ↗</a>)}</div>}
+      {d.metrics.length > 0 && (
+        <ul class="metrics">{d.metrics.map((m) => <li data-reveal><b class="num">{m.value}</b><span>{m.label}</span></li>)}</ul>
+      )}
+    </header>
+
+    {d.cover && (
+      <div class="wrap">
+        <div class="cover" transition:name={`cover-${p.id}`}>
+          <Image src={d.cover} alt={`Screenshot of ${d.title}`} widths={[640, 1000, 1400]} sizes="(max-width: 1360px) 92vw, 1240px" loading="eager" />
+        </div>
+      </div>
+    )}
+
+    {p.id === 'hackbama' && <div class="race"><Race caseLink={false} /></div>}
+
+    <div class="wrap body">
+      <div class="prose"><Content /></div>
+      <aside class="side">
+        {visual && <Visuals kind={visual} />}
+        {d.figure && <div class="fig card"><Figure name={d.figure} label={`Line figure for ${d.title}`} /></div>}
+        <div class="stack card">
+          <p class="meta">Stack</p>
+          <ul class="chips">{d.stack.map((s) => <li class="chip">{s}</li>)}</ul>
+        </div>
+      </aside>
+    </div>
+
+    <a class="next" href={`/work/${next.id}/`}>
+      <span class="meta">Next project</span>
+      <span class="t">{next.data.title}</span>
+      <span class="serif">{next.data.cardLine}</span>
+    </a>
+  </article>
+</Base>
+
+<style>
+  .head { padding-top: clamp(130px, 14vw, 190px); display: grid; gap: 18px; }
+  .back { width: max-content; }
+  h1 { font-size: clamp(3rem, 1.4rem + 6vw, 7.4rem); text-transform: uppercase; letter-spacing: -0.05em; line-height: 0.86; overflow-wrap: anywhere; }
+  .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px 30px; margin: 14px 0 0; }
+  .meta-grid dd { margin: 4px 0 0; }
+  .links { display: flex; flex-wrap: wrap; gap: 10px; }
+  .metrics { display: flex; flex-wrap: wrap; gap: 14px; list-style: none; padding: 0; margin: 10px 0 0; }
+  .metrics li { padding: 18px 22px; border-radius: var(--radius); background: var(--bg-2); border: 1px solid var(--line); }
+  .metrics b { display: block; font: 800 clamp(1.8rem, 1.3rem + 1.4vw, 2.8rem) / 1 var(--display); letter-spacing: -0.03em; color: var(--glow); }
+  .metrics span { font-size: 0.85rem; color: var(--muted); }
+  .cover { margin-top: 50px; border-radius: 20px; overflow: hidden; border: 1px solid var(--line); aspect-ratio: 16 / 9; }
+  .cover :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .race { margin-top: 80px; }
+  .body { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(30px, 5vw, 80px); padding-block: 90px; align-items: start; }
+  .side { display: grid; gap: 16px; position: sticky; top: 90px; }
+  .side .card { padding: 18px; }
+  .prose { font-size: 1.05rem; }
+  .prose :global(h2) { font-size: clamp(1.8rem, 1.3rem + 1.6vw, 2.8rem); margin: 56px 0 18px; }
+  .prose :global(h2:first-child) { margin-top: 0; }
+  .prose :global(ul), .prose :global(ol) { padding-left: 20px; }
+  .prose :global(li) { margin-bottom: 10px; }
+  .prose :global(strong) { color: var(--sand); font-weight: 600; }
+  .prose :global(table) { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95rem; display: block; overflow-x: auto; }
+  .prose :global(th), .prose :global(td) { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  .prose :global(th) { font: 500 0.75rem var(--mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+  .chips { list-style: none; padding: 0; margin: 10px 0 0; }
+  .next { display: grid; gap: 8px; padding: clamp(60px, 8vw, 120px) var(--gutter); text-decoration: none; border-top: 1px solid var(--line); transition: background 0.5s; }
+  .next:hover { background: color-mix(in srgb, var(--cardinal) 18%, var(--bg)); }
+  .next .t { font: 800 clamp(2.6rem, 1.4rem + 5vw, 6rem) / 0.9 var(--display); text-transform: uppercase; letter-spacing: -0.05em; }
+  .next .serif { font-size: 1.3rem; max-width: 50ch; }
+  @media (max-width: 960px) { .body { grid-template-columns: 1fr; } .side { position: relative; top: 0; } }
+</style>

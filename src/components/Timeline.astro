@@ -1,0 +1,107 @@
+---
+// A centred timeline: the rail fills with a glowing beam as you scroll, and each role sits on one side
+// with its Hairline figure, large, on the other. Sides alternate down the page.
+import type { Role } from '../data/roles';
+import Figure from './Figure.astro';
+interface Props { items: Role[]; figures?: boolean; }
+const { items, figures = true } = Astro.props;
+const KIND: Record<string, string> = { work: 'Work', teaching: 'Teaching', research: 'Research', leadership: 'Leadership', earlier: 'Earlier' };
+---
+<div class="tl" data-timeline>
+  <span class="rail" aria-hidden="true"><i data-beam></i></span>
+  <ol class="items">
+    {items.map((r, i) => (
+      <li class:list={['item', { flip: i % 2 === 1, bare: !(figures && r.figure) }]} id={r.id} data-kind={r.kind} data-node>
+        <span class="dot" aria-hidden="true"></span>
+        <div class="what card">
+          <div class="top"><span class="kind" data-k={r.kind}>{KIND[r.kind]}</span><span class="when">{r.dates}</span></div>
+          <h3>{r.title}</h3>
+          <p class="org">{r.org}{r.place ? ` · ${r.place}` : ''}</p>
+          <p class="line">{r.cardLine}</p>
+          {r.bullets.length > 0 && (
+            <details>
+              <summary><span>Details</span></summary>
+              <ul>{r.bullets.map((b) => <li>{b}</li>)}</ul>
+              {r.skills && <div class="chips">{r.skills.map((s) => <span class="chip">{s}</span>)}</div>}
+            </details>
+          )}
+          <div class="links">
+            {r.caseStudy && <a class="more-link" href={`/work/${r.caseStudy}/`}><span class="t">Read more</span><span class="arrow" aria-hidden="true">→</span></a>}
+            {r.link && <a class="link" href={r.link.href} rel="noopener" target="_blank">{r.link.label} ↗</a>}
+          </div>
+        </div>
+        {figures && r.figure && <div class="art" data-art><Figure name={r.figure} label={`Line figure for ${r.title}`} /></div>}
+      </li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .tl { position: relative; overflow-x: clip; overflow-y: visible; }
+  .items { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(30px, 5vw, 70px); }
+  .rail { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--line); }
+  .rail i { position: absolute; inset: 0 0 auto; height: 0; background: linear-gradient(var(--cardinal), var(--glow), var(--sand)); box-shadow: 0 0 16px var(--glow); }
+  .rail i::after { content: ''; position: absolute; left: 50%; bottom: -8px; width: 16px; height: 16px; margin-left: -8px; border-radius: 50%; background: var(--sand); box-shadow: 0 0 24px var(--glow), 0 0 6px #fff; }
+  .item { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(60px, 8vw, 120px); align-items: center; }
+  .item.flip .what { order: 2; }
+  .item.flip .art { order: 1; }
+  .item.bare .what { grid-column: 1; }
+  .item.bare.flip .what { grid-column: 2; }
+  .dot { position: absolute; left: 50%; top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--line); border: 2px solid var(--bg); transition: background 0.4s, box-shadow 0.4s; z-index: 1; }
+  .item.lit .dot { background: var(--glow); box-shadow: 0 0 0 6px color-mix(in srgb, var(--glow) 22%, transparent), 0 0 22px var(--glow); }
+  .what { padding: clamp(22px, 2.6vw, 32px); }
+  .top { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .kind { font: 600 0.7rem var(--mono); letter-spacing: 0.12em; text-transform: uppercase; padding: 5px 10px; border-radius: 999px; color: var(--sand); background: rgba(212, 165, 116, 0.1); border: 1px solid rgba(212, 165, 116, 0.35); }
+  .kind[data-k='teaching'] { color: var(--third); background: color-mix(in srgb, var(--third) 10%, transparent); border-color: color-mix(in srgb, var(--third) 35%, transparent); }
+  .kind[data-k='research'] { color: #f08a8a; background: rgba(212, 68, 68, 0.12); border-color: rgba(212, 68, 68, 0.4); }
+  .when { font: 700 0.92rem var(--display); color: var(--third); }
+  h3 { font-size: clamp(1.3rem, 1rem + 0.9vw, 1.8rem); }
+  .org { margin: 8px 0 10px; font-size: 0.92rem; color: var(--sand); }
+  .line { color: var(--ink); opacity: 0.9; }
+  details { margin-top: 4px; }
+  summary { list-style: none; cursor: pointer; width: max-content; }
+  summary::-webkit-details-marker { display: none; }
+  /* a sand pill with a filled + disc, so the way into the details is easy to spot */
+  summary span { display: inline-flex; align-items: center; gap: 10px; font: 700 0.98rem / 1 var(--display); letter-spacing: -0.01em; color: var(--sand); padding: 6px 6px 6px 16px; border-radius: 999px; background: color-mix(in srgb, var(--sand) 14%, transparent); border: 1px solid color-mix(in srgb, var(--sand) 55%, transparent); box-shadow: 0 0 22px -10px rgba(212, 165, 116, 0.8); transition: background 0.3s, color 0.3s, box-shadow 0.3s; }
+  summary span::after { content: '+'; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--sand); color: var(--bg); font: 700 1.15rem / 1 var(--display); transition: transform 0.45s var(--ease-out), background 0.3s, color 0.3s; }
+  details[open] summary span::after { transform: rotate(45deg); }
+  summary:hover span, summary:focus-visible span { background: var(--sand); color: var(--bg); box-shadow: 0 0 28px -6px rgba(212, 165, 116, 0.75); }
+  summary:hover span::after, summary:focus-visible span::after { background: var(--bg); color: var(--sand); }
+  details ul { margin: 14px 0; padding-left: 18px; color: var(--ink); opacity: 0.88; }
+  details li { margin-bottom: 6px; }
+  .links { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; margin-top: 14px; }
+  .art { display: grid; place-items: center; }
+  .art :global(.figure) { width: min(100%, 420px); filter: drop-shadow(0 0 30px rgba(212, 165, 116, 0.18)); }
+  @media (max-width: 860px) {
+    .rail { left: 14px; }
+    .item, .item.flip { grid-template-columns: 1fr; gap: 10px; padding-left: 40px; }
+    .item.flip .what, .item.flip .art { order: 0; }
+    .item.bare .what, .item.bare.flip .what { grid-column: auto; }
+    .dot { left: 15px; top: 34px; }
+    .art :global(.figure) { width: min(100%, 300px); }
+  }
+</style>
+
+<script>
+  import { gsap } from '../scripts/motion';
+  import { onPage, reducedMotion } from '../scripts/page';
+  onPage(() => {
+    const ctx = gsap.context(() => {
+      document.querySelectorAll<HTMLElement>('[data-timeline]').forEach((tl) => {
+        const beam = tl.querySelector('[data-beam]');
+        const nodes = [...tl.querySelectorAll<HTMLElement>('[data-node]')];
+        if (reducedMotion()) { gsap.set(beam, { height: '100%' }); nodes.forEach((n) => n.classList.add('lit')); return; }
+        gsap.to(beam, { height: '100%', ease: 'none', scrollTrigger: { trigger: tl, start: 'top 60%', end: 'bottom 60%', scrub: true } });
+        const narrow = innerWidth < 861; // side-entry would push the page wider than a phone
+        nodes.forEach((n) => {
+          const flip = n.classList.contains('flip');
+          const st = { trigger: n, start: 'top 82%', once: true, onEnter: () => n.classList.add('lit') };
+          gsap.from(n.querySelector('.what'), { x: narrow ? 0 : flip ? 60 : -60, y: narrow ? 30 : 0, opacity: 0, duration: 1, ease: 'expo.out', scrollTrigger: st });
+          const art = n.querySelector('[data-art]');
+          if (art) gsap.from(art, { x: narrow ? 0 : flip ? -60 : 60, opacity: 0, scale: 0.9, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: n, start: 'top 82%', once: true } });
+        });
+      });
+    });
+    return () => ctx.revert();
+  });
+</script>

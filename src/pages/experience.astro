@@ -1,0 +1,62 @@
+---
+import Cta from '../components/Cta.astro';
+import Base from '../layouts/Base.astro';
+import Timeline from '../components/Timeline.astro';
+import { roles, byStart } from '../data/roles';
+const items = roles.filter((r) => r.kind !== 'earlier').sort(byStart);
+const kinds = [['all', 'All'], ['work', 'Work'], ['teaching', 'Teaching'], ['research', 'Research'], ['leadership', 'Leadership']] as const;
+---
+<Base title="Experience" description="Work, teaching, research and leadership roles of Rodion Mayatskiy, CS & Physics at UAB.">
+  <section class="wrap top">
+    <span class="label third">Experience</span>
+    <h1 data-split>Every <span class="outline">role</span>, <em>one line</em></h1>
+    <p class="lead" data-reveal>Work, teaching, research and leadership, newest first. Open any entry for the details; earlier history is on the About page.</p>
+    <div class="filters" role="group" aria-label="Filter roles" data-reveal>
+      {kinds.map(([k, label]) => (
+        <button type="button" data-kind-filter={k} aria-pressed={k === 'all' ? 'true' : 'false'}>
+          {label} <sup>{k === 'all' ? items.length : items.filter((r) => r.kind === k).length}</sup>
+        </button>
+      ))}
+    </div>
+  </section>
+  <section class="wrap section">
+    <Timeline items={items} />
+    <div class="more"><Cta href="/about/#earlier-h" label="Earlier history" big data-magnetic /></div>
+  </section>
+</Base>
+
+<style>
+  .top { padding-top: clamp(130px, 14vw, 200px); }
+  h1 { font-size: clamp(3rem, 1.6rem + 5vw, 6.4rem); text-transform: uppercase; letter-spacing: -0.045em; line-height: 0.88; margin: 14px 0 24px; }
+  h1 em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--sand); text-transform: none; }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 30px; }
+  .filters button { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; cursor: pointer; font: 500 0.9rem var(--text); transition: background 0.2s, color 0.2s; }
+  .filters button[aria-pressed='true'] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  sup { font: 500 0.65rem var(--mono); color: var(--sand); }
+  [aria-pressed='true'] sup { color: var(--cardinal); }
+  .more { display: flex; justify-content: center; margin-top: 70px; }
+  :global([data-node].hide) { display: none; }
+</style>
+
+<script>
+  import { onPage } from '../scripts/page';
+  import { ScrollTrigger } from '../scripts/motion';
+  onPage(() => {
+    const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-kind-filter]')];
+    if (!buttons.length) return;
+    const set = (k: string) => {
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.kindFilter === k)));
+      let shown = 0; // sides keep alternating among the roles still shown
+      document.querySelectorAll<HTMLElement>('[data-node]').forEach((n) => {
+        const hide = k !== 'all' && n.dataset.kind !== k;
+        n.classList.toggle('hide', hide);
+        if (!hide) n.classList.toggle('flip', shown++ % 2 === 1);
+      });
+      ScrollTrigger.refresh();
+    };
+    buttons.forEach((b) => b.addEventListener('click', () => set(b.dataset.kindFilter ?? 'all')));
+    // a link to #role opens that entry
+    const target = location.hash ? document.getElementById(decodeURIComponent(location.hash.slice(1))) : null;
+    target?.querySelector('details')?.setAttribute('open', '');
+  });
+</script>

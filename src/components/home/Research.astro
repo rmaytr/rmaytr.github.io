@@ -1,0 +1,44 @@
+---
+import Cta from '../Cta.astro';
+import Scene from './Scene.astro';
+import Publication from '../Publication.astro';
+// On the research page the scene sits between an intro and the details, so it carries no heading of its own
+interface Props { page?: boolean; }
+const { page = false } = Astro.props;
+---
+<section id="research" aria-labelledby="research-h">
+  <Scene id="laser" kind="laser" tone="cardinal" length={180} label="A laser strikes an aluminum target and a glowing red sphere grows from the impact">
+    <span class="label" slot="head">{page ? 'In motion' : 'Research'}</span>
+    <div slot="extra" class="tlabel" data-tlabel aria-hidden="true">Target<b>Aluminum (Al)</b></div>
+    {page ? (
+      <>
+        <p class="serif kicker">Laser meets target</p>
+        <p class="h2" id="research-h">One pulse</p>
+        <p>A stylized pulse strikes an <strong>aluminum</strong> target and a plume swells from the spot, then fades.</p>
+      </>
+    ) : (
+      <>
+        <p class="serif kicker">Undergraduate Researcher</p>
+        <h2 id="research-h">Physics <span class="outline">Lab</span></h2>
+        <p>Computational plasma physics at UAB, on the <strong>Cheaha supercomputer</strong>. Co-author of an <strong>AVS 72nd International Symposium</strong> abstract accepted for an oral presentation.</p>
+        <a class="more-link" href="/research/"><span class="t">Read more</span><span class="arrow" aria-hidden="true">→</span></a>
+      </>
+    )}
+  </Scene>
+  {!page && (
+    <div class="wrap more">
+      <Publication />
+      <Cta href="/research/" label="The research, in full" data-magnetic data-reveal />
+    </div>
+  )}
+</section>
+
+<style>
+  .kicker { font-size: 1.7rem; margin: 0; }
+  #research h2, #research .h2 { font: 800 clamp(2.6rem, 1.4rem + 3.6vw, 4.6rem) / 0.95 var(--display); letter-spacing: -0.03em; margin: 0.1em 0 0.3em; text-transform: uppercase; }
+  #research strong { color: var(--sand); font-weight: 600; }
+  .tlabel { position: absolute; z-index: 2; left: 0; top: 0; font: 600 0.74rem var(--mono); letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap; pointer-events: none; opacity: 0; padding-left: 46px; color: var(--third); }
+  .tlabel::before { content: ''; position: absolute; left: 0; top: 50%; width: 38px; height: 1.5px; background: linear-gradient(90deg, transparent, var(--third)); }
+  .tlabel b { display: block; font: 800 1.6rem / 1 var(--display); letter-spacing: -0.02em; text-transform: none; margin-top: 4px; color: var(--ink); }
+  .more { display: grid; gap: 28px; justify-items: start; margin-top: 40px; }
+</style>

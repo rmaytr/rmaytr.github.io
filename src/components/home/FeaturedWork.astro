@@ -1,0 +1,194 @@
+---
+import Cta from '../Cta.astro';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import Figure from '../Figure.astro';
+const all = await getCollection('projects');
+const featured = all.filter((p) => p.data.category.includes('featured')).sort((a, b) => a.data.order - b.data.order);
+const words = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+const count = (n: number) => words[n] ?? String(n);
+---
+<section class="work" id="work" aria-labelledby="work-h" data-tone="sand">
+  <div class="wrap head">
+    <span class="label">Projects</span>
+    <h2 id="work-h" data-split>Featured <em>projects</em></h2>
+    <p class="lead" data-reveal>{count(featured.length)} projects at a glance: a hackathon win, an AI tutor in development, two client websites, an algorithms pipeline and a game. Pick one, or keep scrolling to go through them one by one.</p>
+  </div>
+
+  <!-- every project in one view; each tile jumps to its panel below -->
+  <ol class="wrap sheet-grid" aria-label="All featured projects">
+    {featured.map((p, i) => (
+      <li class="tile" data-reveal>
+        <a class="tile-link" href={`#p-${p.id}`} data-jump={`p-${p.id}`}>
+          <span class="thumb">
+            {p.data.cover
+              ? <Image src={p.data.cover} alt="" widths={[360, 560]} sizes="(max-width: 760px) 45vw, 30vw" loading="lazy" />
+              : <span class="poster" aria-hidden="true"><b class="outline">{p.data.metrics[0]?.value}</b><small>{p.data.metrics[0]?.label}</small></span>}
+          </span>
+          <span class="tile-top"><span class="i num">0{i + 1}</span><span class="yr">{p.data.year}</span></span>
+          <span class="tile-t">{p.data.title}</span>
+          <span class="tile-k">{p.data.result ?? p.data.status ?? p.data.stack.slice(0, 2).join(' · ')}</span>
+          <span class="tile-go" aria-hidden="true">↓</span>
+        </a>
+      </li>
+    ))}
+  </ol>
+
+  <div class="pin" data-hscroll>
+    <ol class="track" data-track>
+      {featured.map((p, i) => (
+        <li class="panel" id={`p-${p.id}`} data-tilt data-panel>
+          <a href={`/work/${p.id}/`} class="panel-link" aria-label={`${p.data.title}: read the case study`}>
+            <div class="media" transition:name={`cover-${p.id}`}>
+              {p.data.cover
+                ? <Image src={p.data.cover} alt="" widths={[480, 800, 1200]} sizes="(max-width: 760px) 86vw, 48vw" loading="lazy" data-par />
+                : <span class="poster big" aria-hidden="true" data-par><b class="outline">{p.data.metrics[0]?.value}</b><small>{p.data.metrics[0]?.label}</small></span>}
+              <span class="index outline">0{i + 1}</span>
+              <span class="glare" aria-hidden="true"></span>
+            </div>
+            <div class="body">
+              <p class="when" data-pr>{p.data.dates}</p>
+              <div class="row" data-pr>
+                <h3>{p.data.title}</h3>
+                {(p.data.result ?? p.data.status) && <span class="chip">{p.data.result ?? p.data.status}</span>}
+              </div>
+              <p data-pr>{p.data.cardLine}</p>
+              {p.data.metrics.length > 0 && (
+                <ul class="metrics" data-pr>
+                  {p.data.metrics.map((m) => <li><b class="num">{m.value}</b><span>{m.label}</span></li>)}
+                </ul>
+              )}
+              <ul class="stack" data-pr>{p.data.stack.slice(0, 5).map((s) => <li>{s}</li>)}</ul>
+              <span class="more-link" data-pr><span class="t">Read more</span><span class="arrow" aria-hidden="true">→</span></span>
+            </div>
+          </a>
+          {p.data.figure && <Figure name={p.data.figure} label={`Line figure for ${p.data.title}`} class="panel-fig" />}
+        </li>
+      ))}
+      <li class="end">
+        <p class="end-k serif">{count(all.length)} projects, with filters</p>
+        <Cta href="/work/" label="All projects" big data-magnetic />
+      </li>
+    </ol>
+  </div>
+</section>
+
+<style>
+  .work { padding-top: calc(var(--section) / 2); }
+  .head { display: grid; gap: 16px; margin-bottom: 40px; }
+  .head .label { margin-bottom: 6px; }
+
+  /* the overview: every project in one view */
+  .sheet-grid { list-style: none; margin-block: 0 clamp(60px, 8vw, 120px); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 22px); }
+  .tile-link { position: relative; display: grid; gap: 6px; padding: 10px 10px 16px; border-radius: 18px; text-decoration: none; color: inherit; background: color-mix(in srgb, var(--bg-2) 82%, transparent); border: 1px solid var(--line); transition: transform 0.5s var(--ease-out), border-color 0.3s, background 0.3s; }
+  .tile-link:hover, .tile-link:focus-visible { transform: translateY(-6px); border-color: color-mix(in srgb, var(--sand) 55%, transparent); background: var(--bg-2); }
+  .thumb { position: relative; display: block; aspect-ratio: 16 / 10; border-radius: 11px; overflow: hidden; background: #000; margin-bottom: 8px; }
+  .thumb :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: top; filter: saturate(0.85); transition: transform 1s var(--ease-out), filter 0.6s; }
+  .tile-link:hover .thumb :global(img) { transform: scale(1.06); filter: none; }
+  .tile-top { display: flex; justify-content: space-between; padding-inline: 6px; font: 700 0.8rem var(--display); color: var(--sand); }
+  .tile-top .yr { color: var(--muted); font-weight: 500; }
+  .tile-t { padding-inline: 6px; font: 800 clamp(1.1rem, 0.9rem + 0.7vw, 1.6rem) / 1.05 var(--display); letter-spacing: -0.02em; text-transform: uppercase; }
+  .tile-k { padding-inline: 6px; padding-right: 48px; font-size: 0.88rem; color: var(--third); }
+  .tile-go { position: absolute; right: 16px; bottom: 14px; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--sand); color: var(--bg); font-weight: 700; transform: scale(0.6); opacity: 0; transition: transform 0.45s var(--ease-out), opacity 0.3s; }
+  .tile-link:hover .tile-go, .tile-link:focus-visible .tile-go { transform: scale(1); opacity: 1; }
+
+  /* a project with no screenshot gets a poster of its headline number */
+  .poster { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 4px; text-align: center; padding: 12px; background: radial-gradient(circle at 30% 20%, color-mix(in srgb, var(--cardinal) 55%, #120c0d), #0e0a0a 75%); }
+  .poster::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(243, 237, 228, 0.22) 1px, transparent 1.4px); background-size: 18px 18px; mask-image: linear-gradient(transparent, #000 60%, transparent); }
+  .poster b { position: relative; z-index: 1; font: 800 clamp(2.6rem, 2rem + 3vw, 4.6rem) / 0.9 var(--display); letter-spacing: -0.04em; -webkit-text-stroke-color: var(--sand); text-shadow: 0 0 30px rgba(212, 165, 116, 0.35); }
+  .poster small { position: relative; z-index: 1; max-width: 22ch; font-size: 0.8rem; color: var(--ink); opacity: 0.85; }
+  .poster.big b { font-size: clamp(4rem, 3rem + 5vw, 8rem); }
+  .poster.big small { font-size: 1rem; }
+
+  /* the line: one panel per project, scrolled sideways on wide screens */
+  .pin { overflow: hidden; }
+  .track { display: flex; gap: 24px; list-style: none; margin: 0; padding: 0 var(--gutter) 60px; width: max-content; }
+  .panel { position: relative; flex: none; width: min(78vw, 640px); border-radius: 20px; background: var(--bg-2); border: 1px solid var(--line); overflow: hidden; transition: border-color 0.3s, transform 0.6s var(--ease-out); transform-style: preserve-3d; scroll-margin-top: 90px; }
+  .panel:hover { border-color: color-mix(in srgb, var(--sand) 50%, transparent); }
+  .panel-link { display: block; text-decoration: none; color: inherit; }
+  .media { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #000; }
+  .media :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: top; transform: scale(1.12); }
+  .index { position: absolute; right: 18px; top: 8px; font: 800 4rem / 1 var(--display); -webkit-text-stroke-color: rgba(255, 255, 255, 0.7); mix-blend-mode: difference; }
+  .glare { position: absolute; inset: 0; background: radial-gradient(circle at var(--gx, 50%) var(--gy, 0%), rgba(255, 255, 255, 0.16), transparent 45%); opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+  .panel:hover .glare { opacity: 1; }
+  .body { padding: 22px 24px 26px; }
+  .when { margin: 0 0 8px; font: 700 0.9rem var(--display); color: var(--third); }
+  .row { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+  h3 { font-size: clamp(1.7rem, 1.2rem + 1.4vw, 2.4rem); text-transform: uppercase; letter-spacing: -0.03em; }
+  .body p:not(.when) { color: var(--ink); opacity: 0.86; margin: 10px 0 16px; }
+  .metrics { display: flex; gap: 22px; list-style: none; margin: 0 0 16px; padding: 0; flex-wrap: wrap; }
+  .metrics b { display: block; font: 800 1.5rem var(--display); background: linear-gradient(90deg, var(--glow), var(--sand)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .metrics span { font: 500 0.68rem var(--mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--third); }
+  .stack { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; margin: 0 0 18px; padding: 0; }
+  .stack li { font-size: 0.78rem; padding: 4px 10px; border-radius: 999px; color: var(--sand); background: rgba(212, 165, 116, 0.08); border: 1px solid rgba(212, 165, 116, 0.28); }
+  :global(.panel-fig) { position: absolute !important; right: 14px; bottom: 14px; width: 120px !important; opacity: 0.9; pointer-events: none; }
+  .end { flex: none; align-self: center; display: grid; gap: 18px; justify-items: start; padding: 0 40px; }
+  .end-k { font-size: 1.6rem; margin: 0; }
+  @media (prefers-reduced-motion: reduce) { .pin { overflow-x: auto; } .media :global(img) { transform: none; } }
+  @media (max-width: 760px) {
+    .sheet-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .tile-link { padding: 6px 6px 12px; border-radius: 14px; }
+    .tile-k, .tile-go, .poster small { display: none; }
+    .poster b { font-size: 2.2rem; }
+    .track { flex-direction: column; width: auto; padding-bottom: 0; }
+    .panel { width: 100%; }
+    .media :global(img) { transform: none; }
+    .end { padding: 20px 0; }
+    :global(.panel-fig) { display: none; }
+  }
+</style>
+
+<script>
+  import { gsap, ScrollTrigger, scrollToY } from '../../scripts/motion';
+  import { onPage, reducedMotion, finePointer } from '../../scripts/page';
+  onPage(() => {
+    const pin = document.querySelector<HTMLElement>('[data-hscroll]');
+    const track = document.querySelector<HTMLElement>('[data-track]');
+    if (!pin || !track) return;
+    let sideways: ScrollTrigger | null = null;
+    const mm = gsap.matchMedia();
+    mm.add('(min-width: 761px) and (prefers-reduced-motion: no-preference)', () => {
+      const dist = () => track.scrollWidth - innerWidth;
+      const tw = gsap.to(track, { x: () => -dist(), ease: 'none', scrollTrigger: { trigger: pin, start: 'top top', end: () => `+=${dist()}`, pin: true, scrub: 0.6, invalidateOnRefresh: true } });
+      sideways = tw.scrollTrigger ?? null;
+      // each panel reveals its details as it slides in, and its picture drifts against the motion
+      track.querySelectorAll<HTMLElement>('[data-panel]').forEach((p) => {
+        gsap.from(p.querySelectorAll('[data-pr]'), { y: 26, opacity: 0, duration: 0.8, ease: 'expo.out', stagger: 0.07, scrollTrigger: { trigger: p, containerAnimation: tw, start: 'left 88%', toggleActions: 'play none none reverse' } });
+        const par = p.querySelector('[data-par]');
+        if (par) gsap.fromTo(par, { xPercent: -5 }, { xPercent: 5, ease: 'none', scrollTrigger: { trigger: p, containerAnimation: tw, start: 'left right', end: 'right left', scrub: true } });
+      });
+      return () => { sideways = null; };
+    });
+
+    // a tile takes you to its panel: along the pinned line on wide screens, down the stack on phones
+    const jumps = [...document.querySelectorAll<HTMLAnchorElement>('[data-jump]')];
+    const onJump = (e: MouseEvent) => {
+      const a = e.currentTarget as HTMLAnchorElement, panel = document.getElementById(a.dataset.jump ?? '');
+      if (!panel) return;
+      e.preventDefault();
+      const gutter = parseFloat(getComputedStyle(track).paddingLeft) || 0;
+      if (sideways) scrollToY(sideways.start + gsap.utils.clamp(0, sideways.end - sideways.start, panel.offsetLeft - gutter));
+      else {
+        pin.scrollTo({ left: Math.max(0, panel.offsetLeft - gutter) }); // reduced motion on wide screens: the line scrolls on its own
+        scrollToY(panel.getBoundingClientRect().top + scrollY - 90);
+      }
+      panel.querySelector<HTMLElement>('.panel-link')?.focus({ preventScroll: true });
+    };
+    jumps.forEach((a) => a.addEventListener('click', onJump));
+
+    const off: Array<() => void> = [() => jumps.forEach((a) => a.removeEventListener('click', onJump))];
+    if (finePointer() && !reducedMotion()) {
+      track.querySelectorAll<HTMLElement>('[data-tilt]').forEach((p) => {
+        const move = (e: PointerEvent) => {
+          const r = p.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+          p.style.transform = `perspective(1000px) rotateY(${(x - 0.5) * 8}deg) rotateX(${(0.5 - y) * 6}deg)`;
+          p.style.setProperty('--gx', `${x * 100}%`); p.style.setProperty('--gy', `${y * 100}%`);
+        };
+        const leave = () => { p.style.transform = ''; };
+        p.addEventListener('pointermove', move); p.addEventListener('pointerleave', leave);
+        off.push(() => { p.removeEventListener('pointermove', move); p.removeEventListener('pointerleave', leave); });
+      });
+    }
+    return () => { mm.revert(); off.forEach((f) => f()); };
+  });
+</script>

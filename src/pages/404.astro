@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Not found">
+  <section class="wrap nf">
+    <p class="meta">404</p>
+    <h1>Lost <em>the</em> <span class="outline">signal</span></h1>
+    <p class="lead">This page doesn’t exist. The work, the research and the rest are a click away.</p>
+    <div class="row"><a class="btn" href="/">Home</a><a class="btn ghost" href="/work/">All projects</a></div>
+  </section>
+</Base>
+
+<style>
+  .nf { min-height: 80svh; display: grid; align-content: center; gap: 20px; padding-top: 120px; }
+  h1 { font-size: clamp(3.4rem, 2rem + 6vw, 8rem); text-transform: uppercase; letter-spacing: -0.05em; line-height: 0.86; }
+  h1 em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--sand); text-transform: none; }
+  .row { display: flex; gap: 12px; }
+</style>

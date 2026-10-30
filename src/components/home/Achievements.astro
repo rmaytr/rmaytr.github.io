@@ -1,0 +1,51 @@
+---
+import { marquee } from '../../data/education';
+const stats = [
+  { v: '4.0', l: 'GPA · Presidential Honors List · Honors College' },
+  { v: '1st', l: 'place, EcoCAR track, HackBama_01 (Oct 2026)' },
+  { v: '60+', l: 'students in CS 103, where I’m the primary TA' },
+  { v: '1,500+', l: 'university web pages across 20+ UAB department sites' },
+  { v: '3', l: 'production websites shipped in 2026' },
+];
+const half = Math.ceil(marquee.length / 2);
+const rows = [marquee.slice(0, half), marquee.slice(half)];
+---
+<section class="section ach" aria-labelledby="ach-h" data-tone="cardinal">
+  <div class="wrap">
+    <span class="label">Achievements</span>
+    <h2 id="ach-h" data-split>In <em>numbers</em></h2>
+    <ul class="stats">
+      {stats.map((s) => <li data-reveal><b class="num" data-count={s.v.endsWith('st') ? undefined : ''}>{s.v}</b><span>{s.l}</span></li>)}
+    </ul>
+  </div>
+  <div class="marquees" aria-label="Honors">
+    {rows.map((row, r) => (
+      <div class={`mq ${r ? 'rev outlined' : ''}`}>
+        {[0, 1].map((copy) => (
+          <ul aria-hidden={copy ? 'true' : undefined}>
+            {row.map(([a, b]) => <li>{a} <em>{b}</em></li>)}
+          </ul>
+        ))}
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .label { margin-bottom: 18px; }
+  .stats { list-style: none; margin: 44px 0 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+  .stats li { padding: 22px 18px; border-radius: var(--radius); background: var(--bg-2); border: 1px solid var(--line); transition: border-color 0.3s, transform 0.4s var(--ease-out); }
+  .stats li:hover { border-color: color-mix(in srgb, var(--sand) 60%, transparent); transform: translateY(-4px); }
+  .stats b { display: inline-block; font: 800 clamp(2.4rem, 1.6rem + 2.4vw, 3.8rem) / 1 var(--display); letter-spacing: -0.04em; background: linear-gradient(180deg, var(--ink), var(--sand)); -webkit-background-clip: text; background-clip: text; color: transparent; white-space: nowrap; }
+  .stats span { display: block; margin-top: 10px; font-size: 0.88rem; color: var(--ink); opacity: 0.82; line-height: 1.4; }
+  .marquees { margin-top: 70px; display: grid; gap: 6px; }
+  .mq { display: flex; overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+  .mq ul { display: flex; gap: 46px; padding: 0 46px 0 0; margin: 0; list-style: none; flex: none; animation: mq 34s linear infinite; font: 800 clamp(2rem, 1.2rem + 2.6vw, 3.6rem) / 1.15 var(--display); text-transform: uppercase; letter-spacing: -0.03em; white-space: nowrap; }
+  .mq.rev ul { animation-direction: reverse; }
+  .mq.outlined ul { color: transparent; -webkit-text-stroke: 1px var(--muted); }
+  .mq em { font: italic 400 0.95em var(--serif); text-transform: none; color: var(--sand); -webkit-text-stroke: 0; }
+  .mq:hover ul { animation-play-state: paused; }
+  @keyframes mq { to { transform: translateX(-100%); } }
+  @media (max-width: 1000px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (prefers-reduced-motion: reduce) { .mq ul { animation: none; } }
+</style>

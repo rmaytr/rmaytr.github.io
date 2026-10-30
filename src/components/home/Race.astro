@@ -1,0 +1,33 @@
+---
+import Scene from './Scene.astro';
+interface Props { caseLink?: boolean; }
+const { caseLink = true } = Astro.props;
+---
+<section aria-labelledby="race-h">
+  <Scene id="race" kind="race" tone="third" length={170} label="A car follows a glowing racing line around a cone course">
+    <span class="label third" slot="head">Featured work · HackBama_01</span>
+    <dl slot="extra" class="hud">
+      <div><dt>lap, hardest practice course</dt><dd class="num" data-lap>36.8 s</dd></div>
+      <div><dt>cones hit</dt><dd>0</dd></div>
+      <div><dt>per decision</dt><dd>~10 ms</dd></div>
+    </dl>
+    <p class="serif kicker">1st place · EcoCAR track</p>
+    {caseLink ? <h2 id="race-h">HackBama<span class="outline">_01</span></h2> : <p class="h2" id="race-h">The racing line</p>}
+    <p>A real-time Python controller that drives a simulated AWD electric race car around unseen autocross courses with no map: <strong>36.8 s</strong> against the organizers' <strong>39.5 s</strong> baseline.</p>
+    {caseLink && <a class="more-link" href="/work/hackbama/"><span class="t">Read more</span><span class="arrow" aria-hidden="true">→</span></a>}
+    <p class="note">Illustration of the idea, not the scored controller's output</p>
+  </Scene>
+</section>
+
+<style>
+  .kicker { font-size: 1.7rem; margin: 0; }
+  #race-h { font-size: clamp(2.6rem, 1.4rem + 3.6vw, 4.6rem); margin: 0.1em 0 0.3em; text-transform: uppercase; }
+  p.h2 { font: 800 clamp(1.8rem, 1.2rem + 2vw, 3rem) / 1 var(--display); text-transform: uppercase; margin: 0.1em 0 0.3em; }
+  strong { color: var(--sand); }
+  .note { margin: 14px 0 0; font: 500 0.72rem var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  .hud { position: absolute; right: calc(var(--gutter) + 30px); top: 13vh; z-index: 2; display: grid; gap: 12px; text-align: right; margin: 0; padding: 20px 24px; border-radius: 18px; background: rgba(11, 9, 9, 0.6); border: 1px solid color-mix(in srgb, var(--third) 25%, transparent); backdrop-filter: blur(10px); }
+  .hud dd { margin: 0; font: 800 clamp(1.8rem, 1.1rem + 2vw, 3rem) / 1 var(--display); letter-spacing: -0.03em; color: var(--ink); }
+  .hud dt { font: 600 0.7rem var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--third); }
+  .hud div { display: flex; flex-direction: column-reverse; gap: 4px; }
+  @media (max-width: 760px) { .hud { top: auto; bottom: 48vh; right: 12px; padding: 14px; } .hud dd { font-size: 1.4rem; } }
+</style>

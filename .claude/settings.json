@@ -1,0 +1,15 @@
+{
+  "env": {
+    "PONYTAIL_DEFAULT_MODE": "lite"
+  },
+  "enabledPlugins": {
+    "locomotive-scroll@claude-design-skillstack": false,
+    "scroll-reveal-libraries@claude-design-skillstack": false,
+    "barba-js@claude-design-skillstack": false,
+    "react-three-fiber@claude-design-skillstack": false,
+    "animated-component-libraries@claude-design-skillstack": false,
+    "lightweight-3d-effects@claude-design-skillstack": false,
+    "lottie-animations@claude-design-skillstack": false,
+    "modern-web-design@claude-design-skillstack": false
+  }
+}

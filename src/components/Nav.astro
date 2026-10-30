@@ -1,0 +1,32 @@
+---
+import { nav, site } from '../data/site';
+const path = Astro.url.pathname;
+---
+<header class="nav" data-nav>
+  <a class="mark" href="/" aria-label={`${site.name}, home`}>RM</a>
+  <nav aria-label="Main">
+    <ul>
+      {nav.map((item) => (
+        <li>
+          <a class="roll" href={item.href} aria-current={path === item.href ? 'page' : undefined} data-magnetic>
+            <span>{item.label}</span><span aria-hidden="true">{item.label}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .nav { position: fixed; z-index: 80; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: max(22px, env(safe-area-inset-top, 0px)) max(var(--gutter), env(safe-area-inset-right, 0px)) 18px max(var(--gutter), env(safe-area-inset-left, 0px)); font: 500 0.8rem var(--mono); letter-spacing: 0.1em; text-transform: uppercase; transition: transform 0.5s var(--ease-out), background 0.4s; }
+  .nav.hidden { transform: translateY(-110%); }
+  .nav.solid { background: color-mix(in srgb, var(--bg) 78%, transparent); backdrop-filter: blur(14px); }
+  .mark { font: 800 1.25rem var(--display); letter-spacing: -0.03em; text-decoration: none; text-transform: none; }
+  ul { display: flex; gap: clamp(14px, 3vw, 46px); list-style: none; margin: 0; padding: 0; }
+  [aria-current='page'] span:first-child { color: var(--sand); }
+  @media (max-width: 640px) {
+    .nav { flex-wrap: wrap; row-gap: 10px; letter-spacing: 0.06em; font-size: 0.74rem; }
+    .nav > nav { width: 100%; }
+    ul { width: 100%; justify-content: space-between; gap: 8px; }
+  }
+</style>

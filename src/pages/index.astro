@@ -1,0 +1,45 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/home/Hero.astro';
+import AboutIntro from '../components/home/AboutIntro.astro';
+import Education from '../components/home/Education.astro';
+import Achievements from '../components/home/Achievements.astro';
+import Race from '../components/home/Race.astro';
+import FeaturedWork from '../components/home/FeaturedWork.astro';
+import Research from '../components/home/Research.astro';
+import Experience from '../components/home/Experience.astro';
+import Leadership from '../components/home/Leadership.astro';
+import Skills from '../components/home/Skills.astro';
+---
+<Base>
+  <Hero />
+  <!-- About and Education ride a sheet that slides up over the hero; it has no edge, it darkens in from nothing -->
+  <div class="sheet" data-sheet data-tone="sand">
+    <AboutIntro />
+    <Education />
+  </div>
+  <Achievements />
+  <Race />
+  <FeaturedWork />
+  <Research />
+  <Experience />
+  <Leadership />
+  <Skills />
+</Base>
+
+<style>
+  .sheet { position: relative; z-index: 4; margin-top: -14vh; padding-top: 14vh; background: linear-gradient(180deg, transparent, rgba(11, 9, 9, 0.7) 14vh, rgba(11, 9, 9, 0.5) 60%, transparent); }
+</style>
+
+<script>
+  import { gsap } from '../scripts/motion';
+  import { onPage, reducedMotion } from '../scripts/page';
+  onPage(() => {
+    const sheet = document.querySelector<HTMLElement>('[data-sheet]');
+    if (!sheet || reducedMotion()) return;
+    const ctx = gsap.context(() => {
+      gsap.fromTo(sheet, { y: 120, scale: 0.96, transformOrigin: '50% 0%' }, { y: 0, scale: 1, ease: 'none', scrollTrigger: { trigger: sheet, start: 'top bottom', end: 'top 20%', scrub: true } });
+    });
+    return () => ctx.revert();
+  });
+</script>

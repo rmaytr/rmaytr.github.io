@@ -1,0 +1,135 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Figure from '../components/Figure.astro';
+import headshot from '../assets/headshot.jpg';
+import { about, uab, highSchool, awards, aiLiteracy } from '../data/education';
+import { roles, byStart } from '../data/roles';
+const earlier = roles.filter((r) => r.kind === 'earlier').sort(byStart);
+const groups = [
+  ['university', 'University'],
+  ['earlier', 'Earlier'],
+  ['certificate', 'Certificates'],
+] as const;
+---
+<Base title="About" description={about.short}>
+  <section class="wrap hero">
+    <div class="txt">
+      <span class="label">About</span>
+      <h1 data-split>Computer Science <em>&amp;</em> <span class="outline">Physics</span></h1>
+      <p class="lead" data-reveal>{about.short}</p>
+    </div>
+    <div class="pic" data-reveal>
+      <Image src={headshot} alt="Rodion Mayatskiy" widths={[420, 640, 900]} sizes="(max-width: 860px) 90vw, 38vw" loading="eager" />
+    </div>
+  </section>
+
+  <section class="wrap section story" aria-label="Story">
+    {about.long.map((p) => <p class="para" data-words>{p}</p>)}
+  </section>
+
+  <section class="wrap section journey" aria-labelledby="journey-h">
+    <div>
+      <h2 id="journey-h" data-split>The <em>route</em> here</h2>
+      <ol class="route">
+        <li data-reveal><b>Moscow</b><span>School #1354</span></li>
+        <li data-reveal><b>Scottsdale, Arizona</b><span>Rancho Solano Preparatory School, moved at 16</span></li>
+        <li data-reveal><b>Birmingham, Alabama</b><span>University of Alabama at Birmingham</span></li>
+      </ol>
+      <p class="muted" data-reveal>Spoken: {about.languages.join(' · ')}</p>
+    </div>
+    <div class="globe card" data-reveal>
+      <Figure name="globe" label="A desk globe that turns to Moscow, Scottsdale or Birmingham under the pointer" />
+      <p class="meta">Move over the globe</p>
+    </div>
+  </section>
+
+  <section class="wrap section" id="education" aria-labelledby="edu-h">
+    <h2 id="edu-h" data-split>Edu<em>cation</em></h2>
+    <div class="edu">
+      <article class="card" data-reveal>
+        <p class="meta">{uab.dates}</p>
+        <h3>{uab.school}</h3>
+        <p>{uab.degree}</p>
+        <p class="muted">Physics concentration: {uab.concentration} · Minors: {uab.minors} · {uab.honors}</p>
+        <ul>{uab.lines.map((l) => <li>{l}</li>)}</ul>
+        <div class="cw">
+          <div><p class="meta">Completed</p><ul class="chips">{uab.completed.map((c) => <li class="chip">{c}</li>)}</ul></div>
+          <div><p class="meta">In progress, Fall 2026</p><ul class="chips">{uab.inProgress.map((c) => <li class="chip">{c}</li>)}</ul></div>
+        </div>
+      </article>
+      <article class="card" data-reveal>
+        <p class="meta">{highSchool.dates}</p>
+        <h3>{highSchool.school}</h3>
+        <ul>{highSchool.lines.map((l) => <li>{l}</li>)}</ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="awards-h">
+    <h2 id="awards-h" data-split>Hon<em>ors</em></h2>
+    <div class="awards">
+      {groups.map(([g, label]) => (
+        <div data-reveal>
+          <p class="meta">{label}</p>
+          <ul>{awards.filter((a) => a.group === g).map((a) => <li><span>{a.title}</span>{a.year && <span class="meta">{a.year}</span>}</li>)}</ul>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="wrap section ai" aria-labelledby="ai-h">
+    <h2 id="ai-h" data-split>AI, <em>used well</em></h2>
+    <p class="lead" data-reveal>{aiLiteracy.intro}</p>
+    <ul class="points">{aiLiteracy.points.map((p) => <li data-reveal>{p}</li>)}</ul>
+  </section>
+
+  <section class="wrap section" aria-labelledby="earlier-h">
+    <h2 id="earlier-h" data-split>Ear<em>lier</em></h2>
+    <ol class="earlier">
+      {earlier.map((r) => (
+        <li data-reveal>
+          <p class="meta">{r.dates}</p>
+          <h3>{r.title}</h3>
+          <p class="muted">{r.cardLine}</p>
+          {r.link && <a class="link" href={r.link.href} rel="noopener" target="_blank">{r.link.label} ↗</a>}
+        </li>
+      ))}
+    </ol>
+  </section>
+</Base>
+
+<style>
+  .hero { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: clamp(30px, 5vw, 80px); align-items: end; padding-top: clamp(130px, 14vw, 200px); }
+  h1 { font-size: clamp(3rem, 1.6rem + 5vw, 6.6rem); text-transform: uppercase; letter-spacing: -0.045em; line-height: 0.88; margin: 14px 0 26px; }
+  h1 em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--sand); text-transform: none; }
+  .pic { position: relative; border-radius: 20px; overflow: hidden; aspect-ratio: 4 / 5; background: #000; }
+  .pic :global(img) { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.08); transition: filter 1s var(--ease-out); }
+  .pic::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, var(--cardinal)); mix-blend-mode: multiply; transition: opacity 1s; }
+  .pic:hover :global(img) { filter: none; } .pic:hover::after { opacity: 0.3; }
+  .story { display: grid; gap: 10px; }
+  .para { font: 500 clamp(1.25rem, 1rem + 1vw, 1.9rem) / 1.35 var(--display); letter-spacing: -0.02em; max-width: 40ch; }
+  .journey { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(30px, 5vw, 80px); align-items: center; }
+  .route { list-style: none; margin: 34px 0 20px; padding: 0 0 0 28px; border-left: 2px solid var(--line); display: grid; gap: 24px; }
+  .route li { position: relative; }
+  .route li::before { content: ''; position: absolute; left: -36px; top: 8px; width: 14px; height: 14px; border-radius: 50%; background: var(--glow); box-shadow: 0 0 16px var(--glow); }
+  .route b { display: block; font: 700 1.4rem var(--display); }
+  .route span { color: var(--muted); }
+  .globe { padding: 14px; }
+  .globe .meta { text-align: center; margin: 4px 0 0; }
+  .edu { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px; margin-top: 40px; }
+  .edu .card { padding: clamp(22px, 3vw, 36px); }
+  .edu h3 { margin: 10px 0 12px; }
+  .edu ul:not(.chips) { padding-left: 18px; }
+  .cw { display: grid; gap: 16px; margin-top: 18px; }
+  .chips { list-style: none; padding: 0; margin: 8px 0 0; }
+  .awards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 30px; margin-top: 40px; }
+  .awards ul { list-style: none; padding: 0; margin: 12px 0 0; }
+  .awards li { display: flex; justify-content: space-between; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .awards li .meta { white-space: nowrap; }
+  .points { list-style: none; padding: 0; margin: 30px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .points li { padding: 22px; border-radius: var(--radius); background: var(--bg-2); border: 1px solid var(--line); }
+  .earlier { list-style: none; padding: 0; margin: 40px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 40px; }
+  .earlier h3 { font-size: 1.25rem; margin: 6px 0 6px; }
+  @media (max-width: 860px) { .hero, .journey, .edu, .awards, .points, .earlier { grid-template-columns: 1fr; } .pic { max-width: 420px; } }
+</style>

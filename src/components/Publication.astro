@@ -1,0 +1,25 @@
+---
+// The AVS 72 abstract. Rodion is a co-author, not the presenter.
+interface Props { finding?: boolean; }
+const { finding = false } = Astro.props;
+---
+<article class="pub card" data-reveal>
+  <div class="row"><span class="label">Publication</span><span class="chip co">Co-author</span></div>
+  <h3>“Machine Learning-Assisted Pulsed Laser Deposition Based on Plasma Optical Emission Signatures”</h3>
+  <p class="authors">D. Carpenter, Z. Nasiri, S. Gupta, <mark>R. Mayatskiy</mark>, S. B. Harris (Center for Nanophase Materials Sciences, Oak Ridge National Laboratory), R. P. Camata</p>
+  <p class="venue"><em>Accepted for an oral presentation</em> · AVS 72nd International Symposium · Pittsburgh, Nov 8–13, 2026</p>
+  {finding && <p class="finding">Across <b>1,000</b> independent trials, the model found optimal plasma conditions in as few as <b>three</b> adaptive iterations: a step toward autonomous, real-time control of thin-film growth.</p>}
+</article>
+
+<style>
+  .pub { padding: clamp(24px, 3vw, 38px); display: grid; gap: 14px; align-content: start; }
+  .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .co { color: var(--ink); border-color: var(--sand); }
+  h3 { font-size: clamp(1.35rem, 1rem + 1.1vw, 2rem); line-height: 1.15; }
+  .authors { color: var(--muted); margin: 0; }
+  mark { background: none; color: var(--ink); font-weight: 600; box-shadow: inset 0 -0.4em 0 rgba(212, 68, 68, 0.45); }
+  .venue { margin: 0; color: var(--ink); }
+  .venue em { font: italic 400 1.2em var(--serif); color: var(--sand); }
+  .finding { margin: 6px 0 0; padding-top: 16px; border-top: 1px solid var(--line); color: var(--ink); }
+  .finding b { font: 800 1.15em var(--display); color: var(--sand); }
+</style>

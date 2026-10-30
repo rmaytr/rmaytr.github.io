@@ -1,0 +1,49 @@
+---
+// A pinned, scroll-scrubbed three.js scene with a heading, an optional HUD and a closing card.
+interface Props { id: string; kind: 'laser' | 'race'; label: string; length?: number; tone?: string; }
+const { id, kind, label, length = 320, tone = 'cardinal' } = Astro.props;
+---
+<div class="scene" id={id} data-scene={kind} data-tone={tone} style={`--len:${length}vh`}>
+  <div class="stick">
+    <canvas data-canvas aria-label={label} role="img"></canvas>
+    <div class="head"><slot name="head" /></div>
+    <slot name="extra" />
+    <div class="card" data-card><slot /></div>
+    <div class="prog" aria-hidden="true"><i data-prog></i></div>
+  </div>
+</div>
+
+<style>
+  .scene { position: relative; height: var(--len); }
+  .stick { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+  /* the scene fades to nothing at its top and bottom, so the page's own ground shows through and no edge is drawn */
+  canvas { width: 100%; height: 100%; transition: opacity 0.2s; -webkit-mask-image: linear-gradient(transparent, #000 24%, #000 76%, transparent); mask-image: linear-gradient(transparent, #000 24%, #000 76%, transparent); }
+  .head { position: absolute; left: var(--gutter); top: 13vh; z-index: 2; }
+  .card { position: absolute; left: var(--gutter); bottom: 12vh; z-index: 2; max-width: 580px; padding: 28px 30px; border-radius: 22px; background: rgba(11, 9, 9, 0.72); border: 1px solid rgba(243, 237, 228, 0.14); backdrop-filter: blur(14px); box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.9); }
+  .js .card { opacity: 0; }
+  .prog { position: absolute; right: clamp(20px, 4vw, 56px); top: 50%; width: 3px; height: 28vh; transform: translateY(-50%); background: rgba(255, 255, 255, 0.14); z-index: 2; border-radius: 3px; }
+  .prog i { display: block; width: 100%; height: 0; border-radius: 3px; background: linear-gradient(var(--glow), var(--sand)); box-shadow: 0 0 12px var(--glow); }
+  @media (prefers-reduced-motion: reduce) { .scene { height: auto; } .stick { position: relative; height: 100svh; } .js .card { opacity: 1; } }
+  @media (max-width: 760px) { .card { left: 12px; right: 12px; padding: 20px; } }
+</style>
+
+<script>
+  import { onPage, whenNear } from '../../scripts/page';
+  onPage(() => {
+    const cleanups: Array<() => void> = [];
+    let cancelled = false;
+    document.querySelectorAll<HTMLElement>('[data-scene]').forEach((wrap) => {
+      const canvas = wrap.querySelector<HTMLCanvasElement>('[data-canvas]')!;
+      const card = wrap.querySelector<HTMLElement>('[data-card]')!;
+      const prog = wrap.querySelector<HTMLElement>('[data-prog]')!;
+      // three.js and the scene are built only as the reader approaches, so they never compete with the first screen
+      cleanups.push(whenNear(wrap, () => {
+        const load = wrap.dataset.scene === 'laser'
+          ? import('../../scripts/scenes/laser.js').then((m) => m.mountLaser(wrap, canvas, card, prog, wrap.querySelector('[data-tlabel]')))
+          : import('../../scripts/scenes/race.js').then((m) => m.mountRace(wrap, canvas, card, prog, wrap.querySelector('[data-lap]')));
+        load.then((c) => (cancelled ? c() : cleanups.push(c))).catch(() => { card.style.opacity = '1'; canvas.remove(); });
+      }));
+    });
+    return () => { cancelled = true; cleanups.forEach((c) => c()); };
+  });
+</script>

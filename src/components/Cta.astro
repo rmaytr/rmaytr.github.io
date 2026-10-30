@@ -1,0 +1,45 @@
+---
+// The call to action: a label that rolls over to a sand copy, beside a badge whose ring of text
+// turns slowly round an arrow. On hover the ring warms, a cardinal fill swells in the centre and the arrow passes through.
+interface Props { href: string; label: string; big?: boolean; arrow?: string; class?: string; [attr: string]: unknown; }
+const { href, label, big = false, arrow = '→', class: cls, ...rest } = Astro.props;
+const unit = `${label} · `;
+// repeat the label until the ring is about full, so the letters keep an even spacing whatever the label's length
+const ring = [...unit.repeat(Math.max(1, Math.round((big ? 40 : 30) / unit.length))).toUpperCase()];
+---
+<a class:list={['cta', { big }, cls]} href={href} {...rest}>
+  <span class="t"><span>{label}</span><span aria-hidden="true">{label}</span></span>
+  <span class="badge" aria-hidden="true" style={`--n:${ring.length}`}>
+    <span class="ring">{ring.map((c, i) => <i style={`--i:${i}`}>{c}</i>)}</span>
+    <span class="core"><span class="arw">{arrow}</span></span>
+  </span>
+</a>
+
+<style>
+  .cta { --b: 78px; display: inline-flex; align-items: center; gap: 18px; width: max-content; color: var(--ink); text-decoration: none; font: 700 clamp(1.1rem, 1rem + 0.4vw, 1.35rem) / 1 var(--display); letter-spacing: -0.01em; }
+  .cta.big { --b: 108px; gap: 24px; font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2.3rem); text-transform: uppercase; letter-spacing: -0.02em; }
+
+  .t { display: inline-block; overflow: hidden; height: 1.15em; line-height: 1.15em; }
+  .t span { display: block; transition: transform 0.7s var(--ease-inout); }
+  .t span + span { color: var(--sand); }
+  .cta:hover .t span, .cta:focus-visible .t span { transform: translateY(-100%); }
+
+  .badge { position: relative; flex: none; display: grid; place-items: center; width: var(--b); height: var(--b); transition: transform 0.9s var(--ease-out); }
+  .ring { position: absolute; inset: 0; color: color-mix(in srgb, var(--ink) 70%, transparent); animation: cta-spin 18s linear infinite; transition: color 0.6s; }
+  .ring i { position: absolute; left: 50%; top: 0; width: 1em; height: 50%; margin-left: -0.5em; text-align: center; font: normal 600 calc(var(--b) * 0.105) / 1 var(--mono); transform-origin: 50% 100%; transform: rotate(calc(var(--i) * 360deg / var(--n))); }
+  .core { position: relative; display: grid; place-items: center; width: 52%; height: 52%; border-radius: 50%; overflow: hidden; color: var(--sand); background: rgba(212, 165, 116, 0.08); border: 1.5px solid rgba(212, 165, 116, 0.6); transition: color 0.6s, border-color 0.6s, transform 0.25s var(--ease-out); }
+  .core::before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle, var(--glow), var(--cardinal) 70%); transform: scale(0); transition: transform 0.8s var(--ease-out); }
+  .arw { position: relative; font: 700 calc(var(--b) * 0.22) / 1 var(--display); }
+
+  .cta:hover .badge, .cta:focus-visible .badge { transform: rotate(-14deg) scale(1.06); }
+  .cta:hover .ring, .cta:focus-visible .ring { color: var(--sand); }
+  .cta:hover .core, .cta:focus-visible .core { color: var(--ink); border-color: var(--glow); }
+  .cta:hover .core::before, .cta:focus-visible .core::before { transform: scale(1); }
+  .cta:hover .arw, .cta:focus-visible .arw { animation: cta-through 0.8s var(--ease-inout); }
+  .cta:active .core { transform: scale(0.9); }
+
+  @keyframes cta-spin { to { transform: rotate(360deg); } }
+  /* the arrow leaves to the right and comes back in from the left */
+  @keyframes cta-through { 45% { transform: translateX(170%); } 46% { transform: translateX(-170%); } }
+  @media (max-width: 600px) { .cta { --b: 66px; } .cta.big { --b: 88px; } }
+</style>

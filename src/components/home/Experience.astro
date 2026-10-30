@@ -1,0 +1,19 @@
+---
+import Cta from '../Cta.astro';
+import Timeline from '../Timeline.astro';
+import { roles, byStart } from '../../data/roles';
+const items = roles.filter((r) => r.kind === 'work' || r.kind === 'teaching' || (r.kind === 'research' && r.id === 'plasma-research')).sort(byStart);
+---
+<section class="section wrap" id="experience" aria-labelledby="exp-h" data-tone="third">
+  <div class="section-head">
+    <span class="label third">Experience</span>
+    <h2 id="exp-h" data-split>Experi<span class="outline">ence</span></h2>
+    <p class="lead" data-reveal>Teaching, research and web development, alongside a full course load.</p>
+  </div>
+  <Timeline items={items} />
+  <div class="all"><Cta href="/experience/" label="See every role" big data-magnetic /></div>
+</section>
+
+<style>
+  .all { display: flex; justify-content: center; margin-top: 70px; }
+</style>
