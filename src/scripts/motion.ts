@@ -35,8 +35,6 @@ function cursor(): void {
   });
 }
 
-const SWASH = '<svg class="swash" viewBox="0 0 200 24" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M4 17 C 52 6, 128 4, 196 11" pathLength="1"/></svg>';
-
 const PAGE_NAMES: Record<string, string> = { '/': 'Home', '/about/': 'About', '/work/': 'Projects', '/experience/': 'Experience', '/research/': 'Research' };
 
 function transitions(): void {
@@ -99,14 +97,6 @@ function pageEffects(): () => void {
         },
       });
     }
-
-    // every header accent gets a hand-drawn swash, added before splitting so a re-split keeps it
-    document.querySelectorAll<HTMLElement>('h1 em, h2 em').forEach((em) => {
-      if (!em.querySelector('.swash')) em.insertAdjacentHTML('beforeend', SWASH);
-      if (reduce) return;
-      const path = em.querySelector('.swash path');
-      gsap.fromTo(path, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut', delay: 0.45, scrollTrigger: { trigger: em, start: 'top 88%', once: true } });
-    });
 
     // headings: words rise and settle one after another; no clipping mask, so italics and descenders stay whole
     document.querySelectorAll<HTMLElement>('[data-split]').forEach((el) => {
