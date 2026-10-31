@@ -12,8 +12,15 @@ export const ss = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b 
 export const glow = (hex, k) => new THREE.MeshBasicMaterial({ color: new THREE.Color(hex).multiplyScalar(k), toneMapped: false });
 export const additive = (o) => Object.assign(o, { transparent: true, blending: THREE.AdditiveBlending, depthWrite: false });
 
-/** How far the page has scrolled through a pinned wrapper, 0 to 1. */
-export const scrollProgress = (wrap) => { const r = wrap.getBoundingClientRect(); return Math.min(1, Math.max(0, -r.top / (r.height - innerHeight))); };
+/** How far the page has scrolled through a pinned wrapper, 0 to 1. The first HOLD of the scroll keeps the scene at its
+ *  opening and the next EASE of it speeds up gently, so a reader who arrives scrolling fast lands on the start, not mid-way. */
+const HOLD = 0.12, EASE = 0.25;
+export const scrollProgress = (wrap) => {
+  const r = wrap.getBoundingClientRect();
+  const t = Math.max(0, (Math.min(1, Math.max(0, -r.top / (r.height - innerHeight))) - HOLD) / (1 - HOLD));
+  const s = 1 / (1 - EASE / 2); // the linear part's slope, so the curve still ends at 1
+  return t < EASE ? (s * t * t) / (2 * EASE) : s * (t - EASE / 2);
+};
 
 export function radialTexture() {
   const c = document.createElement('canvas'); c.width = c.height = 256;
