@@ -12,7 +12,6 @@ export const uab = {
   lines: [
     '==GPA 4.0== · **Presidential Honors List** (Fall 2025, Spring 2026)',
     '**Early admission** to UAB’s Accelerated Bachelor’s-to-Master’s Program in Artificial Intelligence',
-    '==One of 4== first-year students selected for the **Honors College SMART Leader Focus Group**',
   ],
   completed: ['Object-Oriented Programming (Java)', 'Discrete Structures', 'Intro to CS in Python', 'Calculus II & III', 'General Physics I & II (E&M and optics)', 'The World Through Data (final project: NumPy-only analysis of the California Housing dataset)'],
   inProgress: ['Algorithms & Data Structures', 'Mathematical Foundations of AI (LaTeX + Python/NumPy)', 'Honors Differential Equations (SageMath)', 'Scientific Programming', 'Community Data Research', 'AI in a Nutshell', 'Topics in Contemporary Physics'],
@@ -62,7 +61,7 @@ export const aiLiteracy = {
 
 export const about = {
   short: 'Computer Science & Physics double major at UAB (4.0 GPA). Computational plasma physics research, production web development and applied AI.',
-  intro: 'I’m a **Computer Science and Physics** double major at UAB. I work where software meets science: ==plasma simulations on a supercomputer==, **production websites** for real clients, and Python for **60+ students** as the primary TA for CS 103.',
+  intro: 'I build ==physics simulations==, tutor students and serve as the **TA for CS 103**. I work on the **front end of UAB’s websites**, and I take on ==leadership roles== in clubs like **ACM** and **The AI Collective**.',
   long: [
     'I’m a **Computer Science and Physics** double major at the University of Alabama at Birmingham, with minors in Mathematics and Entrepreneurship, in the **Honors College**, with ==early admission to UAB’s Accelerated Bachelor’s-to-Master’s Program in AI==.',
     'I work where **software meets science**. In a UAB physics research lab I write and run ==laser-plasma simulations on UAB’s Cheaha supercomputer== for machine-learning-guided materials research. I build **production websites** for real clients and for the university, and I teach Python as the **primary TA for CS 103**. Outside class I founded ==The AI Collective==, UAB’s first interdisciplinary AI organization, and I plan events for **ACM**.',
