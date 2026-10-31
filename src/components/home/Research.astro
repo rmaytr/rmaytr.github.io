@@ -41,4 +41,5 @@ const { page = false } = Astro.props;
   .tlabel::before { content: ''; position: absolute; left: 0; top: 50%; width: 38px; height: 1.5px; background: linear-gradient(90deg, transparent, var(--third)); }
   .tlabel b { display: block; font: 800 1.6rem / 1 var(--display); letter-spacing: -0.02em; text-transform: none; margin-top: 4px; color: var(--ink); }
   .more { display: grid; gap: 28px; justify-items: start; margin-top: 40px; }
+  .more :global(.cta) { justify-self: center; }
 </style>
