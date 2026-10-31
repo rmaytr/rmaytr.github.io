@@ -35,6 +35,8 @@ function cursor(): void {
   });
 }
 
+const SWASH = '<svg class="swash" viewBox="0 0 200 24" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M4 17 C 52 6, 128 4, 196 11" pathLength="1"/></svg>';
+
 const PAGE_NAMES: Record<string, string> = { '/': 'Home', '/about/': 'About', '/work/': 'Projects', '/experience/': 'Experience', '/research/': 'Research' };
 
 function transitions(): void {
@@ -98,20 +100,22 @@ function pageEffects(): () => void {
       });
     }
 
-    // headings that rise line by line
-    document.querySelectorAll<HTMLElement>('[data-split]').forEach((el) => {
+    // every header accent gets a hand-drawn swash, added before splitting so a re-split keeps it
+    document.querySelectorAll<HTMLElement>('h1 em, h2 em').forEach((em) => {
+      if (!em.querySelector('.swash')) em.insertAdjacentHTML('beforeend', SWASH);
       if (reduce) return;
-      // autoSplit re-splits after fonts load and on resize, so line masks never clip
-      SplitText.create(el, {
-        type: 'lines', mask: 'lines', linesClass: 'line', autoSplit: true,
-        onSplit: (self) => gsap.from(self.lines, { yPercent: 110, duration: 1, ease: 'expo.out', stagger: 0.08, scrollTrigger: { trigger: el, start: 'top 88%', once: true } }),
-      });
+      const path = em.querySelector('.swash path');
+      gsap.fromTo(path, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut', delay: 0.45, scrollTrigger: { trigger: em, start: 'top 88%', once: true } });
     });
 
-    // single-word headers fill from below as they rise into view
-    document.querySelectorAll<HTMLElement>('[data-fill]').forEach((el) => {
+    // headings: words rise and settle one after another; no clipping mask, so italics and descenders stay whole
+    document.querySelectorAll<HTMLElement>('[data-split]').forEach((el) => {
       if (reduce) return;
-      gsap.fromTo(el, { '--top': '100%' }, { '--top': '44%', ease: 'none', scrollTrigger: { trigger: el, start: 'top 92%', end: 'top 50%', scrub: true } });
+      // autoSplit re-splits after fonts load and on resize
+      SplitText.create(el, {
+        type: 'words', autoSplit: true,
+        onSplit: (self) => gsap.fromTo(self.words, { yPercent: 55, opacity: 0, rotate: 3, filter: 'blur(8px)' }, { yPercent: 0, opacity: 1, rotate: 0, filter: 'blur(0px)', clearProps: 'filter', duration: 1, ease: 'expo.out', stagger: 0.09, scrollTrigger: { trigger: el, start: 'top 88%', once: true } }),
+      });
     });
 
     // statements that light up word by word with scroll

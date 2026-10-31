@@ -18,7 +18,7 @@ const groups = [
   <section class="wrap intro" data-tone="cardinal">
     <div class="txt">
       <span class="label">About</span>
-      <h1 data-split>Computer Science <em>&amp;</em> <span class="outline">Physics</span></h1>
+      <h1 data-split>Computer Science <em>&amp; physics</em></h1>
       <p class="lead" data-reveal>{about.short}</p>
       <div class="story">
         {about.long.map((p) => <p class="para rich" data-words set:html={rich(p)} />)}
@@ -33,7 +33,7 @@ const groups = [
 
   <section class="wrap section edu-sec" id="education" aria-labelledby="edu-h" data-tone="sand">
     <span class="label">Education</span>
-    <h2 id="edu-h" data-reveal><span class="fillword" data-fill data-text="Education">Education</span></h2>
+    <h2 id="edu-h" data-split>Where I <em>study</em></h2>
     <div class="edu">
       <article class="uni" data-reveal>
         <DateSpan {...uab.span} note="expected" />
@@ -69,7 +69,7 @@ const groups = [
 
   <section class="wrap section" aria-labelledby="awards-h" data-tone="cardinal">
     <span class="label">Recognition</span>
-    <h2 id="awards-h" data-reveal><span class="fillword" data-fill data-text="Awards">Awards</span></h2>
+    <h2 id="awards-h" data-split>Awards <em>&amp; honors</em></h2>
     <div class="awards">
       {groups.map(([g, label]) => {
         const list = awards.filter((a) => a.group === g);
@@ -103,7 +103,7 @@ const groups = [
 
   <section class="wrap section" aria-labelledby="earlier-h" data-tone="sand">
     <span class="label">Before UAB</span>
-    <h2 id="earlier-h" data-reveal><span class="fillword" data-fill data-text="Earlier">Earlier</span></h2>
+    <h2 id="earlier-h" data-split>Earlier <em>chapters</em></h2>
     <ol class="earlier">
       {earlier.map((r) => (
         <li data-reveal>
