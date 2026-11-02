@@ -53,7 +53,7 @@ export async function mountLaser(wrap, canvas, card, prog, label) {
 
   let p = reduce ? 0.5 : 0;
   const v = new THREE.Vector3();
-  const pace = pacer(wrap, 0.2, p); // the whole strike takes at least five seconds, however fast the scroll
+  const pace = pacer(wrap, 0.22, p); // the whole strike takes at least four and a half seconds, however fast the scroll
   const stop = loop(wrap, (t, dt) => {
     const to = reduce ? 0.5 : scrollProgress(wrap);
     p = reduce ? to : pace.step(to, dt);
