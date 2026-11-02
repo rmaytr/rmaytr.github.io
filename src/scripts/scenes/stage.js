@@ -5,6 +5,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { addBrake } from '../motion';
 
 export { THREE };
 /** Hands the main thread back for a moment, so long scene setup runs in short slices between frames. */
@@ -24,6 +25,28 @@ export const scrollProgress = (wrap) => {
   return t < EASE ? (s * t * t) / (2 * EASE) : s * (t - EASE / 2);
 };
 
+/** Paces a scroll-driven scene. Its progress follows the scroll on a spring, never faster than `rate` (progress per
+ *  second), and while it trails the scroll the wheel is slowed in that direction (never stopped, and never when scrolling
+ *  back toward it), so a fast scroll plays the scene through instead of skipping it. Touch keeps its native scroll; the
+ *  scene then catches up at its own pace. */
+export function pacer(wrap, rate, p = 0) {
+  const SPRING = 9; // settles in about a third of a second
+  let v = 0, target = p;
+  const stop = addBrake((dy) => {
+    const r = wrap.getBoundingClientRect(), lag = target - p;
+    if (r.top > 1 || r.bottom < innerHeight / 2 || Math.sign(dy) !== Math.sign(lag)) return dy; // only while pinned or just leaving
+    if (dy > 0 && r.bottom < innerHeight + 1 && p < 0.97) return dy * 0.05; // past the pin with the ending still to play: hold it in view
+    return dy * (1 - Math.min(0.95, Math.max(0, (Math.abs(lag) - 0.04) / 0.14))); // a small lag is free; past ~0.18 the wheel nearly stops
+  });
+  const step = (to, dt) => {
+    target = to;
+    v = Math.max(-rate, Math.min(rate, v + (SPRING * SPRING * (to - p) - 2 * SPRING * v) * dt));
+    p += v * dt;
+    return p;
+  };
+  return { step, stop };
+}
+
 export function radialTexture() {
   const c = document.createElement('canvas'); c.width = c.height = 256;
   const g = c.getContext('2d'), gr = g.createRadialGradient(128, 128, 0, 128, 128, 128);
@@ -33,7 +56,9 @@ export function radialTexture() {
 }
 
 export function stage(canvas, { bloom = [0.6, 0.4, 0.85], bg = null, env = 0.4, fov = 32 } = {}) {
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: !bg, powerPreference: 'high-performance' });
+  // no antialiasing on the canvas: the scene is drawn into the bloom chain's buffers, so the canvas only ever gets one
+  // full-screen picture, which multisampling can't change and would only cost memory bandwidth every frame
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: !bg, powerPreference: 'high-performance' });
   renderer.debug.checkShaderErrors = import.meta.env.DEV; // the check waits on the driver for every shader's log; shipped shaders are known good
   renderer.setPixelRatio(Math.min(2, devicePixelRatio));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;

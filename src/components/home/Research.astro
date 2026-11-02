@@ -7,7 +7,7 @@ interface Props { page?: boolean; }
 const { page = false } = Astro.props;
 ---
 <section id="research" aria-labelledby="research-h">
-  <Scene id="laser" kind="laser" tone="cardinal" length={210} label="A laser strikes an aluminum target and a glowing red sphere grows from the impact">
+  <Scene id="laser" kind="laser" tone="cardinal" length={300} label="A laser strikes an aluminum target and a glowing red sphere grows from the impact">
     <span class="label" slot="head">{page ? 'In motion' : 'Research'}</span>
     <div slot="extra" class="tlabel" data-tlabel aria-hidden="true">Target<b>Aluminum (Al)</b></div>
     {page ? (

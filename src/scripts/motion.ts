@@ -10,9 +10,17 @@ gsap.registerPlugin(ScrollTrigger, SplitText);
 
 let lenis: Lenis | null = null;
 
+type Brake = (dy: number) => number;
+const brakes = new Set<Brake>();
+/** A pinned scene that needs the reader to slow down adds a brake: given a wheel step, it returns the step to scroll by. */
+export function addBrake(brake: Brake): () => void {
+  brakes.add(brake);
+  return () => { brakes.delete(brake); };
+}
+
 function smoothScroll(): void {
   if (reducedMotion()) return;
-  lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1 });
+  lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1, virtualScroll: (e) => { for (const b of brakes) e.deltaY = b(e.deltaY); return true; } });
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add((t) => lenis?.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);

@@ -129,3 +129,22 @@ test('a reload keeps the scroll position', async ({ page }) => {
   await page.waitForTimeout(800);
   expect(await page.evaluate(() => scrollY)).toBeGreaterThan(800);
 });
+
+test('both scroll scenes play through without errors, and a fast scroll cannot skip them', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop', 'wheel scrolling');
+  const problems: string[] = [];
+  page.on('pageerror', (e) => problems.push(e.message));
+  await page.addInitScript(() => sessionStorage.setItem('rm-pre', '1'));
+  await page.goto('/', { waitUntil: 'networkidle' });
+  for (const id of ['race', 'laser']) {
+    const scene = page.locator(`#${id}`), bar = scene.locator('[data-prog]');
+    await scene.evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + scrollY - innerHeight / 2));
+    await page.mouse.move(700, 450);
+    // an impatient reader: the scene must still be on screen, not skipped, until it has played to the end
+    const end = Date.now() + 12000;
+    while (Date.now() < end && (await bar.evaluate((b) => parseFloat(b.style.height) || 0)) < 99) { await page.mouse.wheel(0, 240); await page.waitForTimeout(40); }
+    expect(await bar.evaluate((b) => parseFloat(b.style.height) || 0), `${id} played to the end`).toBeGreaterThanOrEqual(99);
+    expect(await scene.evaluate((el) => el.getBoundingClientRect().bottom), `${id} still on screen at its end`).toBeGreaterThan(0);
+  }
+  expect(problems, problems.join('\n')).toEqual([]);
+});

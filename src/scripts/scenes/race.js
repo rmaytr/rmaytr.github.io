@@ -1,6 +1,6 @@
 // HackBama scene: an electric race car follows a glowing racing line around an autocross course, driven by scroll.
 // Everything is modelled and textured in code: a lofted body, extruded wings, lathed tyres, canvas-drawn livery, carbon and asphalt.
-import { THREE, stage, loop, tick, glow, additive, ss, scrollProgress, radialTexture, reduce as reduceQ } from './stage.js';
+import { THREE, stage, loop, tick, pacer, glow, additive, ss, scrollProgress, radialTexture, reduce as reduceQ } from './stage.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 const reduce = reduceQ();
@@ -341,12 +341,13 @@ export async function mountRace(wrap, canvas, card, prog, lap) {
   // reduced motion holds the finished lap (the whole line, as the HUD reads 36.8 s) with the camera already at rest
   let p = reduce ? 1 : 0, prevS = -1, still = 0, w = 0, h = 0, speed = 0, roll = 0, pitch = 0, steer = 0, turn = 0;
   const pos = new V3(), tg = new V3(), aim = new V3(), camPos = new V3(0, 15, 11), look = new V3(), TOP = new V3(0, 15, 11), ORIGIN = new V3();
+  const pace = pacer(wrap, 0.16, p); // a full lap takes at least six seconds, however fast the scroll
   const stop = loop(wrap, (_, dt) => {
     const target = reduce ? 1 : scrollProgress(wrap), resized = canvas.width !== w || canvas.height !== h;
     w = canvas.width; h = canvas.height;
     if (Math.abs(target - p) > 1e-4 || resized) still = 0;
     else if (++still > 90) return; // everything has settled: keep the last frame rather than drawing it again
-    p += (target - p) * 0.12;
+    p = reduce ? target : pace.step(target, dt);
     const s = ss(0.06, 0.92, p), u = s % 1;
     curve.getPointAt(u, pos); curve.getTangentAt(u, tg);
     car.position.copy(pos); car.rotation.y = Math.atan2(tg.x, tg.z);
@@ -376,5 +377,5 @@ export async function mountRace(wrap, canvas, card, prog, lap) {
     prog.style.height = p * 100 + '%';
     composer.render();
   }, warm(), { renderer, composer, max: renderer.getPixelRatio() });
-  return () => { stop(); instanced.forEach((o) => o.dispose()); list.forEach((t) => t.dispose()); dispose(); };
+  return () => { stop(); pace.stop(); instanced.forEach((o) => o.dispose()); list.forEach((t) => t.dispose()); dispose(); };
 }
