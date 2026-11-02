@@ -5,7 +5,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
-import { addBrake } from '../motion';
+import { addGate } from '../motion';
 
 export { THREE };
 /** Hands the main thread back for a moment, so long scene setup runs in short slices between frames. */
@@ -15,36 +15,26 @@ export const ss = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b 
 export const glow = (hex, k) => new THREE.MeshBasicMaterial({ color: new THREE.Color(hex).multiplyScalar(k), toneMapped: false });
 export const additive = (o) => Object.assign(o, { transparent: true, blending: THREE.AdditiveBlending, depthWrite: false });
 
-/** How far the page has scrolled through a pinned wrapper, 0 to 1. The first HOLD of the scroll keeps the scene at its
- *  opening and the next EASE of it speeds up gently, so a reader who arrives scrolling fast lands on the start, not mid-way. */
-const HOLD = 0.12, EASE = 0.25;
-export const scrollProgress = (wrap) => {
-  const r = wrap.getBoundingClientRect();
-  const t = Math.max(0, (Math.min(1, Math.max(0, -r.top / (r.height - innerHeight))) - HOLD) / (1 - HOLD));
-  const s = 1 / (1 - EASE / 2); // the linear part's slope, so the curve still ends at 1
-  return t < EASE ? (s * t * t) / (2 * EASE) : s * (t - EASE / 2);
-};
-
-/** Paces a scroll-driven scene. Its progress follows the scroll on a spring, never faster than `rate` (progress per
- *  second), and while it trails the scroll the wheel is slowed in that direction (never stopped, and never when scrolling
- *  back toward it), so a fast scroll plays the scene through instead of skipping it. Touch keeps its native scroll; the
- *  scene then catches up at its own pace. */
-export function pacer(wrap, rate, p = 0) {
-  const SPRING = 9; // settles in about a third of a second
-  let v = 0, target = p;
-  const stop = addBrake((dy) => {
-    const r = wrap.getBoundingClientRect(), lag = target - p;
-    if (r.top > 1 || r.bottom < innerHeight / 2 || Math.sign(dy) !== Math.sign(lag)) return dy; // only while pinned or just leaving
-    if (dy > 0 && r.bottom < innerHeight + 1 && p < 0.97) return dy * 0.05; // past the pin with the ending still to play: hold it in view
-    return dy * (1 - Math.min(0.95, Math.max(0, (Math.abs(lag) - 0.04) / 0.14))); // a small lag is free; past ~0.18 the wheel nearly stops
-  });
-  const step = (to, dt) => {
-    target = to;
-    v = Math.max(-rate, Math.min(rate, v + (SPRING * SPRING * (to - p) - 2 * SPRING * v) * dt));
-    p += v * dt;
+/** Plays a pinned scene on its own clock, `seconds` long. When the reader scrolls down to it the page stops at its
+ *  start (a gate, see motion.ts) until it has played; scrolling on meanwhile plays it up to twice as fast, so it can't
+ *  be skipped and never keeps anyone long. Once the reader is back above it, it rewinds for the next visit. */
+export function player(wrap, seconds, p = 0) {
+  let push = 0, speed = 1, stop = null;
+  const gate = {
+    held: false,
+    at() { const top = wrap.getBoundingClientRect().top; if (top > innerHeight) p = 0; return p < 1 ? top + scrollY : null; },
+    push(dy) { push = Math.min(1, push + dy / 600); },
+  };
+  const step = (dt) => {
+    stop ??= addGate(gate); // only once the scene can draw, so the page never waits on a scene still loading
+    if (p < 1 && wrap.getBoundingClientRect().top <= 1) {
+      speed += (1 + push - speed) * Math.min(1, dt * 5);
+      push *= Math.exp(-dt * 2);
+      p = Math.min(1, p + (dt / seconds) * speed);
+    }
     return p;
   };
-  return { step, stop };
+  return { step, stop: () => stop?.() };
 }
 
 export function radialTexture() {

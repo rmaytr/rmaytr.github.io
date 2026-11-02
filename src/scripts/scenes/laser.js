@@ -1,5 +1,5 @@
 // Research scene: a beam strikes an aluminum target and a glowing red sphere swells from the impact.
-import { THREE, stage, loop, tick, pacer, glow, additive, ss, scrollProgress, radialTexture, reduce as reduceQ } from './stage.js';
+import { THREE, stage, loop, tick, player, glow, additive, ss, radialTexture, reduce as reduceQ } from './stage.js';
 
 const reduce = reduceQ();
 
@@ -53,10 +53,9 @@ export async function mountLaser(wrap, canvas, card, prog, label) {
 
   let p = reduce ? 0.5 : 0;
   const v = new THREE.Vector3();
-  const pace = pacer(wrap, 0.22, p); // the whole strike takes at least four and a half seconds, however fast the scroll
+  const play = player(wrap, 3.5, p); // the strike plays in three and a half seconds, quicker while the reader keeps scrolling
   const stop = loop(wrap, (t, dt) => {
-    const to = reduce ? 0.5 : scrollProgress(wrap);
-    p = reduce ? to : pace.step(to, dt);
+    p = reduce ? 0.5 : play.step(dt);
     const beamIn = ss(0.04, 0.16, p), beamA = beamIn * (1 - ss(0.55, 0.66, p));
     core.scale.y = halo.scale.y = Math.max(0.001, beamIn); core.position.y = halo.position.y = (L / 2) * beamIn + (1 - beamIn) * L;
     coreMat.opacity = beamA * (0.85 + 0.15 * Math.sin(t * 40)); haloMat.uniforms.uA.value = beamA * 0.45;
@@ -85,5 +84,5 @@ export async function mountLaser(wrap, canvas, card, prog, label) {
     prog.style.height = p * 100 + '%';
     composer.render();
   }, warm(), { renderer, composer, max: renderer.getPixelRatio() });
-  return () => { stop(); pace.stop(); dispose(); };
+  return () => { stop(); play.stop(); dispose(); };
 }

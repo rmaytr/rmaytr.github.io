@@ -130,21 +130,28 @@ test('a reload keeps the scroll position', async ({ page }) => {
   expect(await page.evaluate(() => scrollY)).toBeGreaterThan(800);
 });
 
-test('both scroll scenes play through without errors, and a fast scroll cannot skip them', async ({ page }, info) => {
+test('both scenes hold the page while they play, so a fast scroll cannot skip them', async ({ page }, info) => {
   test.skip(info.project.name !== 'desktop', 'wheel scrolling');
   const problems: string[] = [];
   page.on('pageerror', (e) => problems.push(e.message));
   await page.addInitScript(() => sessionStorage.setItem('rm-pre', '1'));
   await page.goto('/', { waitUntil: 'networkidle' });
   for (const id of ['race', 'laser']) {
-    const scene = page.locator(`#${id}`), bar = scene.locator('[data-prog]');
-    await scene.evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + scrollY - innerHeight / 2));
+    const scene = page.locator(`#${id}`);
+    await scene.evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + scrollY - innerHeight));
     await page.mouse.move(700, 450);
-    // an impatient reader: the scene must still be on screen, not skipped, until it has played to the end
+    // an impatient reader wheels hard the whole time: the page must stop at the scene until it has played
+    const tops: number[] = [];
     const end = Date.now() + 12000;
-    while (Date.now() < end && (await bar.evaluate((b) => parseFloat(b.style.height) || 0)) < 99) { await page.mouse.wheel(0, 240); await page.waitForTimeout(40); }
-    expect(await bar.evaluate((b) => parseFloat(b.style.height) || 0), `${id} played to the end`).toBeGreaterThanOrEqual(99);
-    expect(await scene.evaluate((el) => el.getBoundingClientRect().bottom), `${id} still on screen at its end`).toBeGreaterThan(0);
+    let progress = 0;
+    while (Date.now() < end && progress < 99) {
+      await page.mouse.wheel(0, 300); await page.waitForTimeout(40);
+      const [top, pr] = await scene.evaluate((el) => [el.getBoundingClientRect().top, parseFloat(el.querySelector<HTMLElement>('[data-prog]')!.style.height) || 0]);
+      progress = pr;
+      if (pr > 0 && pr < 99) tops.push(top);
+    }
+    expect(progress, `${id} played to the end`).toBeGreaterThanOrEqual(99);
+    expect(Math.max(...tops.map(Math.abs)), `${id} held at its start while playing`).toBeLessThanOrEqual(2);
   }
   expect(problems, problems.join('\n')).toEqual([]);
 });

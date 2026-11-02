@@ -10,19 +10,59 @@ gsap.registerPlugin(ScrollTrigger, SplitText);
 
 let lenis: Lenis | null = null;
 
-type Brake = (dy: number) => number;
-const brakes = new Set<Brake>();
-/** A pinned scene that needs the reader to slow down adds a brake: given a wheel step, it returns the step to scroll by. */
-export function addBrake(brake: Brake): () => void {
-  brakes.add(brake);
-  return () => { brakes.delete(brake); };
+/** A scene that plays on its own clock. `at()` is where the page stops for it (its top), or null once it has played;
+ *  `push` hears the scrolling it holds back, which plays it faster. */
+export type Gate = { at: () => number | null; push: (dy: number) => void; held: boolean };
+const gates = new Set<Gate>();
+let input = 0, touch = false; // when the reader last scrolled by wheel or touch, and which
+
+export function addGate(gate: Gate): () => void {
+  gates.add(gate);
+  return () => { release(gate); gates.delete(gate); };
+}
+const release = (g: Gate) => { if (g.held && lenis?.isStopped) lenis.start(); g.held = false; };
+const hold = (g: Gate, at: number) => {
+  g.held = true;
+  if (touch) lenis!.stop(); // blocks native touch scrolling; a wheel is simply held back below (stopping would hide the scrollbar)
+  lenis!.scrollTo(at, { immediate: true, force: true });
+};
+
+// When the reader scrolls down to a gate, the page eases to a stop at it and stays there until the scene has played.
+// Scrolling on plays it faster, scrolling back up always gets out, and navigation (no recent wheel or touch) never stops.
+let lastY = 0;
+function holdAtGates(): void {
+  if (!lenis) return;
+  const y = lenis.animatedScroll, recent = performance.now() - input < (touch ? 3000 : 1500);
+  for (const g of gates) {
+    const at = g.at();
+    if (at === null) { release(g); continue; }
+    if (g.held) { if (Math.abs(y - at) > 2) release(g); continue; } // moved off by keys or the scrollbar
+    const crossed = lastY < at - 1 && y > at + 1; // a native scroll (touch momentum) jumped past it in one frame
+    if (!recent || (y > at + 1 && !crossed)) continue;
+    if (crossed || y >= at - 1) hold(g, at);
+    else if (lenis.targetScroll > at + 1) lenis.scrollTo(at); // heading past it: ease to a stop at its start
+  }
+  lastY = y;
 }
 
 function smoothScroll(): void {
   if (reducedMotion()) return;
-  lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1, virtualScroll: (e) => { for (const b of brakes) e.deltaY = b(e.deltaY); return true; } });
+  lenis = new Lenis({
+    lerp: 0.1,
+    wheelMultiplier: 1,
+    virtualScroll: ({ deltaY, event }) => {
+      input = performance.now();
+      touch = event.type.startsWith('touch');
+      for (const g of gates) {
+        if (!g.held) continue;
+        if (deltaY < 0) release(g);
+        else if (deltaY > 0) { g.push(deltaY); if (event.cancelable) event.preventDefault(); return false; }
+      }
+      return true;
+    },
+  });
   lenis.on('scroll', ScrollTrigger.update);
-  gsap.ticker.add((t) => lenis?.raf(t * 1000));
+  gsap.ticker.add((t) => { lenis?.raf(t * 1000); holdAtGates(); });
   gsap.ticker.lagSmoothing(0);
 }
 
@@ -200,6 +240,7 @@ export function boot(): void {
 
 /** Scroll the page to a y position, through Lenis when it is running. */
 export function scrollToY(y: number): void {
+  input = 0; // a jump the reader asked for passes any scene gate
   if (lenis) lenis.scrollTo(y, { duration: 1.4 });
   else window.scrollTo({ top: y, behavior: reducedMotion() ? 'auto' : 'smooth' });
 }
