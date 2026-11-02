@@ -11,6 +11,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check:facts": "node scripts/check-facts.mjs",
+    "cv:pdf": "astro build && node scripts/cv-pdf.mjs",
     "test:e2e": "playwright test",
     "astro": "astro"
   },

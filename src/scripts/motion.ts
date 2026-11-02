@@ -35,7 +35,7 @@ function cursor(): void {
   });
 }
 
-const PAGE_NAMES: Record<string, string> = { '/': 'Home', '/about/': 'About', '/work/': 'Projects', '/experience/': 'Experience', '/research/': 'Research' };
+const PAGE_NAMES: Record<string, string> = { '/': 'Home', '/about/': 'About', '/work/': 'Projects', '/experience/': 'Experience', '/research/': 'Research', '/cv/': 'CV' };
 
 function transitions(): void {
   const pt = document.querySelector<HTMLElement>('[data-pt]');

@@ -23,6 +23,10 @@ Rules that keep libraries from fighting:
 - One scroll engine and one ScrollTrigger setup per page; no second scroll listener library.
 - Every animation honors `prefers-reduced-motion`.
 
+## CV
+
+`/cv/` and the CV PDF are built from the site's data (`src/components/CvBody.astro`). After changing any role, project, award, skill or education data, run `npm run cv:pdf` and commit the regenerated `public/cv/Rodion_Mayatskiy_CV.pdf`. The one-page résumé (`public/cv/Rodion_Mayatskiy_Resume.pdf`) is Rodion's own file; replace it, don't edit it.
+
 ## Testing
 
 This overrides the global TDD / 80% unit-coverage rule for this project. Verify with Playwright instead: a smoke test per page (loads, no console errors, links resolve) plus screenshot checks at 390px and desktop, with reduced motion on and off. Unit-test only real logic (data transforms, utilities), if any appears.

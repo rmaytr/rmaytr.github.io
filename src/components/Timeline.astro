@@ -3,6 +3,7 @@
 // with its Hairline figure, large, on the other. Sides alternate down the page.
 import type { Role } from '../data/roles';
 import Figure from './Figure.astro';
+import { rich } from '../data/rich';
 interface Props { items: Role[]; figures?: boolean; }
 const { items, figures = true } = Astro.props;
 const KIND: Record<string, string> = { work: 'Work', teaching: 'Teaching', research: 'Research', leadership: 'Leadership', earlier: 'Earlier' };
@@ -21,7 +22,7 @@ const KIND: Record<string, string> = { work: 'Work', teaching: 'Teaching', resea
           {r.bullets.length > 0 && (
             <details>
               <summary><span>Details</span></summary>
-              <ul>{r.bullets.map((b) => <li>{b}</li>)}</ul>
+              <ul class="rich">{r.bullets.map((b) => <li set:html={rich(b)} />)}</ul>
               {r.skills && <div class="chips">{r.skills.map((s) => <span class="chip">{s}</span>)}</div>}
             </details>
           )}

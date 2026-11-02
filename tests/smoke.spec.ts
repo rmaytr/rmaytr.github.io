@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-const pages = ['/', '/about/', '/work/', '/experience/', '/research/', '/work/hackbama/', '/work/phasora/', '/work/sofiakamal/', '/work/bor-realty/', '/work/leetcode/', '/work/cairn/', '/work/canvas-tracker/', '/work/pigeon-problems/', '/work/hollow-alibi/', '/work/raincheck-raccoons/', '/404'];
+const pages = ['/', '/about/', '/work/', '/experience/', '/research/', '/cv/', '/work/hackbama/', '/work/phasora/', '/work/sofiakamal/', '/work/bor-realty/', '/work/leetcode/', '/work/cairn/', '/work/canvas-tracker/', '/work/pigeon-problems/', '/work/hollow-alibi/', '/work/raincheck-raccoons/', '/404'];
 // Driver and GPU noise that is not the site's: shader compiler precision notes on Windows.
 const ignorable = (t: string) => /X4122|GPU stall due to ReadPixels/i.test(t);
 
@@ -27,7 +27,7 @@ for (const path of pages) {
 
 test('internal links resolve', async ({ page, request }) => {
   const seen = new Set<string>();
-  for (const path of pages.slice(0, 5)) {
+  for (const path of pages.slice(0, 6)) {
     await page.goto(path);
     for (const href of await page.locator('a[href^="/"]').evaluateAll((as) => as.map((a) => (a as HTMLAnchorElement).getAttribute('href') ?? ''))) {
       const url = href.split('#')[0] || '/';

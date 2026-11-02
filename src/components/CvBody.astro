@@ -1,0 +1,141 @@
+---
+// The full CV, built from the site's own data so it never drifts from the rest of the site. Unstyled on purpose:
+// the web page (/cv/) and the print layout behind the PDF (/cv/print/) each style it their own way.
+import { getCollection } from 'astro:content';
+import { uab, highSchool, awards } from '../data/education';
+import { roles, byStart, type Role } from '../data/roles';
+import { SKILLS, GROUPS } from '../data/skills';
+import { rich } from '../data/rich';
+import { mdBullets, shortUrl } from '../data/cv';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+type Project = (typeof projects)[number];
+const bulletsOf = (p: Project) => { const b = mdBullets(p.body ?? ''); return b.length ? b : [p.data.cardLine]; };
+
+const of = (...kinds: string[]) => roles.filter((r) => kinds.includes(r.kind)).sort(byStart);
+const research = of('research');
+const work = of('work', 'teaching');
+const leadership = of('leadership').filter((r) => r.id !== 'other-involvement');
+const other = roles.find((r) => r.id === 'other-involvement');
+const earlier = of('earlier');
+// a role with a case study (BOR Realty) takes that project's full bullets, so the project isn't listed twice
+const caseStudy = (r: Role) => projects.find((p) => p.id === r.caseStudy);
+const ownProjects = projects.filter((p) => !roles.some((r) => r.caseStudy === p.id));
+
+// "Title | Organisation, Place", leaving out an organisation the title already names
+const orgLine = (r: Role) => {
+  const core = r.org.replace(/\s*\(.*\)$/, '');
+  const org = r.kind === 'earlier' || r.title.includes(core) ? '' : r.org;
+  const place = r.place && !r.title.includes(r.place) ? r.place : '';
+  return [org, place].filter(Boolean).join(', ');
+};
+const bulletsFor = (r: Role) => { const p = caseStudy(r); return p ? bulletsOf(p) : r.bullets.length ? r.bullets : [r.cardLine]; };
+const linksFor = (r: Role) => caseStudy(r)?.data.links ?? (r.link ? [r.link] : []);
+
+const awardGroups = [['university', 'At UAB'], ['highschool', 'High school'], ['certificate', 'Certificates']] as const;
+const skillGroups = Object.entries(GROUPS).filter(([k]) => k !== 'spoken').map(([k, [label]]) => [label, SKILLS.filter((s) => s[2] === k).map((s) => s[1])] as const);
+const spoken = SKILLS.filter((s) => s[2] === 'spoken').map((s) => `${s[1]} (${s[3].replace(/\.$/, '').toLowerCase()})`);
+const courses = (list: Array<[string, string]>) => list.map(([code, name]) => `${code} ${name}`).join(' · ');
+---
+<section class="cv-sec" aria-labelledby="cv-edu">
+  <h2 id="cv-edu">Education</h2>
+  <article class="entry">
+    <div class="eh"><h3><span class="t">{uab.school}</span><span class="o">Honors College · College of Arts & Sciences</span></h3><span class="d">{uab.dates}</span></div>
+    <p class="sub"><strong>{uab.degree}</strong> · Concentration: {uab.concentration} · Minors: {uab.minors}</p>
+    <ul class="rich">{uab.lines.map((l) => <li set:html={rich(l)} />)}</ul>
+    <p class="note"><strong>Completed:</strong> {courses(uab.completed)}</p>
+    <p class="note"><strong>IB transfer credit:</strong> {courses(uab.transfer)}</p>
+    <p class="note"><strong>In progress (Fall 2026):</strong> {courses(uab.inProgress)}</p>
+  </article>
+  <article class="entry">
+    <div class="eh"><h3><span class="t">{highSchool.school}</span></h3><span class="d">{highSchool.dates}</span></div>
+    <ul class="rich">{highSchool.lines.map((l) => <li set:html={rich(l)} />)}</ul>
+  </article>
+</section>
+
+<section class="cv-sec" aria-labelledby="cv-research">
+  <h2 id="cv-research">Research & publications</h2>
+  {research.map((r) => (
+    <article class="entry">
+      <div class="eh"><h3><span class="t">{r.title}</span><span class="o">{orgLine(r)}</span></h3><span class="d">{r.dates}</span></div>
+      <ul class="rich">{bulletsFor(r).filter((b) => !b.startsWith('Co-author')).map((b) => <li set:html={rich(b)} />)}</ul>
+      {r.skills && <p class="note"><strong>Tools:</strong> {r.skills.join(' · ')}</p>}
+    </article>
+  ))}
+  <article class="entry">
+    <div class="eh"><h3><span class="t">“Machine Learning-Assisted Pulsed Laser Deposition Based on Plasma Optical Emission Signatures”</span></h3><span class="d">Nov 2026</span></div>
+    <p class="sub">D. Carpenter, Z. Nasiri, S. Gupta, <strong>R. Mayatskiy</strong>, S. B. Harris (Center for Nanophase Materials Sciences, Oak Ridge National Laboratory), R. P. Camata</p>
+    <ul class="rich">
+      <li set:html={rich('**Co-author** of an abstract accepted for an **oral presentation** at the **AVS 72nd International Symposium**, Pittsburgh, Nov 8–13, 2026.')} />
+      <li set:html={rich('Across **1,000** independent trials, the model found optimal plasma conditions in as few as **three** adaptive iterations: a step toward autonomous, real-time control of thin-film growth.')} />
+    </ul>
+  </article>
+</section>
+
+<section class="cv-sec" aria-labelledby="cv-work">
+  <h2 id="cv-work">Work & teaching experience</h2>
+  {work.map((r) => (
+    <article class="entry">
+      <div class="eh"><h3><span class="t">{r.title}</span><span class="o">{orgLine(r)}</span></h3><span class="d">{r.dates}</span></div>
+      {linksFor(r).length > 0 && <p class="links">{linksFor(r).map((l) => <a href={l.href} rel="noopener" target="_blank">{shortUrl(l.href)}</a>)}</p>}
+      <ul class="rich">{bulletsFor(r).map((b) => <li set:html={rich(b)} />)}</ul>
+      {caseStudy(r) ? <p class="note"><strong>Stack:</strong> {caseStudy(r)!.data.stack.join(' · ')}</p> : r.skills && <p class="note"><strong>Skills:</strong> {r.skills.join(' · ')}</p>}
+    </article>
+  ))}
+</section>
+
+<section class="cv-sec" aria-labelledby="cv-projects">
+  <h2 id="cv-projects">Projects</h2>
+  {ownProjects.map((p) => (
+    <article class="entry">
+      <div class="eh">
+        <h3><span class="t">{p.data.title}</span><span class="o">{p.data.result ?? p.data.status ?? ''}</span></h3>
+        <span class="d">{p.data.dates}</span>
+      </div>
+      <p class="sub">{p.data.role}{p.data.team && ` · Team: ${p.data.team}`}</p>
+      {p.data.links.length > 0 && <p class="links">{p.data.links.map((l) => <a href={l.href} rel="noopener" target="_blank">{shortUrl(l.href)}</a>)}</p>}
+      <ul class="rich">{bulletsOf(p).map((b) => <li set:html={rich(b)} />)}</ul>
+      <p class="note"><strong>Stack:</strong> {p.data.stack.join(' · ')}</p>
+    </article>
+  ))}
+</section>
+
+<section class="cv-sec" aria-labelledby="cv-lead">
+  <h2 id="cv-lead">Leadership & involvement</h2>
+  {leadership.map((r) => (
+    <article class="entry">
+      <div class="eh"><h3><span class="t">{r.title}</span><span class="o">{orgLine(r)}</span></h3><span class="d">{r.dates}</span></div>
+      {r.link && <p class="links"><a href={r.link.href} rel="noopener" target="_blank">{r.link.label}</a></p>}
+      <ul class="rich">{bulletsFor(r).map((b) => <li set:html={rich(b)} />)}</ul>
+    </article>
+  ))}
+  {other && <p class="note"><strong>Also:</strong> {other.bullets.join(' · ')}</p>}
+</section>
+
+<section class="cv-sec" aria-labelledby="cv-earlier">
+  <h2 id="cv-earlier">Earlier experience</h2>
+  {earlier.map((r) => (
+    <article class="entry">
+      <div class="eh"><h3><span class="t">{r.title}</span><span class="o">{orgLine(r)}</span></h3><span class="d">{r.dates}</span></div>
+      <ul class="rich">{bulletsFor(r).map((b) => <li set:html={rich(b)} />)}</ul>
+    </article>
+  ))}
+</section>
+
+<section class="cv-sec" aria-labelledby="cv-awards">
+  <h2 id="cv-awards">Awards & honors</h2>
+  {awardGroups.map(([g, label]) => (
+    <div class="group">
+      <h3 class="gh">{label}</h3>
+      <ul class="rich">{awards.filter((a) => a.group === g).map((a) => <li><span set:html={rich(a.title)} />{a.year && <span class="yr"> ({a.year})</span>}</li>)}</ul>
+    </div>
+  ))}
+</section>
+
+<section class="cv-sec" aria-labelledby="cv-skills">
+  <h2 id="cv-skills">Skills</h2>
+  <dl class="skills">
+    {skillGroups.map(([label, list]) => <div><dt>{label}</dt><dd>{list.map((s, i) => <><span class="k">{s}</span>{i < list.length - 1 && ' · '}</>)}</dd></div>)}
+    <div><dt>Spoken languages</dt><dd>{spoken.join(' · ')}</dd></div>
+  </dl>
+</section>

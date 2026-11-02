@@ -5,6 +5,7 @@ import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
   site: 'https://rmaytr.github.io',
-  integrations: [react(), sitemap()],
+  // the CV's print layout only exists to make the PDF, so it stays out of the sitemap
+  integrations: [react(), sitemap({ filter: (page) => !page.includes('/cv/print/') })],
   prefetch: { prefetchAll: true },
 });

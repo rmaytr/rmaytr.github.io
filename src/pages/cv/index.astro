@@ -1,0 +1,72 @@
+---
+import Base from '../../layouts/Base.astro';
+import CvBody from '../../components/CvBody.astro';
+import { site } from '../../data/site';
+import { shortUrl } from '../../data/cv';
+// both PDFs live in public/cv; the CV one is generated from /cv/print/ by `npm run cv:pdf`
+const CV_PDF = '/cv/Rodion_Mayatskiy_CV.pdf';
+const RESUME_PDF = '/cv/Rodion_Mayatskiy_Resume.pdf';
+---
+<Base title="CV" description="The full CV of Rodion Mayatskiy: education, research, experience, every project, leadership, awards and skills.">
+  <div class="wrap cv-web">
+    <header class="top">
+      <span class="label">CV</span>
+      <h1 data-split>Curriculum <em>vitae</em></h1>
+      <p class="lead">Everything in one place: education, research, work, every project, leadership, awards and skills. The résumé is the one-page version.</p>
+      <ul class="contact">
+        <li>{site.location}</li>
+        <li><a class="link" href={`mailto:${site.email}`}>{site.email}</a></li>
+        <li><a class="link" href={site.links.linkedin} rel="noopener" target="_blank">LinkedIn</a></li>
+        <li><a class="link" href={site.links.github} rel="noopener" target="_blank">{shortUrl(site.links.github)}</a></li>
+      </ul>
+      <div class="downloads">
+        <a class="dl primary" href={CV_PDF} download data-astro-reload><span>Download CV</span><small>PDF, full</small><i aria-hidden="true">↓</i></a>
+        <a class="dl" href={RESUME_PDF} download data-astro-reload><span>Download résumé</span><small>PDF, one page</small><i aria-hidden="true">↓</i></a>
+      </div>
+    </header>
+    <CvBody />
+  </div>
+</Base>
+
+<style>
+  .cv-web { max-width: 1040px; padding-top: clamp(130px, 14vw, 190px); padding-bottom: var(--section); }
+  h1 { font-size: clamp(2.8rem, 1.6rem + 4.4vw, 5.6rem); text-transform: uppercase; letter-spacing: -0.045em; line-height: 0.9; margin: 14px 0 20px; }
+  h1 em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--sand); text-transform: none; }
+  .lead { margin-bottom: 18px; }
+  .contact { display: flex; flex-wrap: wrap; gap: 6px 22px; list-style: none; margin: 0 0 26px; padding: 0; color: var(--muted); }
+  .downloads { display: flex; flex-wrap: wrap; gap: 12px; }
+  .dl { display: inline-grid; grid-template-columns: auto auto; grid-template-rows: auto auto; column-gap: 16px; align-items: center; padding: 12px 14px 12px 20px; border-radius: 14px; text-decoration: none; color: var(--ink); background: var(--bg-2); border: 1px solid color-mix(in srgb, var(--sand) 45%, transparent); transition: border-color 0.3s, background 0.3s, transform 0.3s var(--ease-out); }
+  .dl span { font: 700 1.05rem var(--display); }
+  .dl small { grid-row: 2; font-size: 0.8rem; color: var(--muted); }
+  .dl i { grid-row: 1 / span 2; grid-column: 2; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; font-style: normal; font-weight: 700; color: var(--bg); background: var(--sand); }
+  .dl.primary { background: color-mix(in srgb, var(--cardinal) 55%, var(--bg-2)); border-color: color-mix(in srgb, var(--glow) 60%, transparent); }
+  .dl:hover, .dl:focus-visible { transform: translateY(-2px); border-color: var(--sand); }
+
+  /* the CV itself: plain, readable sections */
+  .cv-web :global(.cv-sec) { margin-top: clamp(48px, 6vw, 80px); }
+  .cv-web :global(.cv-sec > h2) { font: 800 clamp(1.5rem, 1.2rem + 1vw, 2.1rem) / 1 var(--display); letter-spacing: -0.02em; text-transform: uppercase; padding-bottom: 12px; margin-bottom: 8px; border-bottom: 1px solid color-mix(in srgb, var(--sand) 40%, transparent); }
+  .cv-web :global(.entry) { padding-block: 20px; }
+  .cv-web :global(.entry + .entry) { border-top: 1px solid var(--line); }
+  .cv-web :global(.eh) { display: flex; justify-content: space-between; align-items: baseline; gap: 6px 20px; flex-wrap: wrap; }
+  .cv-web :global(.eh h3) { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; font: 700 clamp(1.1rem, 1rem + 0.4vw, 1.3rem) / 1.25 var(--display); letter-spacing: -0.01em; }
+  .cv-web :global(.eh .o) { font: 500 0.95rem var(--text); color: var(--sand); }
+  .cv-web :global(.eh .d) { flex: none; font: 700 0.92rem var(--display); color: var(--third); }
+  .cv-web :global(.sub), .cv-web :global(.links) { margin: 6px 0 0; text-align: left; color: var(--muted); }
+  .cv-web :global(.sub strong) { color: var(--ink); }
+  .cv-web :global(.links) { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+  .cv-web :global(.links a) { color: var(--ink); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--sand) 55%, transparent); text-underline-offset: 3px; }
+  .cv-web :global(.links a:hover) { color: var(--sand); }
+  .cv-web :global(.entry ul), .cv-web :global(.group ul) { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 6px; }
+  .cv-web :global(.entry li::marker), .cv-web :global(.group li::marker) { color: var(--glow); }
+  .cv-web :global(.note) { margin: 10px 0 0; max-width: none; text-align: left; font-size: 0.92rem; color: var(--muted); }
+  .cv-web :global(.note strong) { color: var(--ink); }
+  .cv-web :global(.group) { padding-block: 14px; }
+  .cv-web :global(.gh) { font: 700 1.1rem var(--display); color: var(--sand); }
+  .cv-web :global(.yr) { color: var(--third); white-space: nowrap; }
+  .cv-web :global(.skills) { display: grid; gap: 10px; margin: 18px 0 0; }
+  .cv-web :global(.skills div) { display: grid; grid-template-columns: 15em minmax(0, 1fr); gap: 16px; }
+  .cv-web :global(.skills dt) { font-weight: 700; color: var(--sand); }
+  .cv-web :global(.skills dd) { margin: 0; }
+  .cv-web :global(.k) { white-space: nowrap; }
+  @media (max-width: 700px) { .cv-web :global(.skills div) { grid-template-columns: 1fr; gap: 2px; } }
+</style>

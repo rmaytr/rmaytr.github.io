@@ -1,0 +1,73 @@
+---
+// The print layout behind the CV PDF, styled after the one-page résumé: `npm run cv:pdf` renders it to
+// public/cv/Rodion_Mayatskiy_CV.pdf. Not linked anywhere and kept out of the sitemap.
+import CvBody from '../../components/CvBody.astro';
+import { site } from '../../data/site';
+import { shortUrl } from '../../data/cv';
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex" />
+    <title>Rodion Mayatskiy, CV</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <main class="cv-print">
+      <header class="head">
+        <div>
+          <h1>{site.name}</h1>
+          <p>{site.location}</p>
+          <p><a href={`mailto:${site.email}`}>{site.email}</a></p>
+        </div>
+        <div class="right">
+          <p>Portfolio: <a href="https://rmaytr.github.io">rmaytr.github.io</a></p>
+          <p>LinkedIn: <a href={site.links.linkedin}>{shortUrl(site.links.linkedin)}</a></p>
+          <p>GitHub: <a href={site.links.github}>{shortUrl(site.links.github)}</a></p>
+        </div>
+      </header>
+      <CvBody />
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  @page { size: Letter; margin: 0.45in 0.5in 0.5in; }
+  * { box-sizing: border-box; }
+  html { background: #fff; }
+  body { margin: 0; color: #111; font: 9.6pt / 1.32 'Lato', 'Carlito', 'Calibri', Arial, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .cv-print { max-width: 7.5in; margin: 0 auto; }
+  a { color: #1155cc; text-decoration: underline; }
+  p { margin: 0; }
+  .head { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; margin-bottom: 4pt; }
+  .head h1 { margin: 0 0 1pt; font-size: 19pt; font-weight: 700; letter-spacing: 0.01em; text-transform: uppercase; line-height: 1.05; }
+  .head .right { text-align: right; }
+  .cv-sec { margin-top: 7pt; }
+  .cv-sec > h2 { margin: 0 0 3pt; padding-bottom: 1.5pt; border-bottom: 1.2px solid #111; font-size: 10.6pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; break-after: avoid; }
+  /* long entries may run across a page; a heading never ends a page, and a bullet is never split */
+  .entry { margin-top: 4.5pt; }
+  li, .note, .sub, .links { break-inside: avoid; }
+  .eh { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; break-after: avoid; }
+  .eh h3 { margin: 0; font-size: 9.6pt; font-weight: 700; }
+  .eh .o:not(:empty)::before { content: ' | '; font-weight: 400; }
+  .eh .o { font-weight: 400; }
+  .eh .d { flex: none; white-space: nowrap; }
+  .sub, .links { margin-top: 0.5pt; }
+  .links a + a::before { content: ' · '; color: #111; display: inline-block; text-decoration: none; margin: 0 2pt; }
+  ul { margin: 1.5pt 0 0; padding-left: 13pt; }
+  li { margin: 0.6pt 0; padding-left: 1pt; }
+  strong, mark { font-weight: 700; background: none; color: inherit; }
+  .note { margin-top: 1.5pt; color: #333; }
+  .group { margin-top: 3pt; break-inside: avoid; }
+  .gh { margin: 0; font-size: 9.6pt; font-weight: 700; }
+  .skills { margin: 3pt 0 0; }
+  .skills div { display: flex; gap: 4pt; margin: 1pt 0; }
+  .skills dt { flex: none; font-weight: 700; }
+  .skills dt::after { content: ':'; }
+  .skills dd { margin: 0; }
+  .k { white-space: nowrap; }
+  @media screen { body { padding: 0.45in 0.5in; } }
+</style>

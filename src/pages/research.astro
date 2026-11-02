@@ -5,6 +5,7 @@ import Figure from '../components/Figure.astro';
 import Publication from '../components/Publication.astro';
 import Research from '../components/home/Research.astro';
 import { roles } from '../data/roles';
+import { rich } from '../data/rich';
 const r = roles.find((x) => x.id === 'plasma-research')!;
 // the first five bullets are the work; the sixth is the publication, shown in full below
 const TITLES = ['Simulations in C', 'Supercomputer runs', 'Ground truth for ML', 'Analysis in Python', 'ML-guided growth'];
@@ -45,7 +46,7 @@ const facts = [
         <li class="card" data-reveal>
           <span class="n num" aria-hidden="true">0{i + 1}</span>
           <h3>{w.t}</h3>
-          <p>{w.b}</p>
+          <p class="rich" set:html={rich(w.b)} />
         </li>
       ))}
     </ol>

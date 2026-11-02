@@ -24,4 +24,5 @@ export const nav = [
   { href: '/work/', label: 'Projects' },
   { href: '/experience/', label: 'Experience' },
   { href: '/research/', label: 'Research' },
+  { href: '/cv/', label: 'CV' },
 ] as const;
