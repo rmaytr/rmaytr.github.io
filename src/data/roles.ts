@@ -30,7 +30,7 @@ export const roles: Role[] = [
       'Teach my own weekly 2-hour lab section of ~40 students, walking through hands-on exercises from first principles.',
       'Hold 2 hours of office hours a week on programming concepts, problem-solving and students’ own code.',
       'Work with a second TA, who leads the smaller lab section, on day-to-day course operations.',
-      'Took CS 103 as a student in Fall 2025 (A) and became its primary TA a year later.',
+      'Built a small recursion visualizer in Python to explain recursion to my students.',
     ],
     skills: ['Python', 'Teaching', 'Code review', 'Technical communication'], figure: 'terminal',
   },
@@ -103,7 +103,7 @@ export const roles: Role[] = [
     cardLine: 'Plan the full-year event calendar for UAB’s largest computing student organization.',
     bullets: [
       'ACM at UAB is the local chapter of the world’s largest computing society and the largest CS organization on campus.',
-      'Plan and run the chapter’s full-year calendar: LeetCode nights, alumni panels, internship recruiting events and networking mixers.',
+      'Plan and organize the year’s events: LeetCode nights, alumni panels, internship recruiting events and networking mixers.',
       'Handle outreach to companies for event collaborations.',
       'Developing joint programming with The AI Collective.',
     ],
@@ -127,8 +127,8 @@ export const roles: Role[] = [
     bullets: [
       'Selected as 1 of 31 from 100+ applicants to represent the freshman class.',
       'Conceived and founded the Micro-Internships initiative with the UAB Career Center, handling the networking, employer outreach and program planning.',
-      'Secured $2,000 in stipend funding and placed 10 students in project-based micro-internships across 7 UAB departments (Spring 2026).',
-      'Adopted long-term as Project One, a cohort-based USGA and Career Center program with dedicated Career Center staff, expanded to 20 host sites for 20 students, including off-campus organizations.',
+      'Secured $2,000 in scholarship funding ($200 per intern) from on-campus departments and placed 10 students in project-based micro-internships across 7 UAB departments (Spring 2026).',
+      'Adopted long-term as Project One, a cohort-based USGA and Career Center program with dedicated Career Center staff, its Fall 2026 cohort placed 20 students at 18 departments, including 3 off-campus.',
       'Remain a point of contact: helped match this year’s students to sites and will speak at the closing ceremony.',
       'Led a 6-student team with the Career Center Director to run a campus-wide Career Readiness Week (resume workshops, job fairs, headshots, professional development sessions).',
       'The only member in direct mentorship with the USGA President.',

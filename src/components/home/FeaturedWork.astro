@@ -7,16 +7,17 @@ const all = await getCollection('projects');
 const featured = all.filter((p) => p.data.category.includes('featured')).sort((a, b) => a.data.order - b.data.order);
 const words = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
 const count = (n: number) => words[n] ?? String(n);
+// NOTE: the lead sentence below names the featured set by hand; update it when a project joins or leaves `featured`
 ---
 <section class="work" id="work" aria-labelledby="work-h" data-tone="sand">
   <div class="wrap head">
     <span class="label">Projects</span>
     <h2 id="work-h" data-split>Featured <em>projects</em></h2>
-    <p class="lead" data-reveal>{count(featured.length)} projects at a glance: a hackathon win, an AI tutor in development, two client websites, an algorithms pipeline and a game. Pick one, or keep scrolling to go through them one by one.</p>
+    <p class="lead" data-reveal>{count(featured.length)} projects at a glance: a hackathon win, an AI task planner, a Canvas reminder bot, a multiplayer browser game, two client websites and an AI tutor in early development. Pick one, or keep scrolling to go through them one by one.</p>
   </div>
 
   <!-- every project in one view; each tile jumps to its panel below -->
-  <ol class="wrap sheet-grid" aria-label="All featured projects">
+  <ol class:list={['wrap sheet-grid', { many: featured.length > 6 }]} aria-label="All featured projects">
     {featured.map((p, i) => (
       <li class="tile" data-reveal>
         <a class="tile-link" href={`#p-${p.id}`} data-jump={`p-${p.id}`}>
@@ -79,7 +80,10 @@ const count = (n: number) => words[n] ?? String(n);
   .head .label { margin-bottom: 6px; }
 
   /* the overview: every project in one view */
-  .sheet-grid { list-style: none; margin-block: 0 clamp(60px, 8vw, 120px); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 22px); }
+  .sheet-grid { --cols: 3; --gap: clamp(12px, 1.6vw, 22px); list-style: none; margin-block: 0 clamp(60px, 8vw, 120px); display: flex; flex-wrap: wrap; justify-content: center; gap: var(--gap); }
+  .sheet-grid > .tile { flex: 0 0 calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols)); min-width: 0; }
+  .sheet-grid .tile-link { height: 100%; align-content: start; }
+  @media (min-width: 1100px) { .sheet-grid.many { --cols: 4; } }
   .tile-link { position: relative; display: grid; gap: 6px; padding: 10px 10px 16px; border-radius: 18px; text-decoration: none; color: inherit; background: color-mix(in srgb, var(--bg-2) 82%, transparent); border: 1px solid var(--line); transition: transform 0.5s var(--ease-out), border-color 0.3s, background 0.3s; }
   .tile-link:hover, .tile-link:focus-visible { transform: translateY(-6px); border-color: color-mix(in srgb, var(--sand) 55%, transparent); background: var(--bg-2); }
   .thumb { position: relative; display: block; aspect-ratio: 16 / 10; border-radius: 11px; overflow: hidden; background: #000; margin-bottom: 8px; }
@@ -146,9 +150,11 @@ const count = (n: number) => words[n] ?? String(n);
     .body :global(.more-link) { font-size: 1em; }
     .body :global(.more-link .arrow) { width: 2em; height: 2em; }
     :global(.panel-fig) { width: calc(120px * var(--s, 1)) !important; }
+    /* the tool chips wrap short of the corner figure, so it never sits on them */
+    .panel:has(:global(.panel-fig)) .stack { padding-right: calc(120px * var(--s, 1)); }
   }
   @media (max-width: 760px) {
-    .sheet-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .sheet-grid, .sheet-grid.many { --cols: 2; }
     .tile-link { padding: 6px 6px 12px; border-radius: 14px; }
     .tile-k, .tile-go, .poster small { display: none; }
     .poster b { font-size: 2.2rem; }

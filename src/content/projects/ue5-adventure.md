@@ -5,8 +5,8 @@ dates: '2024'
 year: '2024'
 role: Developer
 result: 2nd of 30, ASU Game Development Camp
-category: [featured, games]
-order: 7
+category: [games]
+order: 12
 stack: [Unreal Engine 5, C++, Blueprints]
 metrics:
   - { value: '2nd', label: 'of 30 at ASU Game Development Camp' }

@@ -5,14 +5,14 @@ dates: Summer 2026
 year: '2026'
 role: Web Developer Intern, BOR Realty, LLC (Phoenix, AZ)
 category: [featured, web]
-order: 4
+order: 6
 stack: [Next.js 14, React, TypeScript, Tailwind CSS, Node.js, YouTube Data API v3, GitHub Actions, Playwright, axe-core, ffmpeg, Vercel]
 metrics:
   - { value: '689', label: 'videos synced daily' }
   - { value: '300+', label: 'Playwright tests' }
   - { value: '0', label: 'axe-core violations' }
 links:
-  - { label: Live site, href: 'https://bor-realty-website.vercel.app/' }
+  - { label: azrussianrealtor.com, href: 'https://www.azrussianrealtor.com/' }
 cover: ../../assets/work/bor.png
 figure: phone
 ---

@@ -10,7 +10,7 @@ const items: WorkItem[] = await Promise.all(projects.map(async (p) => ({
   cover: p.data.cover ? (await getImage({ src: p.data.cover, width: 520, format: 'webp' })).src : undefined,
 })));
 ---
-<Base title="Projects" description="Every project by Rodion Mayatskiy: autonomous racing, an AI physics tutor, production websites, algorithms and games.">
+<Base title="Projects" description="Every project by Rodion Mayatskiy: autonomous racing, an AI task planner, a Canvas reminder bot, multiplayer browser games, production websites and an AI physics tutor.">
   <section class="wrap top">
     <span class="label third">Projects</span>
     <h1 data-split>All <em>projects</em></h1>

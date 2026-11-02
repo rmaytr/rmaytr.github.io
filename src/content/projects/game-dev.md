@@ -6,7 +6,7 @@ year: '2026'
 role: Independent
 status: In progress
 category: [games]
-order: 6
+order: 11
 stack: [Unity, Unreal Engine 5]
 ---
 Prototyping games in **Unity** and **Unreal Engine 5**: gameplay systems, level design, real-time rendering.

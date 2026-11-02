@@ -4,8 +4,8 @@ cardLine: An AI-driven Python pipeline that documents and unit-tests solutions t
 dates: '2026'
 year: '2026'
 role: Author
-category: [featured, systems]
-order: 5
+category: [systems]
+order: 10
 stack: [Python, Algorithms & data structures, Unit testing]
 metrics:
   - { value: '100', label: 'problems' }

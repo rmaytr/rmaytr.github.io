@@ -5,7 +5,7 @@ dates: May 2026 – Present
 year: '2026'
 role: Designer & developer (independent client project)
 category: [featured, web]
-order: 3
+order: 5
 stack: [React 18, JavaScript (ES2020), Node.js, esbuild, HTML5, CSS3, View Transitions API, Web Animations API, Python (Pillow), Puppeteer, Lighthouse, Vercel]
 metrics:
   - { value: '58 KB', label: 'JavaScript, from ~1,060 KB' }

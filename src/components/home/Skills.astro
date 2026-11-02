@@ -58,7 +58,7 @@ const counts = Object.fromEntries(Object.keys(GROUPS).map((k) => [k, SKILLS.filt
   .seg button[aria-pressed='true'] { background: var(--third); color: var(--bg); }
 
   .stage { position: relative; width: min(1400px, calc(100vw - 32px)); margin-inline: calc(50% - min(700px, 50vw - 16px)); height: 720px; border-radius: 26px; overflow: hidden; perspective: 1600px; touch-action: pan-y; background: radial-gradient(ellipse at 60% 30%, color-mix(in srgb, var(--third-deep) 18%, transparent), transparent 60%), linear-gradient(180deg, #151112, #0e0b0b); border: 1px solid var(--line); transition: height 0.8s var(--ease-inout); }
-  .stage[data-shape='table'] { height: 620px; }
+  .stage[data-shape='table'] { height: 760px; }
   .spot { position: absolute; width: 520px; height: 520px; left: var(--sx, 50%); top: var(--sy, 50%); margin: -260px; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--third) 12%, transparent), transparent 65%); pointer-events: none; }
   .world { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; }
   .el { position: absolute; width: 64px; height: 78px; margin: -39px 0 0 -32px; border-radius: 10px; background: linear-gradient(160deg, color-mix(in srgb, var(--cat) 30%, #1a1415), color-mix(in srgb, var(--cat) 12%, #120e0f)); border: 1px solid color-mix(in srgb, var(--cat) 60%, transparent); cursor: pointer; padding: 6px 7px; display: flex; flex-direction: column; justify-content: space-between; text-align: left; transition: transform 1.1s var(--ease-inout), opacity 0.4s, box-shadow 0.25s, background 0.25s; color: var(--ink); }
@@ -91,7 +91,7 @@ const counts = Object.fromEntries(Object.keys(GROUPS).map((k) => [k, SKILLS.filt
   import { onPage, reducedMotion } from '../../scripts/page';
   type Skill = { s: string; n: string; g: string; c: string; w: string; l: string; u: string };
   type Pos = { x: number; y: number; z: number; ry: number; rx: number };
-  const DX = 70, DY = 84, ROWS = 6, GAP = 0.4; // GAP: the space between group blocks, in columns
+  const DX = 70, DY = 84, ROWS = 9, GAP = 0.4; // GAP: the space between group blocks, in columns
   const SIDE = 1100; // from this stage width the card sits beside the shape
   const INFO_W = 360; // the docked card's width in the CSS; read as a constant, since its live width changes with the layout
   const BLOCKS = 700; // from this width the table keeps its group blocks; below it, a plain grid
