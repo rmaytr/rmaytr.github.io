@@ -64,7 +64,8 @@ const visual = p.id === 'phasora' || p.id === 'sofiakamal' || p.id === 'bor-real
 <style>
   .head { padding-top: clamp(130px, 14vw, 190px); display: grid; gap: 18px; }
   .back { width: max-content; }
-  h1 { font-size: clamp(3rem, 1.4rem + 6vw, 7.4rem); text-transform: uppercase; letter-spacing: -0.05em; line-height: 0.86; overflow-wrap: anywhere; }
+  @media (pointer: coarse) { .back { display: inline-block; padding-block: 13px; margin-block: -13px; } } /* a 44px tap area */
+  h1 { font-size: min(clamp(3rem, 1.4rem + 6vw, 7.4rem), 9.6vw); text-transform: uppercase; letter-spacing: -0.05em; line-height: 0.86; overflow-wrap: anywhere; }
   .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px 30px; margin: 14px 0 0; }
   .meta-grid dd { margin: 4px 0 0; }
   .links { display: flex; flex-wrap: wrap; gap: 10px; }

@@ -29,5 +29,5 @@ const { caseLink = true } = Astro.props;
   .hud dd { margin: 0; font: 800 clamp(1.8rem, 1.1rem + 2vw, 3rem) / 1 var(--display); letter-spacing: -0.03em; color: var(--ink); }
   .hud dt { font: 600 0.7rem var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--third); }
   .hud div { display: flex; flex-direction: column-reverse; gap: 4px; }
-  @media (max-width: 760px) { .hud { top: auto; bottom: 48vh; right: 12px; padding: 14px; } .hud dd { font-size: 1.4rem; } }
+  @media (max-width: 900px) { .hud { top: calc(13vh + 56px); bottom: auto; left: var(--gutter); right: auto; grid-auto-flow: column; gap: 16px; text-align: left; padding: 12px 14px; } .hud dd { font-size: 1.25rem; } .hud dt { font-size: 0.58rem; max-width: 16ch; } }
 </style>

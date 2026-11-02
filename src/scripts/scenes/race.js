@@ -1,6 +1,6 @@
 // HackBama scene: an electric race car follows a glowing racing line around an autocross course, driven by scroll.
 // Everything is modelled and textured in code: a lofted body, extruded wings, lathed tyres, canvas-drawn livery, carbon and asphalt.
-import { THREE, stage, loop, glow, additive, ss, scrollProgress, radialTexture, reduce as reduceQ } from './stage.js';
+import { THREE, stage, loop, tick, glow, additive, ss, scrollProgress, radialTexture, reduce as reduceQ } from './stage.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 const reduce = reduceQ();
@@ -317,15 +317,19 @@ function course(scene, curve, T) {
 
 /* ---------- the scene ---------- */
 
-export function mountRace(wrap, canvas, card, prog, lap) {
-  const { renderer, scene, camera, composer, dispose } = stage(canvas, { bloom: [0.7, 0.5, 1.0], bg: 0x070505, env: 0.32 });
+export async function mountRace(wrap, canvas, card, prog, lap) {
+  const { renderer, scene, camera, composer, warm, dispose } = stage(canvas, { bloom: [0.7, 0.5, 1.0], bg: 0x070505, env: 0.32 });
   scene.fog = new THREE.Fog(0x110a09, 9, 30);
+  await tick(); // let a frame through between setup steps
   const { T, list } = textures(Math.min(8, renderer.capabilities.getMaxAnisotropy()));
+  await tick();
   const M = materials(T);
   const pts = [[-7, 0], [-4.5, -3.5], [-0.5, -2.2], [2.5, -4.6], [7, -3], [7.5, 1], [4, 2.2], [1.5, 0.6], [-1.5, 3.8], [-6, 3.4]].map(([x, z]) => new V3(x, 0, z));
   const curve = new THREE.CatmullRomCurve3(pts, true, 'centripetal');
   const { bend, L, lineGeo, lineMat, spillGeo, instanced } = course(scene, curve, T);
+  await tick();
   const { car, body, fronts, spins } = buildCar(T, M);
+  await tick();
   scene.add(car);
 
   scene.add(new THREE.HemisphereLight(0xfff2e8, 0x1a0b0a, 0.3));
@@ -371,6 +375,6 @@ export function mountRace(wrap, canvas, card, prog, lap) {
     const c = reduce ? 1 : ss(0.9, 0.99, p); card.style.opacity = c; card.style.transform = `translateY(${(1 - c) * 24}px)`;
     prog.style.height = p * 100 + '%';
     composer.render();
-  });
+  }, warm(), { renderer, composer, max: renderer.getPixelRatio() });
   return () => { stop(); instanced.forEach((o) => o.dispose()); list.forEach((t) => t.dispose()); dispose(); };
 }

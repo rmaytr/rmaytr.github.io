@@ -35,4 +35,10 @@ const path = Astro.url.pathname;
     .nav > nav { width: 100%; }
     ul { width: 100%; justify-content: space-between; gap: 8px; }
   }
+  /* touch screens have no hover to roll: one line, and a bigger tap area that doesn't change the header's height */
+  @media (pointer: coarse) {
+    .roll { height: auto; overflow: visible; padding-block: 15px; margin-block: -15px; }
+    .roll span + span { display: none; }
+  }
+  @media (pointer: coarse) and (max-width: 640px) { .roll { padding-block: 10px; margin-block: -10px; } } /* clear of the monogram on the row above */
 </style>

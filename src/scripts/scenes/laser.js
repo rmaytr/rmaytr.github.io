@@ -1,11 +1,12 @@
 // Research scene: a beam strikes an aluminum target and a glowing red sphere swells from the impact.
-import { THREE, stage, loop, glow, additive, ss, scrollProgress, radialTexture, reduce as reduceQ } from './stage.js';
+import { THREE, stage, loop, tick, glow, additive, ss, scrollProgress, radialTexture, reduce as reduceQ } from './stage.js';
 
 const reduce = reduceQ();
 
-export function mountLaser(wrap, canvas, card, prog, label) {
-  const { scene, camera, composer, bloomPass, dispose } = stage(canvas, { bloom: [0.8, 0.55, 0.4], bg: 0x050404, env: 0.45 });
+export async function mountLaser(wrap, canvas, card, prog, label) {
+  const { renderer, scene, camera, composer, bloomPass, warm, dispose } = stage(canvas, { bloom: [0.8, 0.55, 0.4], bg: 0x050404, env: 0.45 });
   scene.fog = new THREE.FogExp2(0x050404, 0.06);
+  await tick(); // let a frame through between setup steps
   const target = new THREE.Group(); scene.add(target); target.rotation.x = 0.2;
   const alu = new THREE.MeshStandardMaterial({ color: 0xb4b8be, metalness: 1, roughness: 0.34 });
   target.add(new THREE.Mesh(new THREE.CylinderGeometry(1.3, 1.3, 0.16, 128), alu));
@@ -69,17 +70,18 @@ export function mountLaser(wrap, canvas, card, prog, label) {
     seeds.forEach(([x, y, z, sp], i) => { const r = eg2 * sp * 1.4; ep[i * 3] = x * r; ep[i * 3 + 1] = 0.1 + y * r - eg2 * eg2 * 0.6; ep[i * 3 + 2] = z * r; });
     eg.attributes.position.needsUpdate = true;
     bloomPass.strength = 0.75 + hit * 0.9 + (1 - g) * 0.25;
-    const cz = 11 - ss(0, 0.7, p) * 2.4, cx = Math.sin(p * Math.PI) * 1.6;
+    const fitW = Math.max(1, 0.62 / camera.aspect); // portrait screens: back off so the disc's width still fits
+    const cz = (11 - ss(0, 0.7, p) * 2.4) * fitW, cx = Math.sin(p * Math.PI) * 1.6 * fitW;
     camera.position.set(cx, 2.2 + p * 0.5, cz); camera.lookAt(0, 1.0 + p * 0.5, 0);
     dust.rotation.y = t * 0.01;
     canvas.style.opacity = 1 - ss(0.82, 0.95, p) * 0.9;
     // material label anchored to the target's right edge
     v.set(1.35, 0.1, 0.3); target.localToWorld(v); v.project(camera);
-    label.style.transform = `translate(${(v.x * 0.5 + 0.5) * canvas.clientWidth + 10}px, ${(-v.y * 0.5 + 0.5) * canvas.clientHeight - 18}px)`;
+    label.style.transform = `translate(${Math.min((v.x * 0.5 + 0.5) * canvas.clientWidth + 10, canvas.clientWidth - label.offsetWidth - 16)}px, ${(-v.y * 0.5 + 0.5) * canvas.clientHeight - 18}px)`;
     label.style.opacity = ss(0.02, 0.1, p) * (1 - ss(0.7, 0.8, p));
     const c = reduce ? 1 : ss(0.88, 0.98, p); card.style.opacity = c; card.style.transform = `translateY(${(1 - c) * 24}px)`;
     prog.style.height = p * 100 + '%';
     composer.render();
-  });
+  }, warm(), { renderer, composer, max: renderer.getPixelRatio() });
   return () => { stop(); dispose(); };
 }

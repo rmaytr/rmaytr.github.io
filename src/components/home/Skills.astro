@@ -79,8 +79,9 @@ const counts = Object.fromEntries(Object.keys(GROUPS).map((k) => [k, SKILLS.filt
   .used { margin: 0 0 12px; font-size: 0.88rem; color: var(--ink); opacity: 0.85; }
   .used span { font: 600 0.68rem var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--third); margin-right: 6px; }
   /* set by the script when the stage is too narrow for a side card: the card goes under the shape */
-  .stage[data-narrow] { height: auto !important; min-height: 420px; }
-  .stage[data-narrow] .info { position: relative; left: 0; top: 0; width: auto; transform: none; grid-template-columns: auto minmax(0, 1fr); gap: 20px; margin: 0 12px 12px; }
+  .stage[data-narrow] { height: auto !important; min-height: 420px; overflow: clip; } /* clip, not hidden: hidden would stop the card sticking */
+  .stage[data-narrow]::before { content: ''; display: block; height: var(--th); }
+  .stage[data-narrow] .info { position: sticky; bottom: 12px; z-index: 3; left: 0; top: auto; width: auto; transform: none; grid-template-columns: auto minmax(0, 1fr); gap: 20px; margin: 0 12px 12px; }
   @media (max-width: 700px) {
     .stage[data-narrow] .info { grid-template-columns: 1fr; }
     .big { width: 72px; height: 82px; }
@@ -92,7 +93,7 @@ const counts = Object.fromEntries(Object.keys(GROUPS).map((k) => [k, SKILLS.filt
   type Skill = { s: string; n: string; g: string; c: string; w: string; l: string; u: string };
   type Pos = { x: number; y: number; z: number; ry: number; rx: number };
   const DX = 70, DY = 84, ROWS = 9, GAP = 0.4; // GAP: the space between group blocks, in columns
-  const SIDE = 1100; // from this stage width the card sits beside the shape
+  const SIDE = 1200; // from this stage width the card sits beside the shape (narrower, the table would shrink to unreadable)
   const INFO_W = 360; // the docked card's width in the CSS; read as a constant, since its live width changes with the layout
   const BLOCKS = 700; // from this width the table keeps its group blocks; below it, a plain grid
 
@@ -155,7 +156,7 @@ const counts = Object.fromEntries(Object.keys(GROUPS).map((k) => [k, SKILLS.filt
       stage.style.perspectiveOrigin = stacked ? '' : `${cx}px 50%`; // so the sphere and helix turn about their own centre
       const rows = stage.clientWidth < BLOCKS ? Math.ceil(n / cols()) : ROWS;
       const h = (lay === 'sphere' ? 2 * 290 + 160 : lay === 'helix' ? (n - 1) * 8.8 + 160 : rows * DY) * scale;
-      world.style.top = stacked ? `${h / 2 + 24}px` : ''; info.style.marginTop = stacked ? `${h + 48}px` : '';
+      world.style.top = stacked ? `${h / 2 + 24}px` : ''; stage.style.setProperty('--th', stacked ? `${h + 48}px` : '0px');
     };
     const draw = () => {
       els.forEach((e, i) => { const p = pos[i]; e.style.transform = `translate3d(${p.x}px,${p.y}px,${p.z + lift[i]}px) rotateY(${p.ry}deg) rotateX(${p.rx}deg) scale(${1 + lift[i] / 170})`; });
@@ -193,7 +194,7 @@ const counts = Object.fromEntries(Object.keys(GROUPS).map((k) => [k, SKILLS.filt
     };
     const onLeave = () => { ptr = null; };
     const onDown = (e: PointerEvent) => { if (lay !== 'table' && !(e.target as HTMLElement).closest('.info')) drag = [e.clientX, e.clientY, tRotY, tRotX]; };
-    const onUp = () => { drag = null; };
+    const onUp = (e: PointerEvent) => { drag = null; if (e.pointerType !== 'mouse') ptr = null; }; // a touch leaves no pointer behind to keep magnifying
     stage.addEventListener('pointermove', onMove); stage.addEventListener('pointerleave', onLeave); stage.addEventListener('pointerdown', onDown); addEventListener('pointerup', onUp);
     els.forEach((e, i) => {
       e.addEventListener('click', () => select(i));

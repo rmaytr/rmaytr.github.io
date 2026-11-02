@@ -28,21 +28,28 @@ const { id, kind, label, length = 320, tone = 'cardinal' } = Astro.props;
 </style>
 
 <script>
-  import { onPage, whenNear } from '../../scripts/page';
+  import { onPage, whenNear, whenIdle } from '../../scripts/page';
   onPage(() => {
     const cleanups: Array<() => void> = [];
     let cancelled = false;
-    document.querySelectorAll<HTMLElement>('[data-scene]').forEach((wrap) => {
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
+    document.querySelectorAll<HTMLElement>('[data-scene]').forEach((wrap, i) => {
       const canvas = wrap.querySelector<HTMLCanvasElement>('[data-canvas]')!;
       const card = wrap.querySelector<HTMLElement>('[data-card]')!;
       const prog = wrap.querySelector<HTMLElement>('[data-prog]')!;
-      // three.js and the scene are built only as the reader approaches, so they never compete with the first screen
-      cleanups.push(whenNear(wrap, () => {
+      // each scene is built once: early, while the page is quiet a few seconds after it opens (one at a time), or as the
+      // reader approaches, whichever comes first, so its setup is done before anyone scrolls into it
+      let started = false;
+      const start = () => {
+        if (started || cancelled) return;
+        started = true;
         const load = wrap.dataset.scene === 'laser'
           ? import('../../scripts/scenes/laser.js').then((m) => m.mountLaser(wrap, canvas, card, prog, wrap.querySelector('[data-tlabel]')))
           : import('../../scripts/scenes/race.js').then((m) => m.mountRace(wrap, canvas, card, prog, wrap.querySelector('[data-lap]')));
         load.then((c) => (cancelled ? c() : cleanups.push(c))).catch(() => { card.style.opacity = '1'; canvas.remove(); });
-      }));
+      };
+      cleanups.push(whenNear(wrap, start));
+      if (!saveData) { const t = setTimeout(() => whenIdle(start), 3500 + i * 2500); cleanups.push(() => clearTimeout(t)); }
     });
     return () => { cancelled = true; cleanups.forEach((c) => c()); };
   });

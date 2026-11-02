@@ -146,6 +146,6 @@ p { margin: 0 0 1em; max-width: 68ch; text-align: justify; hyphens: auto; }
 
 @media (prefers-reduced-motion: reduce) {
   .label::before { animation: none; }
-  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+  *, *::before, *::after { transition-duration: 0s !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
   .js [data-reveal] { opacity: 1; transform: none; }
 }

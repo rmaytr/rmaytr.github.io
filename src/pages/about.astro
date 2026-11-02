@@ -200,10 +200,15 @@ const groups = [
   .line { margin: 0 0 10px; }
 
   @media (max-width: 860px) {
-    .intro, .edu, .awards, .ai, .earlier { grid-template-columns: 1fr; }
+    .edu, .awards, .ai, .earlier { grid-template-columns: 1fr; }
     .ai-head { position: static; }
+    .facts div { grid-template-columns: 1fr; gap: 2px; }
+  }
+  /* the photo keeps its sticky column down to tablets held upright; justified type would open gaps in the narrower text column */
+  @media (min-width: 761px) and (max-width: 860px) { .para { text-align: left; } }
+  @media (max-width: 760px) {
+    .intro { grid-template-columns: 1fr; }
     .pic-col { order: -1; }
     .pic { position: relative; top: 0; max-width: 420px; }
-    .facts div { grid-template-columns: 1fr; gap: 2px; }
   }
 </style>

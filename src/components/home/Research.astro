@@ -40,6 +40,7 @@ const { page = false } = Astro.props;
   .tlabel { position: absolute; z-index: 2; left: 0; top: 0; font: 600 0.74rem var(--mono); letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap; pointer-events: none; opacity: 0; padding-left: 46px; color: var(--third); }
   .tlabel::before { content: ''; position: absolute; left: 0; top: 50%; width: 38px; height: 1.5px; background: linear-gradient(90deg, transparent, var(--third)); }
   .tlabel b { display: block; font: 800 1.6rem / 1 var(--display); letter-spacing: -0.02em; text-transform: none; margin-top: 4px; color: var(--ink); }
+  @media (max-width: 760px) { .tlabel { text-shadow: 0 0 4px var(--bg), 0 0 14px var(--bg), 0 0 26px var(--bg); } } /* on phones it sits over the bright disc */
   .more { display: grid; gap: 28px; justify-items: start; margin-top: 40px; }
   .more :global(.cta) { justify-self: center; }
 </style>

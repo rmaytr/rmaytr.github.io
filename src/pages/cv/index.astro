@@ -50,11 +50,11 @@ const RESUME_PDF = '/cv/Rodion_Mayatskiy_Resume.pdf';
   .cv-web :global(.eh) { display: flex; justify-content: space-between; align-items: baseline; gap: 6px 20px; flex-wrap: wrap; }
   .cv-web :global(.eh h3) { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; font: 700 clamp(1.1rem, 1rem + 0.4vw, 1.3rem) / 1.25 var(--display); letter-spacing: -0.01em; }
   .cv-web :global(.eh .o) { font: 500 0.95rem var(--text); color: var(--sand); }
-  .cv-web :global(.eh .d) { flex: none; font: 700 0.92rem var(--display); color: var(--third); }
+  .cv-web :global(.eh .d) { flex: 0 1 auto; font: 700 0.92rem var(--display); color: var(--third); }
   .cv-web :global(.sub), .cv-web :global(.links) { margin: 6px 0 0; text-align: left; color: var(--muted); }
   .cv-web :global(.sub strong) { color: var(--ink); }
   .cv-web :global(.links) { display: flex; flex-wrap: wrap; gap: 4px 18px; }
-  .cv-web :global(.links a) { color: var(--ink); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--sand) 55%, transparent); text-underline-offset: 3px; }
+  .cv-web :global(.links a) { overflow-wrap: anywhere; color: var(--ink); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--sand) 55%, transparent); text-underline-offset: 3px; }
   .cv-web :global(.links a:hover) { color: var(--sand); }
   .cv-web :global(.entry ul), .cv-web :global(.group ul) { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 6px; }
   .cv-web :global(.entry li::marker), .cv-web :global(.group li::marker) { color: var(--glow); }

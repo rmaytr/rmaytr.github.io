@@ -1,6 +1,6 @@
 // The hero's AI companion: an original character built in code. A clay helmet with a bevelled visor and headphones on a
 // padded bust. Eyes follow the pointer, it blinks, smiles when you hover its face, beams and hops when clicked, and breathes.
-import { THREE, stage, loop, glow, ss, reduce as reduceQ } from './stage.js';
+import { THREE, stage, loop, tick, glow, ss, reduce as reduceQ } from './stage.js';
 import { ParametricGeometry } from 'three/addons/geometries/ParametricGeometry.js';
 
 const reduce = reduceQ();
@@ -84,7 +84,7 @@ function normalMap(w, h, draw, k = 3, repeat = [1, 1]) {
   const src = g.getImageData(0, 0, w, h).data, img = g.createImageData(w, h), o = img.data;
   const at = (x, y) => src[(((y + h) % h) * w + ((x + w) % w)) * 4] / 255;
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-    const nx = (at(x - 1, y) - at(x + 1, y)) * k, ny = (at(x, y + 1) - at(x, y - 1)) * k, l = Math.hypot(nx, ny, 1), i = (y * w + x) * 4;
+    const nx = (at(x - 1, y) - at(x + 1, y)) * k, ny = (at(x, y + 1) - at(x, y - 1)) * k, l = Math.sqrt(nx * nx + ny * ny + 1), i = (y * w + x) * 4;
     o[i] = (nx / l * 0.5 + 0.5) * 255; o[i + 1] = (ny / l * 0.5 + 0.5) * 255; o[i + 2] = (0.5 / l + 0.5) * 255; o[i + 3] = 255;
   }
   g.putImageData(img, 0, 0);
@@ -100,12 +100,13 @@ const stroke = (g, pts, width, col) => { g.strokeStyle = col; g.lineWidth = widt
 const seam = (g, ...pts) => { stroke(g, pts, 7, 'rgba(96,96,96,.55)'); stroke(g, pts, 2.5, '#303030'); };
 const clayGrain = (g, w, h) => { noise(g, w, h, 96, 0.065); noise(g, w, h, w, 0.04); };
 
-export function mountCompanion(host, canvas) {
-  const { renderer, scene, camera, composer, dispose } = stage(canvas, { bloom: [0.5, 0.45, 1.0], env: 0.28 });
+export async function mountCompanion(host, canvas) {
+  const { renderer, scene, camera, composer, warm, dispose } = stage(canvas, { bloom: [0.5, 0.45, 1.0], env: 0.28 });
   const small = matchMedia('(pointer: coarse)').matches || innerWidth < 760;
   const pr = Math.min(devicePixelRatio, small ? 1.5 : 1.75);
   renderer.setPixelRatio(pr); composer.setPixelRatio(pr);
   renderer.shadowMap.enabled = true;
+  await tick(); // let a frame through between setup steps
   let camZ = 10.5, cx = 0, cy = 0;
   camera.position.set(0, 0.1, camZ); camera.lookAt(0, -0.45, 0);
 
@@ -128,6 +129,7 @@ export function mountCompanion(host, canvas) {
     seam(g, [0, Y(waistV)], [w, Y(waistV)]); seam(g, [0, 0], [0, h]); seam(g, [w, 0], [w, h]);
     for (const sgn of [-1, 1]) seam(g, ...Array.from({ length: 33 }, (_, i) => { const v = collarV * (i / 32); return [(0.5 + sgn * frontHW(v)) * w, Y(v)]; }));
   });
+  await tick();
   const headTex = normalMap(512, 512, (g, w, h) => {
     clayGrain(g, w, h);
     const Y = (v) => (1 - v) * h;
@@ -135,13 +137,16 @@ export function mountCompanion(host, canvas) {
     seam(g, [0, Y(0.8)], [w, Y(0.8)]); seam(g, [0, Y(0.13)], [w, Y(0.13)]);
     for (const u of [0.25, 0.75]) for (const dx of [-16, 0, 16]) stroke(g, [[u * w + dx, Y(0.7)], [u * w + dx, Y(0.62)]], 6, '#3a3a3a'); // temple vents
   });
+  await tick();
   const grainTex = normalMap(256, 256, clayGrain, 2.5, [3, 3]);
   const ribTex = normalMap(256, 256, (g, w, h) => {
     for (let i = 0; i < 8; i++) { const x = (i + 0.5) * w / 8; stroke(g, [[x, 0], [x, h]], 18, '#a8a8a8'); stroke(g, [[x, 0], [x, h]], 8, '#d0d0d0'); }
     for (const y of [14, h - 14]) { stroke(g, [[0, y], [w, y]], 10, '#5a5a5a'); for (let i = 0; i < 8; i++) stroke(g, [[i * w / 8 + 6, y], [i * w / 8 + 22, y]], 4, '#e6e6e6'); }
   }, 2.5, [14, 1]);
+  await tick();
   const ringTex = normalMap(256, 256, (g, w, h) => { noise(g, w, h, w, 0.1); for (let y = 4; y < h; y += 9) stroke(g, [[0, y], [w, y]], 2, '#606060'); }, 2);
   const maps = [bustTex, headTex, grainTex, ribTex, ringTex];
+  await tick();
 
   // materials: soft-touch clay, a cardinal livery, graphite and rubber, ribbed fabric, brushed sand metal, gloss visor
   const clayP = { color: 0xe9e2da, roughness: 0.58, clearcoat: 0.12, clearcoatRoughness: 0.55, sheen: 0.4, sheenColor: 0xffe2d4, sheenRoughness: 0.65 };
@@ -196,6 +201,7 @@ export function mountCompanion(host, canvas) {
   add(lathe([[0.4, -1.1], [0.5, -1.09], [0.545, -1.05], [0.552, -1.0], [0.532, -0.955], [0.48, -0.94], [0.4, -0.945]], 96), graphite, body, 0, 0, 0, false);
   add(new THREE.TorusGeometry(0.549, 0.011, 8, 128), cardMat, body, 0, -1.02, 0, false).rotation.x = Math.PI / 2;
 
+  await tick();
   // ---- head: a shaped shell, a bubble visor sunk in a bevelled rim with a brow, headphones, a mic boom, an antenna
   const head = new THREE.Group(); head.position.y = 0.1; rig.add(head);
   add(shade(new ParametricGeometry(helmet, 128, 88), (c, x, y, z) => c.multiplyScalar((0.62 + 0.38 * ss(-0.85, -0.3, y)) * (1 - 0.3 * Math.exp(-((Math.hypot(Math.abs(x) - 1.05, y, z) / 0.42) ** 2))))), clayHead, head);
@@ -225,6 +231,7 @@ export function mountCompanion(host, canvas) {
   for (const s of [-1, 1]) { const m = faceOn(new THREE.Mesh(blushGeo, blushMat), s * 0.55, -0.17, 0.004); m.scale.set(1.3, 0.7, 1); head.add(m); }
   const smile = new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.02, 10, 48, Math.PI), smileMat); head.add(smile);
 
+  await tick();
   // headphones: rubber cushion, cardinal cup, glowing ring and a brushed cap with concentric grooves; the left is a mirror
   const pod = new THREE.Group(); pod.position.x = 1.02; head.add(pod);
   const ax = new THREE.Group(); ax.rotation.z = -Math.PI / 2; pod.add(ax);
@@ -258,6 +265,7 @@ export function mountCompanion(host, canvas) {
   add(new THREE.TorusGeometry(0.03, 0.01, 8, 24), metal, ant, 0, 0.5).rotation.x = Math.PI / 2;
   add(new THREE.SphereGeometry(0.07, 32, 24), cardMat, ant, 0, 0.56, 0, false);
 
+  await tick();
   // screws: a few brushed rivets on the visor rim and the chest plate, one instanced draw each
   const screwGeo = new THREE.SphereGeometry(1, 10, 6, 0, TAU, 0, Math.PI / 2).rotateX(Math.PI / 2);
   const screws = (parent, placements) => {
@@ -269,6 +277,7 @@ export function mountCompanion(host, canvas) {
   const headScrews = screws(head, [0.8, 2.34, 3.94, 5.48].map(rimPt));
   const bodyScrews = screws(body, [[-1, 1], [1, 1], [-1, -1], [1, -1]].map(([sx, sy]) => [bust, 0.5, chestV, sx * 0.44, sy * 0.37, plateLift]));
 
+  await tick();
   // floating shapes at different depths, shifting with the pointer
   const floaters = [
     [new THREE.TorusGeometry(0.34, 0.12, 32, 96), clay, [-3.3, 1.3, -1.2], 0.6],
@@ -313,8 +322,9 @@ export function mountCompanion(host, canvas) {
     antV += (-120 * antA - 9 * antV - turn * 6 * idle) * dt; antA += antV * dt; ant.rotation.z = Math.max(-0.6, Math.min(0.6, antA)) - 0.12;
     for (let i = 0; i < floaters.length; i++) { const f = floaters[i]; f.o.position.x = f.bx - tx * 0.35 * f.d; f.o.position.y = f.by + ty * 0.25 * f.d + idle * Math.sin(t * 0.8 + f.ph) * 0.12; f.o.rotation.x = idle * t * 0.3 + f.ph; f.o.rotation.y = idle * t * 0.4; }
     composer.render();
-  });
-  const fitCam = () => { camZ = canvas.clientWidth < 760 ? 13.5 : 10.5; };
+  }, warm(), { renderer, composer, max: pr });
+  // with text either side (landscape), a screen squarer than a laptop's (a tablet held sideways) pulls back so the text clears it
+  const fitCam = () => { const w = canvas.clientWidth, h = canvas.clientHeight; camZ = w < 760 ? 13.5 : 10.5 * (innerWidth > innerHeight ? Math.max(1, (1.55 * h) / w) : 1); };
   addEventListener('resize', fitCam); fitCam();
   return () => {
     stop(); removeEventListener('resize', fitCam); host.removeEventListener('pointermove', onMove); host.removeEventListener('pointerleave', onLeave); host.removeEventListener('click', onClick);
