@@ -95,7 +95,7 @@ export const roles: Role[] = [
       'Designed **5 program tracks**: prompt engineering, productivity, coding and research literacy, AI ethics roundtables, industry briefings.',
       'First event this semester (Fall 2026); building partnerships with **ACM, USGA, Women in Technology**, faculty and alumni.',
     ],
-    link: { label: 'AIC on CampusLabs', href: 'https://uab.campuslabs.com/engage/actioncenter/organization/aic' }, figure: 'hub',
+    link: { label: 'AIC on CampusLabs', href: 'https://uab.campuslabs.com/engage/actioncenter/organization/aic' }, figure: 'neural',
   },
   {
     id: 'acm', kind: 'leadership', title: 'Events Chair, ACM at UAB', org: 'ACM at UAB',
@@ -107,7 +107,7 @@ export const roles: Role[] = [
       'Handle **outreach to companies** for event collaborations.',
       'Developing **joint programming with The AI Collective**.',
     ],
-    figure: 'keyboard',
+    figure: 'calendar',
   },
   {
     id: 'usga-web', kind: 'leadership', title: 'Website Coordinator, Undergraduate Student Government Association (USGA)',
@@ -118,7 +118,7 @@ export const roles: Role[] = [
       'Build and maintain the site in **Joomla 5** with custom HTML, CSS and JavaScript.',
       'Planning and leading a **major redesign** of its structure, visual design and usability.',
     ],
-    figure: 'stack',
+    figure: 'portico',
   },
   {
     id: 'freshman-forum', kind: 'leadership', title: 'Freshman Forum Member, USGA · Member of the Year', org: 'USGA',
@@ -134,7 +134,7 @@ export const roles: Role[] = [
       'The **only member** in direct mentorship with the **USGA President**.',
       'Named inaugural **Member of the Month** (Oct 2025) and **Freshman Forum Member of the Year**.',
     ],
-    figure: 'relay',
+    figure: 'forum',
   },
   {
     id: 'ambassador', kind: 'leadership', title: 'UAB Ambassador', org: 'Office of Student Engagement',
@@ -146,7 +146,7 @@ export const roles: Role[] = [
       // TODO(Rodion): confirm "stipend" vs "merit scholarship" (contents §15).
       'Recipient of a **$1,000** annual award.',
     ],
-    figure: 'router',
+    figure: 'flag',
   },
   {
     id: 'isss', kind: 'leadership', title: 'International Mentor, International Scholar & Student Services (ISSS)', org: 'ISSS',

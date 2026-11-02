@@ -5,6 +5,11 @@ const CUSTOM: Record<string, () => Promise<Custom>> = {
   globe: () => import('./hairline-globe.js').then((m) => m.globe),
   web: () => import('./hairline-web.js').then((m) => m.web),
   tutor: () => import('./hairline-tutor.js').then((m) => m.tutor),
+  neural: () => import('./hairline-neural.js').then((m) => m.neural),
+  calendar: () => import('./hairline-calendar.js').then((m) => m.calendar),
+  portico: () => import('./hairline-portico.js').then((m) => m.portico),
+  forum: () => import('./hairline-forum.js').then((m) => m.forum),
+  flag: () => import('./hairline-flag.js').then((m) => m.flag),
 };
 
 /** The bench's mount, reduced to what a page needs: a stage, an svg, a silent read-out, and the tour. */
